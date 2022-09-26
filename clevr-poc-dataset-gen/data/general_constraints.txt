@@ -1,0 +1,35 @@
+property(color, blue).
+property(color, brown).
+property(color, cyan).
+property(color, gray).
+property(color, green).
+property(color, purple).
+property(color, red).
+property(color, yellow).
+property(color, coral).
+
+property(shape, cube).
+property(shape, cylinder).
+property(shape, sphere).
+property(shape, cone).
+
+property(siz, large).
+property(siz, small).
+property(siz, medium).
+
+property(material, rubber).
+property(material, metal).
+
+region(0).
+region(1).
+region(2).
+region(3).
+region(4).
+region(5).
+region(6).
+region(7).
+region(8).
+
+sameProperty(X1, X2, P) :- object(X1), object(X2), hasProperty(X1,P,V1), hasProperty(X2, P, V2), V1==V2, X1!=X2.
+1{hasProperty(X, P, V):property(P, V)}1 :- object(X).
+1{at(X, R): region(R)}1 :- object(X).

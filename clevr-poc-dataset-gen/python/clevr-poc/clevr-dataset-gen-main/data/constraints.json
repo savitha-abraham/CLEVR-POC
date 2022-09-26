@@ -1,0 +1,4052 @@
+{
+   "constraint_type_0": {
+      "regions": [
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "blue"
+=======
+                  "blue",
+                  "brown"
+               ],
+               "color_shape": [
+                  [
+                     "blue",
+                     "cube"
+                  ],
+                  [
+                     "brown",
+                     "sphere"
+                  ],
+                  [
+                     "brown",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "rubber"
+               ],
+<<<<<<< HEAD
+               "shape": [
+                  "cube"
+               ],
+               "size": [
+                  "large"
+=======
+               "shape_size": [
+                  [
+                     "cylinder",
+                     "small"
+                  ],
+                  [
+                     "sphere",
+                     "large"
+                  ],
+                  [
+                     "cube",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "brown"
+=======
+                  "brown",
+                  "cyan"
+               ],
+               "color_shape": [
+                  [
+                     "brown",
+                     "cube"
+                  ],
+                  [
+                     "cyan",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+<<<<<<< HEAD
+               "shape": [
+                  "cylinder"
+               ],
+               "size": [
+                  "large"
+=======
+               "size": [
+                  "small"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "coral"
+               ],
+               "material": [
+                  "metal"
+=======
+                  "cyan",
+                  "gray"
+               ],
+               "color_material": [
+                  [
+                     "cyan",
+                     "metal"
+                  ],
+                  [
+                     "gray",
+                     "rubber"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "shape": [
+                  "sphere"
+               ],
+               "size": [
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "cyan"
+=======
+                  "gray",
+                  "green"
+               ],
+               "color_shape": [
+                  [
+                     "gray",
+                     "cube"
+                  ],
+                  [
+                     "green",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "cube"
+=======
+                  "cube",
+                  "cylinder"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "size": [
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "gray"
+               ],
+               "material": [
+                  "metal"
+=======
+                  "green",
+                  "purple"
+               ],
+               "color_size": [
+                  [
+                     "green",
+                     "large"
+                  ],
+                  [
+                     "purple",
+                     "small"
+                  ]
+               ],
+               "material": [
+                  "metal",
+                  "rubber"
+               ],
+               "material_size": [
+                  [
+                     "rubber",
+                     "large"
+                  ],
+                  [
+                     "metal",
+                     "small"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "shape": [
+                  "sphere"
+               ],
+               "size": [
+<<<<<<< HEAD
+=======
+                  "large",
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "green"
+=======
+                  "purple",
+                  "red"
+               ],
+               "color_shape": [
+                  [
+                     "purple",
+                     "cylinder"
+                  ],
+                  [
+                     "red",
+                     "cube"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "sphere"
+               ],
+               "size": [
+                  "large"
+=======
+                  "cube",
+                  "cylinder"
+               ],
+               "shape_size": [
+                  [
+                     "cylinder",
+                     "small"
+                  ],
+                  [
+                     "cube",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "purple"
+=======
+                  "red",
+                  "yellow"
+               ],
+               "color_shape": [
+                  [
+                     "red",
+                     "sphere"
+                  ],
+                  [
+                     "yellow",
+                     "cube"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "rubber"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "cylinder"
+               ],
+               "size": [
+                  "small"
+=======
+                  "cube",
+                  "sphere"
+               ],
+               "size": [
+                  "large"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "red"
+=======
+                  "yellow",
+                  "blue"
+               ],
+               "color_size": [
+                  [
+                     "yellow",
+                     "small"
+                  ],
+                  [
+                     "blue",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+                  "cube"
+<<<<<<< HEAD
+               ],
+               "size": [
+                  "large"
+=======
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "yellow"
+               ],
+               "material": [
+                  "rubber"
+               ],
+               "shape": [
+                  "sphere"
+=======
+                  "blue",
+                  "brown"
+               ],
+               "color_material": [
+                  [
+                     "blue",
+                     "rubber"
+                  ],
+                  [
+                     "brown",
+                     "metal"
+                  ]
+               ],
+               "shape": [
+                  "cylinder"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "size": [
+                  "large"
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         }
+      ]
+   },
+   "constraint_type_1": {
+      "regions": [
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "yellow"
+               ],
+               "material": [
+                  "rubber"
+               ],
+               "shape": [
+                  "sphere"
+=======
+                  "blue",
+                  "brown"
+               ],
+               "color_material": [
+                  [
+                     "blue",
+                     "rubber"
+                  ],
+                  [
+                     "brown",
+                     "metal"
+                  ]
+               ],
+               "shape": [
+                  "cylinder"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "size": [
+                  "large"
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "blue"
+=======
+                  "blue",
+                  "brown"
+               ],
+               "color_shape": [
+                  [
+                     "blue",
+                     "cube"
+                  ],
+                  [
+                     "brown",
+                     "sphere"
+                  ],
+                  [
+                     "brown",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "rubber"
+               ],
+<<<<<<< HEAD
+               "shape": [
+                  "cube"
+               ],
+               "size": [
+                  "large"
+=======
+               "shape_size": [
+                  [
+                     "cylinder",
+                     "small"
+                  ],
+                  [
+                     "sphere",
+                     "large"
+                  ],
+                  [
+                     "cube",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "brown"
+=======
+                  "brown",
+                  "cyan"
+               ],
+               "color_shape": [
+                  [
+                     "brown",
+                     "cube"
+                  ],
+                  [
+                     "cyan",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+<<<<<<< HEAD
+               "shape": [
+                  "cylinder"
+               ],
+               "size": [
+                  "large"
+=======
+               "size": [
+                  "small"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "coral"
+               ],
+               "material": [
+                  "metal"
+=======
+                  "cyan",
+                  "gray"
+               ],
+               "color_material": [
+                  [
+                     "cyan",
+                     "metal"
+                  ],
+                  [
+                     "gray",
+                     "rubber"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "shape": [
+                  "sphere"
+               ],
+               "size": [
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "cyan"
+=======
+                  "gray",
+                  "green"
+               ],
+               "color_shape": [
+                  [
+                     "gray",
+                     "cube"
+                  ],
+                  [
+                     "green",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "cube"
+=======
+                  "cube",
+                  "cylinder"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "size": [
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "gray"
+               ],
+               "material": [
+                  "metal"
+=======
+                  "green",
+                  "purple"
+               ],
+               "color_size": [
+                  [
+                     "green",
+                     "large"
+                  ],
+                  [
+                     "purple",
+                     "small"
+                  ]
+               ],
+               "material": [
+                  "metal",
+                  "rubber"
+               ],
+               "material_size": [
+                  [
+                     "rubber",
+                     "large"
+                  ],
+                  [
+                     "metal",
+                     "small"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "shape": [
+                  "sphere"
+               ],
+               "size": [
+<<<<<<< HEAD
+=======
+                  "large",
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "green"
+=======
+                  "purple",
+                  "red"
+               ],
+               "color_shape": [
+                  [
+                     "purple",
+                     "cylinder"
+                  ],
+                  [
+                     "red",
+                     "cube"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "sphere"
+               ],
+               "size": [
+                  "large"
+=======
+                  "cube",
+                  "cylinder"
+               ],
+               "shape_size": [
+                  [
+                     "cylinder",
+                     "small"
+                  ],
+                  [
+                     "cube",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "purple"
+=======
+                  "red",
+                  "yellow"
+               ],
+               "color_shape": [
+                  [
+                     "red",
+                     "sphere"
+                  ],
+                  [
+                     "yellow",
+                     "cube"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "rubber"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "cylinder"
+               ],
+               "size": [
+                  "small"
+=======
+                  "cube",
+                  "sphere"
+               ],
+               "size": [
+                  "large"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "red"
+=======
+                  "yellow",
+                  "blue"
+               ],
+               "color_size": [
+                  [
+                     "yellow",
+                     "small"
+                  ],
+                  [
+                     "blue",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+                  "cube"
+<<<<<<< HEAD
+               ],
+               "size": [
+                  "large"
+=======
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         }
+      ]
+   },
+   "constraint_type_2": {
+      "regions": [
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "purple"
+=======
+                  "red",
+                  "yellow"
+               ],
+               "color_shape": [
+                  [
+                     "red",
+                     "sphere"
+                  ],
+                  [
+                     "yellow",
+                     "cube"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "rubber"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "cylinder"
+               ],
+               "size": [
+                  "small"
+=======
+                  "cube",
+                  "sphere"
+               ],
+               "size": [
+                  "large"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "red"
+=======
+                  "yellow",
+                  "blue"
+               ],
+               "color_size": [
+                  [
+                     "yellow",
+                     "small"
+                  ],
+                  [
+                     "blue",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+                  "cube"
+<<<<<<< HEAD
+               ],
+               "size": [
+                  "large"
+=======
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "yellow"
+               ],
+               "material": [
+                  "rubber"
+               ],
+               "shape": [
+                  "sphere"
+=======
+                  "blue",
+                  "brown"
+               ],
+               "color_material": [
+                  [
+                     "blue",
+                     "rubber"
+                  ],
+                  [
+                     "brown",
+                     "metal"
+                  ]
+               ],
+               "shape": [
+                  "cylinder"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "size": [
+                  "large"
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "blue"
+=======
+                  "blue",
+                  "brown"
+               ],
+               "color_shape": [
+                  [
+                     "blue",
+                     "cube"
+                  ],
+                  [
+                     "brown",
+                     "sphere"
+                  ],
+                  [
+                     "brown",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "rubber"
+               ],
+<<<<<<< HEAD
+               "shape": [
+                  "cube"
+               ],
+               "size": [
+                  "large"
+=======
+               "shape_size": [
+                  [
+                     "cylinder",
+                     "small"
+                  ],
+                  [
+                     "sphere",
+                     "large"
+                  ],
+                  [
+                     "cube",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "brown"
+=======
+                  "brown",
+                  "cyan"
+               ],
+               "color_shape": [
+                  [
+                     "brown",
+                     "cube"
+                  ],
+                  [
+                     "cyan",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+<<<<<<< HEAD
+               "shape": [
+                  "cylinder"
+               ],
+               "size": [
+                  "large"
+=======
+               "size": [
+                  "small"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "coral"
+               ],
+               "material": [
+                  "metal"
+=======
+                  "cyan",
+                  "gray"
+               ],
+               "color_material": [
+                  [
+                     "cyan",
+                     "metal"
+                  ],
+                  [
+                     "gray",
+                     "rubber"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "shape": [
+                  "sphere"
+               ],
+               "size": [
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "cyan"
+=======
+                  "gray",
+                  "green"
+               ],
+               "color_shape": [
+                  [
+                     "gray",
+                     "cube"
+                  ],
+                  [
+                     "green",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "cube"
+=======
+                  "cube",
+                  "cylinder"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "size": [
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "gray"
+               ],
+               "material": [
+                  "metal"
+=======
+                  "green",
+                  "purple"
+               ],
+               "color_size": [
+                  [
+                     "green",
+                     "large"
+                  ],
+                  [
+                     "purple",
+                     "small"
+                  ]
+               ],
+               "material": [
+                  "metal",
+                  "rubber"
+               ],
+               "material_size": [
+                  [
+                     "rubber",
+                     "large"
+                  ],
+                  [
+                     "metal",
+                     "small"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "shape": [
+                  "sphere"
+               ],
+               "size": [
+<<<<<<< HEAD
+=======
+                  "large",
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "green"
+=======
+                  "purple",
+                  "red"
+               ],
+               "color_shape": [
+                  [
+                     "purple",
+                     "cylinder"
+                  ],
+                  [
+                     "red",
+                     "cube"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "sphere"
+               ],
+               "size": [
+                  "large"
+=======
+                  "cube",
+                  "cylinder"
+               ],
+               "shape_size": [
+                  [
+                     "cylinder",
+                     "small"
+                  ],
+                  [
+                     "cube",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         }
+      ]
+   },
+   "constraint_type_3": {
+      "regions": [
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "cyan"
+=======
+                  "gray",
+                  "green"
+               ],
+               "color_shape": [
+                  [
+                     "gray",
+                     "cube"
+                  ],
+                  [
+                     "green",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "cube"
+=======
+                  "cube",
+                  "cylinder"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "size": [
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "gray"
+               ],
+               "material": [
+                  "metal"
+=======
+                  "green",
+                  "purple"
+               ],
+               "color_size": [
+                  [
+                     "green",
+                     "large"
+                  ],
+                  [
+                     "purple",
+                     "small"
+                  ]
+               ],
+               "material": [
+                  "metal",
+                  "rubber"
+               ],
+               "material_size": [
+                  [
+                     "rubber",
+                     "large"
+                  ],
+                  [
+                     "metal",
+                     "small"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "shape": [
+                  "sphere"
+               ],
+               "size": [
+<<<<<<< HEAD
+=======
+                  "large",
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "green"
+=======
+                  "purple",
+                  "red"
+               ],
+               "color_shape": [
+                  [
+                     "purple",
+                     "cylinder"
+                  ],
+                  [
+                     "red",
+                     "cube"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "sphere"
+               ],
+               "size": [
+                  "large"
+=======
+                  "cube",
+                  "cylinder"
+               ],
+               "shape_size": [
+                  [
+                     "cylinder",
+                     "small"
+                  ],
+                  [
+                     "cube",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "purple"
+=======
+                  "red",
+                  "yellow"
+               ],
+               "color_shape": [
+                  [
+                     "red",
+                     "sphere"
+                  ],
+                  [
+                     "yellow",
+                     "cube"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "rubber"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "cylinder"
+               ],
+               "size": [
+                  "small"
+=======
+                  "cube",
+                  "sphere"
+               ],
+               "size": [
+                  "large"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "red"
+=======
+                  "yellow",
+                  "blue"
+               ],
+               "color_size": [
+                  [
+                     "yellow",
+                     "small"
+                  ],
+                  [
+                     "blue",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+                  "cube"
+<<<<<<< HEAD
+               ],
+               "size": [
+                  "large"
+=======
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "yellow"
+               ],
+               "material": [
+                  "rubber"
+               ],
+               "shape": [
+                  "sphere"
+=======
+                  "blue",
+                  "brown"
+               ],
+               "color_material": [
+                  [
+                     "blue",
+                     "rubber"
+                  ],
+                  [
+                     "brown",
+                     "metal"
+                  ]
+               ],
+               "shape": [
+                  "cylinder"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "size": [
+                  "large"
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "blue"
+=======
+                  "blue",
+                  "brown"
+               ],
+               "color_shape": [
+                  [
+                     "blue",
+                     "cube"
+                  ],
+                  [
+                     "brown",
+                     "sphere"
+                  ],
+                  [
+                     "brown",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "rubber"
+               ],
+<<<<<<< HEAD
+               "shape": [
+                  "cube"
+               ],
+               "size": [
+                  "large"
+=======
+               "shape_size": [
+                  [
+                     "cylinder",
+                     "small"
+                  ],
+                  [
+                     "sphere",
+                     "large"
+                  ],
+                  [
+                     "cube",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "brown"
+=======
+                  "brown",
+                  "cyan"
+               ],
+               "color_shape": [
+                  [
+                     "brown",
+                     "cube"
+                  ],
+                  [
+                     "cyan",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+<<<<<<< HEAD
+               "shape": [
+                  "cylinder"
+               ],
+               "size": [
+                  "large"
+=======
+               "size": [
+                  "small"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "coral"
+               ],
+               "material": [
+                  "metal"
+=======
+                  "cyan",
+                  "gray"
+               ],
+               "color_material": [
+                  [
+                     "cyan",
+                     "metal"
+                  ],
+                  [
+                     "gray",
+                     "rubber"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "shape": [
+                  "sphere"
+               ],
+               "size": [
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         }
+      ]
+   },
+   "constraint_type_4": {
+      "regions": [
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "yellow"
+               ],
+               "material": [
+                  "rubber"
+               ],
+               "shape": [
+                  "sphere"
+=======
+                  "blue",
+                  "brown"
+               ],
+               "color_material": [
+                  [
+                     "blue",
+                     "rubber"
+                  ],
+                  [
+                     "brown",
+                     "metal"
+                  ]
+               ],
+               "shape": [
+                  "cylinder"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "size": [
+                  "large"
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "blue"
+=======
+                  "blue",
+                  "brown"
+               ],
+               "color_shape": [
+                  [
+                     "blue",
+                     "cube"
+                  ],
+                  [
+                     "brown",
+                     "sphere"
+                  ],
+                  [
+                     "brown",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "rubber"
+               ],
+<<<<<<< HEAD
+               "shape": [
+                  "cube"
+               ],
+               "size": [
+                  "large"
+=======
+               "shape_size": [
+                  [
+                     "cylinder",
+                     "small"
+                  ],
+                  [
+                     "sphere",
+                     "large"
+                  ],
+                  [
+                     "cube",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "brown"
+=======
+                  "brown",
+                  "cyan"
+               ],
+               "color_shape": [
+                  [
+                     "brown",
+                     "cube"
+                  ],
+                  [
+                     "cyan",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+<<<<<<< HEAD
+               "shape": [
+                  "cylinder"
+               ],
+               "size": [
+                  "large"
+=======
+               "size": [
+                  "small"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "coral"
+               ],
+               "material": [
+                  "metal"
+=======
+                  "cyan",
+                  "gray"
+               ],
+               "color_material": [
+                  [
+                     "cyan",
+                     "metal"
+                  ],
+                  [
+                     "gray",
+                     "rubber"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "shape": [
+                  "sphere"
+               ],
+               "size": [
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "cyan"
+=======
+                  "gray",
+                  "green"
+               ],
+               "color_shape": [
+                  [
+                     "gray",
+                     "cube"
+                  ],
+                  [
+                     "green",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "cube"
+=======
+                  "cube",
+                  "cylinder"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "size": [
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "gray"
+               ],
+               "material": [
+                  "metal"
+=======
+                  "green",
+                  "purple"
+               ],
+               "color_size": [
+                  [
+                     "green",
+                     "large"
+                  ],
+                  [
+                     "purple",
+                     "small"
+                  ]
+               ],
+               "material": [
+                  "metal",
+                  "rubber"
+               ],
+               "material_size": [
+                  [
+                     "rubber",
+                     "large"
+                  ],
+                  [
+                     "metal",
+                     "small"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "shape": [
+                  "sphere"
+               ],
+               "size": [
+<<<<<<< HEAD
+=======
+                  "large",
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "green"
+=======
+                  "purple",
+                  "red"
+               ],
+               "color_shape": [
+                  [
+                     "purple",
+                     "cylinder"
+                  ],
+                  [
+                     "red",
+                     "cube"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "sphere"
+               ],
+               "size": [
+                  "large"
+=======
+                  "cube",
+                  "cylinder"
+               ],
+               "shape_size": [
+                  [
+                     "cylinder",
+                     "small"
+                  ],
+                  [
+                     "cube",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "purple"
+=======
+                  "red",
+                  "yellow"
+               ],
+               "color_shape": [
+                  [
+                     "red",
+                     "sphere"
+                  ],
+                  [
+                     "yellow",
+                     "cube"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "rubber"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "cylinder"
+               ],
+               "size": [
+                  "small"
+=======
+                  "cube",
+                  "sphere"
+               ],
+               "size": [
+                  "large"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "red"
+=======
+                  "yellow",
+                  "blue"
+               ],
+               "color_size": [
+                  [
+                     "yellow",
+                     "small"
+                  ],
+                  [
+                     "blue",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+                  "cube"
+<<<<<<< HEAD
+               ],
+               "size": [
+                  "large"
+=======
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         }
+      ]
+   },
+   "constraint_type_5": {
+      "regions": [
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "cyan"
+=======
+                  "gray",
+                  "green"
+               ],
+               "color_shape": [
+                  [
+                     "gray",
+                     "cube"
+                  ],
+                  [
+                     "green",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "cube"
+=======
+                  "cube",
+                  "cylinder"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "size": [
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "gray"
+               ],
+               "material": [
+                  "metal"
+=======
+                  "green",
+                  "purple"
+               ],
+               "color_size": [
+                  [
+                     "green",
+                     "large"
+                  ],
+                  [
+                     "purple",
+                     "small"
+                  ]
+               ],
+               "material": [
+                  "metal",
+                  "rubber"
+               ],
+               "material_size": [
+                  [
+                     "rubber",
+                     "large"
+                  ],
+                  [
+                     "metal",
+                     "small"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "shape": [
+                  "sphere"
+               ],
+               "size": [
+<<<<<<< HEAD
+=======
+                  "large",
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "green"
+=======
+                  "purple",
+                  "red"
+               ],
+               "color_shape": [
+                  [
+                     "purple",
+                     "cylinder"
+                  ],
+                  [
+                     "red",
+                     "cube"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "sphere"
+               ],
+               "size": [
+                  "large"
+=======
+                  "cube",
+                  "cylinder"
+               ],
+               "shape_size": [
+                  [
+                     "cylinder",
+                     "small"
+                  ],
+                  [
+                     "cube",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "purple"
+=======
+                  "red",
+                  "yellow"
+               ],
+               "color_shape": [
+                  [
+                     "red",
+                     "sphere"
+                  ],
+                  [
+                     "yellow",
+                     "cube"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "rubber"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "cylinder"
+               ],
+               "size": [
+                  "small"
+=======
+                  "cube",
+                  "sphere"
+               ],
+               "size": [
+                  "large"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "red"
+=======
+                  "yellow",
+                  "blue"
+               ],
+               "color_size": [
+                  [
+                     "yellow",
+                     "small"
+                  ],
+                  [
+                     "blue",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+                  "cube"
+<<<<<<< HEAD
+               ],
+               "size": [
+                  "large"
+=======
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "yellow"
+               ],
+               "material": [
+                  "rubber"
+               ],
+               "shape": [
+                  "sphere"
+=======
+                  "blue",
+                  "brown"
+               ],
+               "color_material": [
+                  [
+                     "blue",
+                     "rubber"
+                  ],
+                  [
+                     "brown",
+                     "metal"
+                  ]
+               ],
+               "shape": [
+                  "cylinder"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "size": [
+                  "large"
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "blue"
+=======
+                  "blue",
+                  "brown"
+               ],
+               "color_shape": [
+                  [
+                     "blue",
+                     "cube"
+                  ],
+                  [
+                     "brown",
+                     "sphere"
+                  ],
+                  [
+                     "brown",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "rubber"
+               ],
+<<<<<<< HEAD
+               "shape": [
+                  "cube"
+               ],
+               "size": [
+                  "large"
+=======
+               "shape_size": [
+                  [
+                     "cylinder",
+                     "small"
+                  ],
+                  [
+                     "sphere",
+                     "large"
+                  ],
+                  [
+                     "cube",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "brown"
+=======
+                  "brown",
+                  "cyan"
+               ],
+               "color_shape": [
+                  [
+                     "brown",
+                     "cube"
+                  ],
+                  [
+                     "cyan",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+<<<<<<< HEAD
+               "shape": [
+                  "cylinder"
+               ],
+               "size": [
+                  "large"
+=======
+               "size": [
+                  "small"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "coral"
+               ],
+               "material": [
+                  "metal"
+=======
+                  "cyan",
+                  "gray"
+               ],
+               "color_material": [
+                  [
+                     "cyan",
+                     "metal"
+                  ],
+                  [
+                     "gray",
+                     "rubber"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "shape": [
+                  "sphere"
+               ],
+               "size": [
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         }
+      ]
+   },
+   "constraint_type_6": {
+      "regions": [
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "purple"
+=======
+                  "red",
+                  "yellow"
+               ],
+               "color_shape": [
+                  [
+                     "red",
+                     "sphere"
+                  ],
+                  [
+                     "yellow",
+                     "cube"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "rubber"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "cylinder"
+               ],
+               "size": [
+                  "small"
+=======
+                  "cube",
+                  "sphere"
+               ],
+               "size": [
+                  "large"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "red"
+=======
+                  "yellow",
+                  "blue"
+               ],
+               "color_size": [
+                  [
+                     "yellow",
+                     "small"
+                  ],
+                  [
+                     "blue",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+                  "cube"
+<<<<<<< HEAD
+               ],
+               "size": [
+                  "large"
+=======
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "yellow"
+               ],
+               "material": [
+                  "rubber"
+               ],
+               "shape": [
+                  "sphere"
+=======
+                  "blue",
+                  "brown"
+               ],
+               "color_material": [
+                  [
+                     "blue",
+                     "rubber"
+                  ],
+                  [
+                     "brown",
+                     "metal"
+                  ]
+               ],
+               "shape": [
+                  "cylinder"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "size": [
+                  "large"
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "blue"
+=======
+                  "blue",
+                  "brown"
+               ],
+               "color_shape": [
+                  [
+                     "blue",
+                     "cube"
+                  ],
+                  [
+                     "brown",
+                     "sphere"
+                  ],
+                  [
+                     "brown",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "rubber"
+               ],
+<<<<<<< HEAD
+               "shape": [
+                  "cube"
+               ],
+               "size": [
+                  "large"
+=======
+               "shape_size": [
+                  [
+                     "cylinder",
+                     "small"
+                  ],
+                  [
+                     "sphere",
+                     "large"
+                  ],
+                  [
+                     "cube",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "brown"
+=======
+                  "brown",
+                  "cyan"
+               ],
+               "color_shape": [
+                  [
+                     "brown",
+                     "cube"
+                  ],
+                  [
+                     "cyan",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+<<<<<<< HEAD
+               "shape": [
+                  "cylinder"
+               ],
+               "size": [
+                  "large"
+=======
+               "size": [
+                  "small"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "coral"
+               ],
+               "material": [
+                  "metal"
+=======
+                  "cyan",
+                  "gray"
+               ],
+               "color_material": [
+                  [
+                     "cyan",
+                     "metal"
+                  ],
+                  [
+                     "gray",
+                     "rubber"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "shape": [
+                  "sphere"
+               ],
+               "size": [
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "cyan"
+=======
+                  "gray",
+                  "green"
+               ],
+               "color_shape": [
+                  [
+                     "gray",
+                     "cube"
+                  ],
+                  [
+                     "green",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "cube"
+=======
+                  "cube",
+                  "cylinder"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "size": [
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "gray"
+               ],
+               "material": [
+                  "metal"
+=======
+                  "green",
+                  "purple"
+               ],
+               "color_size": [
+                  [
+                     "green",
+                     "large"
+                  ],
+                  [
+                     "purple",
+                     "small"
+                  ]
+               ],
+               "material": [
+                  "metal",
+                  "rubber"
+               ],
+               "material_size": [
+                  [
+                     "rubber",
+                     "large"
+                  ],
+                  [
+                     "metal",
+                     "small"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "shape": [
+                  "sphere"
+               ],
+               "size": [
+<<<<<<< HEAD
+=======
+                  "large",
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "green"
+=======
+                  "purple",
+                  "red"
+               ],
+               "color_shape": [
+                  [
+                     "purple",
+                     "cylinder"
+                  ],
+                  [
+                     "red",
+                     "cube"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "sphere"
+               ],
+               "size": [
+                  "large"
+=======
+                  "cube",
+                  "cylinder"
+               ],
+               "shape_size": [
+                  [
+                     "cylinder",
+                     "small"
+                  ],
+                  [
+                     "cube",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         }
+      ]
+   },
+   "constraint_type_7": {
+      "regions": [
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "yellow"
+               ],
+               "material": [
+                  "rubber"
+               ],
+               "shape": [
+                  "sphere"
+=======
+                  "blue",
+                  "brown"
+               ],
+               "color_material": [
+                  [
+                     "blue",
+                     "rubber"
+                  ],
+                  [
+                     "brown",
+                     "metal"
+                  ]
+               ],
+               "shape": [
+                  "cylinder"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "size": [
+                  "large"
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "blue"
+=======
+                  "blue",
+                  "brown"
+               ],
+               "color_shape": [
+                  [
+                     "blue",
+                     "cube"
+                  ],
+                  [
+                     "brown",
+                     "sphere"
+                  ],
+                  [
+                     "brown",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "rubber"
+               ],
+<<<<<<< HEAD
+               "shape": [
+                  "cube"
+               ],
+               "size": [
+                  "large"
+=======
+               "shape_size": [
+                  [
+                     "cylinder",
+                     "small"
+                  ],
+                  [
+                     "sphere",
+                     "large"
+                  ],
+                  [
+                     "cube",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "brown"
+=======
+                  "brown",
+                  "cyan"
+               ],
+               "color_shape": [
+                  [
+                     "brown",
+                     "cube"
+                  ],
+                  [
+                     "cyan",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+<<<<<<< HEAD
+               "shape": [
+                  "cylinder"
+               ],
+               "size": [
+                  "large"
+=======
+               "size": [
+                  "small"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "coral"
+               ],
+               "material": [
+                  "metal"
+=======
+                  "cyan",
+                  "gray"
+               ],
+               "color_material": [
+                  [
+                     "cyan",
+                     "metal"
+                  ],
+                  [
+                     "gray",
+                     "rubber"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "shape": [
+                  "sphere"
+               ],
+               "size": [
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "cyan"
+=======
+                  "gray",
+                  "green"
+               ],
+               "color_shape": [
+                  [
+                     "gray",
+                     "cube"
+                  ],
+                  [
+                     "green",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "cube"
+=======
+                  "cube",
+                  "cylinder"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "size": [
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "gray"
+               ],
+               "material": [
+                  "metal"
+=======
+                  "green",
+                  "purple"
+               ],
+               "color_size": [
+                  [
+                     "green",
+                     "large"
+                  ],
+                  [
+                     "purple",
+                     "small"
+                  ]
+               ],
+               "material": [
+                  "metal",
+                  "rubber"
+               ],
+               "material_size": [
+                  [
+                     "rubber",
+                     "large"
+                  ],
+                  [
+                     "metal",
+                     "small"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "shape": [
+                  "sphere"
+               ],
+               "size": [
+<<<<<<< HEAD
+=======
+                  "large",
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "green"
+=======
+                  "purple",
+                  "red"
+               ],
+               "color_shape": [
+                  [
+                     "purple",
+                     "cylinder"
+                  ],
+                  [
+                     "red",
+                     "cube"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "sphere"
+               ],
+               "size": [
+                  "large"
+=======
+                  "cube",
+                  "cylinder"
+               ],
+               "shape_size": [
+                  [
+                     "cylinder",
+                     "small"
+                  ],
+                  [
+                     "cube",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "purple"
+=======
+                  "red",
+                  "yellow"
+               ],
+               "color_shape": [
+                  [
+                     "red",
+                     "sphere"
+                  ],
+                  [
+                     "yellow",
+                     "cube"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "rubber"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "cylinder"
+               ],
+               "size": [
+                  "small"
+=======
+                  "cube",
+                  "sphere"
+               ],
+               "size": [
+                  "large"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "red"
+=======
+                  "yellow",
+                  "blue"
+               ],
+               "color_size": [
+                  [
+                     "yellow",
+                     "small"
+                  ],
+                  [
+                     "blue",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+                  "cube"
+<<<<<<< HEAD
+               ],
+               "size": [
+                  "large"
+=======
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         }
+      ]
+   },
+   "constraint_type_8": {
+      "regions": [
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "blue"
+=======
+                  "blue",
+                  "brown"
+               ],
+               "color_shape": [
+                  [
+                     "blue",
+                     "cube"
+                  ],
+                  [
+                     "brown",
+                     "sphere"
+                  ],
+                  [
+                     "brown",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "rubber"
+               ],
+<<<<<<< HEAD
+               "shape": [
+                  "cube"
+               ],
+               "size": [
+                  "large"
+=======
+               "shape_size": [
+                  [
+                     "cylinder",
+                     "small"
+                  ],
+                  [
+                     "sphere",
+                     "large"
+                  ],
+                  [
+                     "cube",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "brown"
+=======
+                  "brown",
+                  "cyan"
+               ],
+               "color_shape": [
+                  [
+                     "brown",
+                     "cube"
+                  ],
+                  [
+                     "cyan",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+<<<<<<< HEAD
+               "shape": [
+                  "cylinder"
+               ],
+               "size": [
+                  "large"
+=======
+               "size": [
+                  "small"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "coral"
+               ],
+               "material": [
+                  "metal"
+=======
+                  "cyan",
+                  "gray"
+               ],
+               "color_material": [
+                  [
+                     "cyan",
+                     "metal"
+                  ],
+                  [
+                     "gray",
+                     "rubber"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "shape": [
+                  "sphere"
+               ],
+               "size": [
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  1.18,
+                  3.5
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "cyan"
+=======
+                  "gray",
+                  "green"
+               ],
+               "color_shape": [
+                  [
+                     "gray",
+                     "cube"
+                  ],
+                  [
+                     "green",
+                     "cylinder"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "cube"
+=======
+                  "cube",
+                  "cylinder"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "size": [
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "gray"
+               ],
+               "material": [
+                  "metal"
+=======
+                  "green",
+                  "purple"
+               ],
+               "color_size": [
+                  [
+                     "green",
+                     "large"
+                  ],
+                  [
+                     "purple",
+                     "small"
+                  ]
+               ],
+               "material": [
+                  "metal",
+                  "rubber"
+               ],
+               "material_size": [
+                  [
+                     "rubber",
+                     "large"
+                  ],
+                  [
+                     "metal",
+                     "small"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "shape": [
+                  "sphere"
+               ],
+               "size": [
+<<<<<<< HEAD
+=======
+                  "large",
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+                  "small"
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "green"
+=======
+                  "purple",
+                  "red"
+               ],
+               "color_shape": [
+                  [
+                     "purple",
+                     "cylinder"
+                  ],
+                  [
+                     "red",
+                     "cube"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "sphere"
+               ],
+               "size": [
+                  "large"
+=======
+                  "cube",
+                  "cylinder"
+               ],
+               "shape_size": [
+                  [
+                     "cylinder",
+                     "small"
+                  ],
+                  [
+                     "cube",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  -1.16,
+                  1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "purple"
+=======
+                  "red",
+                  "yellow"
+               ],
+               "color_shape": [
+                  [
+                     "red",
+                     "sphere"
+                  ],
+                  [
+                     "yellow",
+                     "cube"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "rubber"
+               ],
+               "shape": [
+<<<<<<< HEAD
+                  "cylinder"
+               ],
+               "size": [
+                  "small"
+=======
+                  "cube",
+                  "sphere"
+               ],
+               "size": [
+                  "large"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -3.5,
+                  -1.17
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "red"
+=======
+                  "yellow",
+                  "blue"
+               ],
+               "color_size": [
+                  [
+                     "yellow",
+                     "small"
+                  ],
+                  [
+                     "blue",
+                     "large"
+                  ]
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "material": [
+                  "metal"
+               ],
+               "shape": [
+                  "cube"
+<<<<<<< HEAD
+               ],
+               "size": [
+                  "large"
+=======
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ]
+            },
+            "range": {
+               "x": [
+                  -1.16,
+                  1.17
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         },
+         {
+            "constraints": {
+               "color": [
+<<<<<<< HEAD
+                  "yellow"
+               ],
+               "material": [
+                  "rubber"
+               ],
+               "shape": [
+                  "sphere"
+=======
+                  "blue",
+                  "brown"
+               ],
+               "color_material": [
+                  [
+                     "blue",
+                     "rubber"
+                  ],
+                  [
+                     "brown",
+                     "metal"
+                  ]
+               ],
+               "shape": [
+                  "cylinder"
+>>>>>>> 1420a7e8e6a6f8c8266ec549e5cce8d30e259109
+               ],
+               "size": [
+                  "large"
+               ]
+            },
+            "range": {
+               "x": [
+                  1.18,
+                  3.5
+               ],
+               "y": [
+                  -3.5,
+                  -1.17
+               ]
+            }
+         }
+      ]
+   }
+}
