@@ -90,7 +90,7 @@ class Blender():
   def render(self):
     while True:
       try:
-        #bpy.ops.render.render(write_still=True)
+        bpy.ops.render.render(write_still=True)
         break
       except Exception as e:
         print(e)
