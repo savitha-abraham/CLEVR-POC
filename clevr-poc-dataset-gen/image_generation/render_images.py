@@ -7,7 +7,7 @@ sys.path.append(str(path_root))
 
 from image_generation import scene_info, blender
 from generate_dataset import parser
-from generate_environment import generateEnvironment
+from generate_environment import generateEnvironment, getSceneGraph
 
 
 INSIDE_BLENDER = True
@@ -31,7 +31,6 @@ if INSIDE_BLENDER:
 
 
 ##---------------------------------------------------------------------------------------------------------------------------
-
 def main(args):
   
   image_dir = os.path.join(args.complete_data_dir, args.image_dir, args.split)
@@ -74,28 +73,47 @@ def main(args):
 
   env_id = 0
   objNum_env = {i:[] for i in range(args.min_objects,args.max_objects+1)}
-  
+  env_answers = {}
   possible_num_objects = [i for i in range(args.min_objects, args.max_objects)]
   while i < args.num_images:
   #for i in range(args.num_images):
-    img_path = img_template % i
-
-    num_objects = random.choice(possible_num_objects)
+    possible_sols = None
+    complete_scene_graph = {} 
+    incomplete_scene_graph = {} 
+    query_attribute = "" 
+    given_query = "" 
+    while(possible_sols == None):
+        img_path = img_template % i
     
-    if (env_id < args.num_constraint_types):
-      generateEnvironment(args, num_objects, env_id)
-      objNum_env[num_objects].append(env_id) 
-      num_image_per_constraint_type[env_id]= num_image_per_constraint_type[env_id] +1
-      constraint_type_index = env_id
-      env_id = env_id +1
-    else:
-      list_env = objNum_env[num_objects]
-      constraint_type_index = balance_constraint_type(list_env, num_image_per_constraint_type, max_number_of_images_per_constraint)
-      if constraint_type_index == None:
-        possible_num_objects.remove(num_objects)
-        continue
-      
-
+        num_objects = random.choice(possible_num_objects)
+        
+        if (env_id < args.num_constraint_types):
+          generateEnvironment(args, environment_constraints_dir, num_objects, env_id)
+          objNum_env[num_objects].append(env_id) 
+          num_image_per_constraint_type[env_id]= num_image_per_constraint_type[env_id] +1
+          constraint_type_index = env_id
+          env_id = env_id +1
+        else:
+          list_env = objNum_env[num_objects]
+          constraint_type_index = balance_constraint_type(list_env, num_image_per_constraint_type, max_number_of_images_per_constraint)
+          if constraint_type_index == None:
+            possible_num_objects.remove(num_objects)
+            continue
+        
+        
+        
+        #Extracting a scene graph conforming to the environment
+        #updated_env_ans 
+        trials = 0
+        while(possible_sols == None and trials<100):
+            complete_scene_graph, incomplete_scene_graph, query_attribute, possible_sols, given_query, updated_env_ans = getSceneGraph(num_objects, constraint_type_index, env_answers, environment_constraints_dir)
+            env_answers = updated_env_ans.copy()
+            trials = trials+1
+    if possible_sols!=None:
+        print("Scene graph for image ",i, " created!!")
+        
+        
+    
 
     
 
@@ -112,15 +130,15 @@ def main(args):
     #    num_image_per_constraint_type[constraint_type_index] = num_image_per_constraint_type[constraint_type_index] + 1
     #    constraint_type = constraints_types_list[constraint_type_index]
 
-    scene = render_scene(args,
-      num_objects=num_objects,
-      image_index=i,
-      image_path=img_path,
-      constraint_type_index=constraint_type_index,
-      properties=properties
-    )
-
-    all_scenes.append(scene)
+#    scene = render_scene(args,
+#      num_objects=num_objects,
+#      image_index=i,
+#      image_path=img_path,
+#      constraint_type_index=constraint_type_index,
+#      properties=properties
+#    )
+#
+    all_scenes.append(complete_scene_graph)
 
     i += 1
     if i == args.start_idx + args.render_batch_size:  #to avoid GPU CUDA overflow!
@@ -148,6 +166,11 @@ def main(args):
 
   else:
     print('EMPTY SCENES!!!')
+
+
+
+        
+
 
 
 def get_already_rendered_scenes(split, scene_dir):

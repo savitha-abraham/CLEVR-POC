@@ -108,7 +108,7 @@ parser.add_argument('--render_batch_size', default=500, type=int,
 parser.add_argument('--num_constraint_types', default=100, type=int,
     help="The number of environments (constraint types) in total")
 
-parser.add_argument('--constraint_template_path', default='/image_generation/ConstraintTemplates/constraint_templates.txt',
+parser.add_argument('--constraint_template_path', default='../image_generation/ConstraintTemplates/constraint_templates.txt',
     help="File containing templates for constraints")
 
 parser.add_argument('--general_constraints_path', default='../data/general_constraints.txt',
