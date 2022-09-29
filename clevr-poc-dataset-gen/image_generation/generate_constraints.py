@@ -17,6 +17,8 @@ ranges = [
 ]
 
 
+
+
 ## run asp
 asp_command = 'clingo ' + str(MAX_NUMBER_OF_ANSWERS) + ' ' + ASP_FILE_PATH
 output_stream = os.popen(asp_command)

@@ -71,7 +71,7 @@ class Blender():
     # Figure out the left, up, and behind directions along the plane and record
     # them in the scene structure
     self.camera = bpy.data.objects['Camera']
-    
+
 
 
   def get_plane_direction(self):
@@ -82,15 +82,19 @@ class Blender():
     plane_behind = (cam_behind - cam_behind.project(plane_normal)).normalized()
     plane_left = (cam_left - cam_left.project(plane_normal)).normalized()
     plane_up = cam_up.project(plane_normal).normalized()
+    
 
     self.delete_object(self.plane)       
-    
+    #print(plane_behind, plane_left, plane_up)
+    #input('here')
     return plane_behind, plane_left, plane_up
 
   def render(self):
     while True:
       try:
         bpy.ops.render.render(write_still=True)
+        #bpy.ops.wm.save_as_mainfile(filepath='/home/marjan/test.blend')
+        
         break
       except Exception as e:
         print(e)
@@ -130,6 +134,8 @@ class Blender():
     p = list(img.pixels)
     color_count = Counter((p[i], p[i+1], p[i+2], p[i+3])
                           for i in range(0, len(p), 4))
+    
+
     os.remove(path)
     if len(color_count) != len(blender_objects) + 1:
       return False

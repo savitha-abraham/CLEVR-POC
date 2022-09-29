@@ -245,6 +245,7 @@ def createTemplateInstance(templates_list):
     return templates, negation, across, within
 
 def generateEnvironment(args, environment_constraints_dir, num_objects, env_id):
+    num_objects = num_objects - 1
     templates_list=[]
     file1 = open(args.constraint_template_path, 'r')
     Lines = file1.readlines()
@@ -314,7 +315,7 @@ def getQA(query_attribute, given_query, complete, incomplete_details, obj_rm, en
      elif len(possible_values) < len(domain[query_attribute]):
          return possible_values 
 
-def getObjects(num_objects, preds, obj_rm, given_query):
+def getObjects(preds, obj_rm, given_query):
     #object(color, material, shape, size, region)
     complete = {}
     incomplete = {}
@@ -420,7 +421,7 @@ def getSceneGraph(num_objects, constraint_type_index, env_answers, environment_c
     possible_sols = [] 
     given_query = ""
     updated_answers = []
-    objects =list(range(num_objects+1))
+    objects =list(range(num_objects))
     for answer_index, answer in enumerate(answers):
             preds = answer.split('\n')[1].split(' ')
             obj_rm = random.choice(objects)
@@ -430,7 +431,7 @@ def getSceneGraph(num_objects, constraint_type_index, env_answers, environment_c
             else:
                 updated_answers = answers[answer_index+1:]
                 env_answers[constraint_type_index] = updated_answers
-                complete, incomplete = getObjects(num_objects, preds, obj_rm, given_query)
+                complete, incomplete = getObjects(preds, obj_rm, given_query)
                 #print("Possible sols:", possible_sols)
                 return complete, incomplete, query_attr, possible_sols, given_query, updated_answers
 
