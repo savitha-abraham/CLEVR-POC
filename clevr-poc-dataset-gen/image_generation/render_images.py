@@ -3,7 +3,11 @@ import collections
 
 from pathlib import Path
 path_root = Path(__file__).parents[1]
+path_current = Path(__file__).parents[0]
 sys.path.append(str(path_root))
+sys.path.append(str(path_current))
+
+
 
 from image_generation import scene_info, blender
 from generate_dataset import parser
@@ -83,6 +87,7 @@ def main(args):
     query_attribute = "" 
     given_query = "" 
     while(possible_sols == None):
+        #print('HEREEEEE')
         img_path = img_template % i
     
         num_objects = random.choice(possible_num_objects)
@@ -113,7 +118,13 @@ def main(args):
         print("Scene graph for image ",i, " created!!")
         
         
-    
+    scene = render_scene(args,
+      complete_scene_graph=complete_scene_graph,
+      incomplete_scene_graph=incomplete_scene_graph,
+      image_index=i,
+      image_path=img_path,
+      properties=properties
+    )
 
     
 
@@ -187,11 +198,12 @@ def get_already_rendered_scenes(split, scene_dir):
 ##---------------------------------------------------------------------------------------------------------------------------
 
 def render_scene(args,
-    num_objects=5,
-    image_index=0,
-    image_path='render.png',
-    constraint_type_index=None,
-    properties=None
+      complete_scene_graph=None,
+      incomplete_scene_graph=None,
+      image_index=0,
+      image_path='render.png',
+      properties=None
+
   ):
 
   blender_obj = blender.Blender(image_path, 
@@ -227,12 +239,12 @@ def render_scene(args,
   scene_struct['directions']['below'] = tuple(-plane_up)
 
   
-  # Get region constraints from the constraints.json file
-  regions = get_regions_info(constraint_type, properties)
+
+
 
   # Building a (complete) scene and check the validity and visibility of all the randomly added objects
   while (True):
-    objects, objects_blender_info = add_objects(scene_struct, num_objects, args, regions, properties)
+    objects, objects_blender_info = add_objects(scene_struct, args, properties, complete_scene_graph)
     objects, blender_objects = get_blender_objects(objects, objects_blender_info, blender_obj)
     all_visible = blender_obj.check_visibility(blender_objects, args.min_pixels_per_object)
  
@@ -247,9 +259,8 @@ def render_scene(args,
 
   scene_struct['objects'] = objects
   scene_struct['relationships'] = scene_info.compute_all_relationships(scene_struct)
-  scene_struct['objects_blender_info'] = objects_blender_info
-  scene_struct['constraint_type'] = constraint_type_index
-  
+  #scene_struct['objects_blender_info'] = objects_blender_info
+    
   blender_obj.render()
 
   return scene_struct
@@ -262,7 +273,6 @@ def make_scene_empty(blender_objects):
     utils.delete_object(obj)
 
 ##---------------------------------------------------------------------------------------------------------------------------
-
 def get_blender_objects(objects, objects_blender_info, blender_obj):
   blender_objects = []
   for index, obj_blender_info in enumerate(objects_blender_info):
@@ -341,14 +351,13 @@ def get_sorted_list(dict):
 ##---------------------------------------------------------------------------------------------------------------------------
 
 
-def add_objects(scene_struct, num_objects, args, regions, properties):
+def add_objects(scene_struct, args, properties, complete_scene_graph):
   objects_blender_info = []
 
   positions = []
   objects = []
 
-  num_objects_per_region = [0 for i in range(len(regions))]
-  
+  num_objects = len(complete_scene_graph.keys())
 
   for i in range(num_objects):
 
@@ -363,83 +372,88 @@ def add_objects(scene_struct, num_objects, args, regions, properties):
       # the objects in the scene and start over.
       num_tries += 1
       if num_tries > args.max_retries:
-        return add_objects(scene_struct, num_objects, args, regions, properties)
+        return add_objects(scene_struct, args, properties, complete_scene_graph)
+
+      
+      #x = random.uniform(-3.5, 3.5)
+      #y = random.uniform(-3.5, 3.5)
+
+      region_index = complete_scene_graph[i]['region']
+      print('region_index: ', region_index)
+      x1 = properties['regions'][region_index]['x'][0]
+      x2 = properties['regions'][region_index]['x'][1]
+      y1 = properties['regions'][region_index]['y'][0]
+      y2 = properties['regions'][region_index]['y'][1]
+      x = random.uniform(x1, x2)
+      y = random.uniform(y1, y2)
+
 
       """
-      x = random.uniform(-3.5, 3.5)
-      y = random.uniform(-3.5, 3.5)
-      region = scene_info.find_region(regions, x, y)
-      """
-
-      x = random.uniform(-3.5, 3.5)
-      y = random.uniform(-3.5, 3.5)
       region = scene_info.find_region(regions, x, y)
       if region is not None:
         if num_objects_per_region[region.get_index()] != 0:
           region = None
-      
+      """
 
-      if region is not None:
-        # Check to make sure the new object is further than min_dist from all
-        # other objects, and further than margin along the four cardinal directions
-        dists_good = True
-        margins_good = True
-        for (xx, yy, rr) in positions:
-          dx, dy = x - xx, y - yy
-          dist = math.sqrt(dx * dx + dy * dy)
-          if dist - r - rr < args.min_dist:
-            dists_good = False
-            break
-
-          for direction_name in ['left', 'right', 'front', 'behind']:
-            direction_vec = scene_struct['directions'][direction_name]
-            assert direction_vec[2] == 0
-            margin = dx * direction_vec[0] + dy * direction_vec[1]
-            if 0 < margin < args.margin:
-              print(margin, args.margin, direction_name)
-              print('BROKEN MARGIN!')
-              margins_good = False
-              break
-          if not margins_good:
-            break
-
-        if dists_good and margins_good:
+      # Check to make sure the new object is further than min_dist from all
+      # other objects, and further than margin along the four cardinal directions
+      dists_good = True
+      margins_good = True
+      for (xx, yy, rr) in positions:
+        dx, dy = x - xx, y - yy
+        dist = math.sqrt(dx * dx + dy * dy)
+        if dist - r - rr < args.min_dist:
+          dists_good = False
           break
-      else:
-        print("Invalid region!")      
-        # Choose color and shape according to the relevant region
 
-    if region is not None:
+        for direction_name in ['left', 'right', 'front', 'behind']:
+          direction_vec = scene_struct['directions'][direction_name]
+          assert direction_vec[2] == 0
+          margin = dx * direction_vec[0] + dy * direction_vec[1]
+          if 0 < margin < args.margin:
+            print(margin, args.margin, direction_name)
+            print('BROKEN MARGIN!')
+            margins_good = False
+            break
+        if not margins_good:
+          break
+
+      if dists_good and margins_good:
+        break
+
       
-      shape_name, color_name, size_name, mat_name = region.get_region_features()
+    shape_name = complete_scene_graph[i]['shape']
+    color_name = complete_scene_graph[i]['color']
+    size_name = complete_scene_graph[i]['siz']
+    mat_name = complete_scene_graph[i]['material']
 
-      
-      r = properties['size'][size_name]
-      rgba = [float(c) / 255.0 for c in properties['color'][color_name]] + [1.0]
-      # For cube, adjust the size a bit
-      if shape_name == 'Cube':
-        r /= math.sqrt(2)
+    
+    r = properties['size'][size_name]
+    rgba = [float(c) / 255.0 for c in properties['color'][color_name]] + [1.0]
+    # For cube, adjust the size a bit
+    if shape_name == 'Cube':
+      r /= math.sqrt(2)
 
-      # Choose random orientation for the object.
-      theta = 360.0 * random.random()
-      #theta = 360.0
+    # Choose random orientation for the object.
+    theta = 360.0 * random.random()
+    #theta = 360.0
 
-      objects_blender_info.append(
-          {'obj_name': properties['shape'][shape_name], 
-           'r': r, 'x': x, 'y':y, 'theta': theta, 
-           'mat_name': properties['material'][mat_name], 
-           'rgba': rgba})
-      
-      positions.append((x, y, r))
-      objects.append({
-        'shape': shape_name,
-        'size': size_name,
-        'material': mat_name,
-        'rotation': theta,
-        'color': color_name,
+    objects_blender_info.append(
+        {'obj_name': properties['shape'][shape_name], 
+          'r': r, 'x': x, 'y':y, 'theta': theta, 
+          'mat_name': properties['material'][mat_name], 
+          'rgba': rgba})
+    
+    positions.append((x, y, r))
+    objects.append({
+      'shape': shape_name,
+      'size': size_name,
+      'material': mat_name,
+      'rotation': theta,
+      'color': color_name,
 
-      })
-      num_objects_per_region[region.get_index()] = 1
+    })
+    
       
     
   return objects, objects_blender_info
