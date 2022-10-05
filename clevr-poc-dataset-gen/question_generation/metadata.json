@@ -9,13 +9,13 @@
       "cube", "sphere", "cylinder", "cone"
     ],
     "Color": [
-      "gray", "red", "blue", "green", "brown", "purple", "cyan", "yellow", "coral"
+      "red", "blue", "green", "yellow"
     ],
     "Relation": [
       "left", "right", "behind", "front"
     ],
     "Size": [
-      "small", "medium", "large"
+      "small", "large"
     ],
     "Material": [
       "rubber", "metal"

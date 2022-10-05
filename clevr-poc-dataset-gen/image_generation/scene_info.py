@@ -136,4 +136,21 @@ def compute_all_relationships(scene_struct, eps=0.2):
         all_relationships[name][i] = sorted(list(all_relationships[name][i]))
 
   return all_relationships
-  
+
+def compute_all_similar(scene_struct):
+    all_similar = {}
+    for p in ['color', 'size', 'material', 'shape']:
+        sim_p = []
+        objects = scene_struct['objects']
+        for i, obj in enumerate(objects):
+            obj_sim_p = []
+            for j, obj_other in enumerate(objects):
+                if i == j:
+                    continue
+                else:
+                    if obj[p]==obj_other[p]:
+                        obj_sim_p.append(j)
+            sim_p.append(obj_sim_p)
+        all_similar[p] = sim_p
+    return all_similar
+    

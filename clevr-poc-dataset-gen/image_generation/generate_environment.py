@@ -8,13 +8,19 @@ Created on Tue Sep 20 09:14:53 2022
 
 import random
 import copy, os
+import sys
 
-PROPERTIES = ['shape', 'color', 'material', 'siz']
+from pathlib import Path
+path_root = Path(__file__).parents[1]
+sys.path.append(str(path_root))
+
+
+PROPERTIES = ['shape', 'color', 'material', 'size']
 domain = {}
-domain['color'] = ['blue', 'brown', 'cyan', 'gray'] #'green', 'purple', 'red', 'yellow', 'coral']
+domain['color'] = ['red', 'blue', 'green', 'yellow'] 
 domain['material'] = ['rubber', 'metal']
 domain['shape'] = ['cube', 'cylinder', 'sphere', 'cone']
-domain['siz'] = ['large', 'small', 'medium']
+domain['size'] = ['large', 'small']
 region = [0,1,2,3] #4,5,6,7,8]
 
 
@@ -281,11 +287,61 @@ def generateEnvironment(args, environment_constraints_dir, num_objects, env_id):
                 print("Satisfiable")
                 break
     
-    
+#----------------------------------------------------------------------------------------------------------
+def getObjects(preds, obj_rm, given_query):
+    #object(color, material, shape, size, region)
+    complete = {}
+    incomplete = {}
+    for pred in preds:
+        if 'hasProperty' in pred:
+            pred_split = pred.split("(")
+            obj_prop_val = pred_split[1].split(",")
+            obj  = obj_prop_val[0]
+            prop = obj_prop_val[1]
+            val = obj_prop_val[2][0:len(obj_prop_val[2])-1]
+            try:
+                complete[int(obj)][prop] = val
+            except:
+                complete[int(obj)] = {}
+                complete[int(obj)][prop] = val
+            if int(obj)!=obj_rm:
+                try:
+                    incomplete[int(obj)][prop] = val
+                except:
+                    incomplete[int(obj)] = {}
+                    incomplete[int(obj)][prop] = val
+            else:
+                if prop in given_query:
+                    try:
+                        incomplete[int(obj)][prop] = val
+                    except:
+                        incomplete[int(obj)] = {}
+                        incomplete[int(obj)][prop] = val
+                    
+        elif 'at(' in pred:
+            pred_split = pred.split("(")
+            obj_reg = pred_split[1].split(",")
+            obj = obj_reg[0]
+            reg = obj_reg[1][0:len(obj_reg[1])-1]
+            try:
+                complete[int(obj)]['region'] = reg
+            except:
+                complete[int(obj)] = {}
+                complete[int(obj)]['region'] = reg
+            if int(obj)!=obj_rm:
+                try:
+                    incomplete[int(obj)]['region'] = reg
+                except:
+                    incomplete[int(obj)] = {}
+                    incomplete[int(obj)]['region'] = reg
+    return complete, incomplete
+
+
+#---------------------------------------------------------------------------------------------------------    
 def getQA(query_attribute, given_query, complete, incomplete_details, obj_rm, environment_constraints_dir):
-     if given_query!="":
+     for g in given_query:
          for pred in incomplete_details:
-             if given_query in pred:
+             if g in pred:
                  complete = complete+"\n"+pred+"."
             
      complete_qa = complete+"\n missing(V):-hasProperty("+str(obj_rm)+","+query_attribute+",V)."     
@@ -315,56 +371,26 @@ def getQA(query_attribute, given_query, complete, incomplete_details, obj_rm, en
      elif len(possible_values) < len(domain[query_attribute]):
          return possible_values 
 
-def getObjects(preds, obj_rm, given_query):
-    #object(color, material, shape, size, region)
-    complete = {}
-    incomplete = {}
-    for pred in preds:
-        if 'hasProperty' in pred:
-            pred_split = pred.split("(")
-            obj_prop_val = pred_split[1].split(",")
-            obj  = obj_prop_val[0]
-            prop = obj_prop_val[1]
-            val = obj_prop_val[2][0:len(obj_prop_val[2])-1]
-            try:
-                complete[int(obj)][prop] = val
-            except:
-                complete[int(obj)] = {}
-                complete[int(obj)][prop] = val
-            if int(obj)!=obj_rm:
-                try:
-                    incomplete[int(obj)][prop] = val
-                except:
-                    incomplete[int(obj)] = {}
-                    incomplete[int(obj)][prop] = val
-            else:
-                if given_query==prop:
-                    try:
-                        incomplete[int(obj)][prop] = val
-                    except:
-                        incomplete[int(obj)] = {}
-                        incomplete[int(obj)][prop] = val
-                    
-        elif 'at(' in pred:
-            pred_split = pred.split("(")
-            obj_reg = pred_split[1].split(",")
-            obj = obj_reg[0]
-            reg = obj_reg[1][0:len(obj_reg[1])-1]
-            try:
-                complete[int(obj)]['region'] = reg
-            except:
-                complete[int(obj)] = {}
-                complete[int(obj)]['region'] = reg
-            if int(obj)!=obj_rm:
-                try:
-                    incomplete[int(obj)]['region'] = reg
-                except:
-                    incomplete[int(obj)] = {}
-                    incomplete[int(obj)]['region'] = reg
-    return complete, incomplete
+    
+    
+#----------------------------------------------------------------------------------------------
+def chooseGiven(props, query_attribute, n1):
+    #Choose n1 props that is not query_attribute
+    given = []
+    allowed = copy.deepcopy(props)
+    allowed.remove(query_attribute)
+    for i in range(n1):
+        g = random.choice(allowed)
+        given.append(g)
+        allowed.remove(g)
+       
+    return given
+#-----------------------------------------------------------------------------------------------
+#Creates an incomplete scene graph by removing obj_rm and decides on the query_attribute and given_attributes 
+#based on possible_sols for the query () 
 
-def createQuery_Incomplete(asp_file, preds, obj_rm, environment_constraints_dir):
-     props = ['color', 'shape', 'siz', 'material']
+def createQuery_Incomplete(asp_file, preds, obj_rm, environment_constraints_dir,args):
+     props = ['color', 'shape', 'size', 'material']
      file2 = open(asp_file, 'r')
      Lines = file2.readlines()
      complete = ""
@@ -381,25 +407,31 @@ def createQuery_Incomplete(asp_file, preds, obj_rm, environment_constraints_dir)
          complete = complete+"\n"+pred+"."
      query_attr = ""
      possible_sols = []
-     given_query = ""
-     for query_attribute in props:
+     given_query = []
+     for k in range(10):
+         query_attribute = random.choice(props)
+         n1 = random.randint(0, 2)
+         given = chooseGiven(props, query_attribute, n1)
          
-         possible_sols_qa = getQA(query_attribute, "", complete, incomplete_details, obj_rm, environment_constraints_dir)
+         possible_sols_qa = getQA(query_attribute, given, complete, incomplete_details, obj_rm, environment_constraints_dir)
          if possible_sols_qa!=None :
-             return query_attribute, possible_sols_qa, given_query
-     for qa in range(0, len(props)-1):
-         for gq in range(qa+1,len(props)):
-             #print("I m here..")
-             possible_sols_qa = getQA(props[qa], props[gq], complete, incomplete_details, obj_rm, environment_constraints_dir)
-             if possible_sols_qa!=None:
-                 return props[qa], possible_sols_qa, props[gq]
+             #question, structured = generate_question(args,query_attribute, given, obj_rm, preds, possible_sols_qa)
+             #print("Question generated::", question)
+             return query_attribute, possible_sols_qa, given
+             
+                 
      return query_attr, possible_sols, given_query
         
          
+#-------------------------------------------------------------------------------------------------------------
+#1. Creates a scene graph that conforms to the environment - constraint_type_index - by generating answer sets 
+# to the program that takes number of objects and the constraints as input  - a set of 1000000 answers are considered , each a scene graph
+#env_answers maps the environment to these answer sets.
+#2. Creates an incomplete scene graph with an obj_interest, query_attribute, given_attributes and set of possible soluions for it.
+      
         
-        
-def getSceneGraph(num_objects, constraint_type_index, env_answers, environment_constraints_dir):
-    MAX_NUMBER_OF_ANSWERS = 100000
+def getSceneGraph(num_objects, constraint_type_index, env_answers, environment_constraints_dir, args):
+    MAX_NUMBER_OF_ANSWERS = 1000000
     if constraint_type_index in env_answers:
         answers = env_answers[constraint_type_index]
     else:
@@ -413,9 +445,10 @@ def getSceneGraph(num_objects, constraint_type_index, env_answers, environment_c
         
         answers = output.split('Answer:')
         answers = answers[1:]
-        
         random.shuffle(answers)
-        env_answers[constraint_type_index] = answers
+        number_answers  = min(len(answers), MAX_NUMBER_OF_ANSWERS)
+        number_sample = int(10.0/100*(number_answers))
+        env_answers[constraint_type_index] = random.sample(answers, number_sample)
     
     query_attr = "" 
     possible_sols = [] 
@@ -425,7 +458,7 @@ def getSceneGraph(num_objects, constraint_type_index, env_answers, environment_c
     for answer_index, answer in enumerate(answers):
             preds = answer.split('\n')[1].split(' ')
             obj_rm = random.choice(objects)
-            query_attr, possible_sols, given_query = createQuery_Incomplete(asp_file, preds, obj_rm, environment_constraints_dir)
+            query_attr, possible_sols, given_query = createQuery_Incomplete(asp_file, preds, obj_rm, environment_constraints_dir, args)
             if len(possible_sols)==0:
                 continue
             else:
@@ -433,7 +466,7 @@ def getSceneGraph(num_objects, constraint_type_index, env_answers, environment_c
                 env_answers[constraint_type_index] = updated_answers
                 complete, incomplete = getObjects(preds, obj_rm, given_query)
                 #print("Possible sols:", possible_sols)
-                return complete, incomplete, query_attr, possible_sols, given_query, updated_answers
+                return complete, incomplete, query_attr, possible_sols, given_query, obj_rm, updated_answers
 
 
 

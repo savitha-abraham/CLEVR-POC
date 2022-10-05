@@ -182,7 +182,9 @@ parser.add_argument('--num_scenes', default=0, type=int,
 
 # Control the number of questions per image; we will attempt to generate
 # templates_per_image * instances_per_template questions per image.
-parser.add_argument('--templates_per_image', default=10, type=int,
+
+
+parser.add_argument('--templates_per_image', default=1, type=int,
     help="The number of different templates that should be instantiated " +
          "on each image")
 parser.add_argument('--instances_per_template', default=1, type=int,

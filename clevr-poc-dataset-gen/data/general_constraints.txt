@@ -8,8 +8,8 @@ property(shape, cylinder).
 property(shape, sphere).
 property(shape, cone).
 
-property(siz, small).
-property(siz, large).
+property(size, small).
+property(size, large).
 
 property(material, rubber).
 property(material, metal).
@@ -23,7 +23,7 @@ sameProperty(X1, X2, P) :- object(X1), object(X2), hasProperty(X1,P,V1), hasProp
 1{hasProperty(X, color, V):property(color, V)}1 :- object(X).
 1{hasProperty(X, material, V):property(material, V)}1 :- object(X).
 1{hasProperty(X, shape, V):property(shape, V)}1 :- object(X).
-1{hasProperty(X, siz, V):property(siz, V)}1 :- object(X).
+1{hasProperty(X, size, V):property(size, V)}1 :- object(X).
 1{at(X, R): region(R)}1 :- object(X).
 
-:-hasProperty(X1, material, MV), hasProperty(X2, material, MV), hasProperty(X1, color, CV), hasProperty(X2, color, CV), hasProperty(X1, siz, SiV), hasProperty(X2, siz, SiV), hasProperty(X1, shape, SV), hasProperty(X2, shape, SV), X1!=X2, object(X1), object(X2).
+:-hasProperty(X1, material, MV), hasProperty(X2, material, MV), hasProperty(X1, color, CV), hasProperty(X2, color, CV), hasProperty(X1, size, SiV), hasProperty(X2, size, SiV), hasProperty(X1, shape, SV), hasProperty(X2, shape, SV), X1!=X2, object(X1), object(X2).

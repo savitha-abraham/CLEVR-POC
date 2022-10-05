@@ -13,6 +13,7 @@ sys.path.append(str(path_current))
 from image_generation import scene_info, blender
 from generate_dataset import parser
 from generate_environment import generateEnvironment, getSceneGraph
+from question_generation.generate_questions import generate_question
 
 
 INSIDE_BLENDER = True
@@ -51,29 +52,28 @@ def directory_management(main_dir):
 
   prefix = '%s_' % (args.filename_prefix)
   image_temp = '%s%%0%dd.png' % (prefix, num_digits)
+  scene_temp = '%s%%0%dd.json' % (prefix, num_digits)
+  
+  scene_template = os.path.join(scene_dir, scene_temp)
   img_template = os.path.join(image_dir, image_temp)
 
 
 
-  return scene_dir, img_template
+  return scene_dir, img_template, scene_template
 
 
 ##---------------------------------------------------------------------------------------------------------------------------
 def main(args):
   
 
-  complete_scene_dir, complete_img_template = directory_management(args.complete_data_dir)
-  incomplete_scene_dir, incomplete_img_template = directory_management(args.incomplete_data_dir)
+  complete_scene_dir, complete_img_template, complete_scene_template = directory_management(args.complete_data_dir)
+  incomplete_scene_dir, incomplete_img_template, incomplete_scene_template = directory_management(args.incomplete_data_dir)
 
 
   environment_constraints_dir = os.path.join(args.incomplete_data_dir, args.environment_constraints_dir)
   if not os.path.isdir(environment_constraints_dir):
     os.makedirs(environment_constraints_dir)     
 
-
-  
-  complete_all_scenes = get_already_rendered_scenes(split=args.split, scene_dir=complete_scene_dir)
-  incomplete_all_scenes = get_already_rendered_scenes(split=args.split, scene_dir=incomplete_scene_dir)
 
   constraints_types_list = []
   # Load the property file
@@ -93,6 +93,7 @@ def main(args):
   objNum_env = {i:[] for i in range(args.min_objects,args.max_objects+1)}
   env_answers = {}
   possible_num_objects = [i for i in range(args.min_objects, args.max_objects)]
+  questions = []
   while i < args.num_images:
   #for i in range(args.num_images):
         possible_sols = None
@@ -106,6 +107,10 @@ def main(args):
                 complete_scene_image_path = complete_img_template % i
                 incomplete_scene_image_path = incomplete_img_template % i
             
+
+                complete_scene_path = complete_scene_template % i
+                incomplete_scene_path = incomplete_scene_template % i
+                
                 num_objects = random.choice(possible_num_objects)
                 
                 if (env_id < args.num_constraint_types):
@@ -127,7 +132,7 @@ def main(args):
                 #updated_env_ans 
                 trials = 0
                 while(possible_sols == None and trials<100):
-                    complete_scene_graph, incomplete_scene_graph, query_attribute, possible_sols, given_query, updated_env_ans = getSceneGraph(num_objects, constraint_type_index, env_answers, environment_constraints_dir)
+                    complete_scene_graph, incomplete_scene_graph, query_attribute, possible_sols, given_query, obj_rm, updated_env_ans = getSceneGraph(num_objects, constraint_type_index, env_answers, environment_constraints_dir, args)
                     env_answers = copy.deepcopy(updated_env_ans)
                     trials = trials+1
                     
@@ -139,58 +144,42 @@ def main(args):
                       image_index=i,
                       complete_scene_image_path=complete_scene_image_path,
                       incomplete_scene_image_path= incomplete_scene_image_path,
-                      properties=properties
+                      properties=properties,
+                      constraint_type_index=constraint_type_index
                     )
 
                     if complete_scene is not None:
-                      complete_all_scenes.append(complete_scene)
-                      incomplete_all_scenes.append(incomplete_scene)
+                        with open(complete_scene_path, 'w') as f:
+                            json.dump(complete_scene, f)  
+                        with open(incomplete_scene_path, 'w') as f:
+                            json.dump(incomplete_scene, f)
+                        #Generate question for the scene...
+                        question = generate_question(args,query_attribute, given_query, obj_rm, possible_sols, complete_scene, complete_scene_path, i)
+                        questions.append(question)
                     else:
-                      possible_sols = None
+                        possible_sols = None
 
 
         i = i + 1
         if i == args.start_idx + args.render_batch_size:  #to avoid GPU CUDA overflow!
           break
 
+  question_dir = os.path.join(args.incomplete_data_dir, args.question_dir)
+  if not os.path.isdir(question_dir):
+    os.makedirs(question_dir)
 
-  # After rendering all images, combine the JSON files for each scene into a
-  # single JSON file.
-  if len(complete_all_scenes) > 0:
-    complete_scene_output = {
-        'info': {
-          'date': args.date,
-          'version': args.version,
-          'split': args.split,
-          'license': args.license,
-        },
-        'scenes': complete_all_scenes
-    }
-
-    incomplete_scene_output = {
-        'info': {
-          'date': args.date,
-          'version': args.version,
-          'split': args.split,
-          'license': args.license,
-        },
-        'scenes': incomplete_all_scenes
-    }
-
-    with open(os.path.join(complete_scene_dir, args.split + '.json'), 'w') as f:
-      json.dump(complete_scene_output, f)  
-
-    
-    with open(os.path.join(incomplete_scene_dir, args.split + '.json'), 'w') as f:
-      json.dump(incomplete_scene_output, f) 
-
-  else:
-    print('EMPTY SCENES!!!')
+  questions_file = os.path.join(question_dir, args.split + '.json')
 
 
+  with open(questions_file, 'w') as f:
+    print('Writing output to %s' % questions_file)
+    json.dump({
+        #'info': scene_info,
+        'questions': questions,
+      }, f)
 
-        
 
+#-----------------------------------------------------------------------------------------------------------------------
 
 
 def get_already_rendered_scenes(split, scene_dir):
@@ -212,7 +201,8 @@ def render_scene(args,
       image_index=0,
       complete_scene_image_path='render.png',
       incomplete_scene_image_path='render.png',
-      properties={}
+      properties=None,
+      constraint_type_index=None
 
   ):
 
@@ -233,6 +223,13 @@ def render_scene(args,
 
   # This will give ground-truth information about the scene and its objects
   complete_scene_struct = {
+       'info': {
+          'date': args.date,
+          'version': args.version,
+          'split': args.split,
+          'license': args.license,
+       },
+      'constraint_type_index': constraint_type_index,
       'image_index': image_index,
       'image_filename': os.path.basename(complete_scene_image_path),
       'objects': [],
@@ -278,8 +275,10 @@ def render_scene(args,
     
     complete_scene_struct['objects'] = objects
     complete_scene_struct['relationships'] = scene_info.compute_all_relationships(complete_scene_struct)
+    complete_scene_struct['similar'] = scene_info.compute_all_similar(complete_scene_struct)
     #scene_struct['objects_blender_info'] = objects_blender_info    
-    blender_obj.render()
+    
+    ##blender_obj.render()
 
     
     blender_incomplete_obj = blender.Blender(incomplete_scene_image_path, 
@@ -298,10 +297,11 @@ def render_scene(args,
     incomplete_objects, incomplete_blender_info = get_incomplete_scene_info(complete_scene_graph, incomplete_scene_graph, objects, objects_blender_info)
     incomplete_objects, incomplete_blender_objects = get_blender_objects(incomplete_objects, incomplete_blender_info, blender_incomplete_obj)    
 
-    blender_incomplete_obj.render()
+    ##blender_incomplete_obj.render()
 
 
     incomplete_scene_struct = copy.deepcopy(complete_scene_struct)
+    del incomplete_scene_struct['similar']
     incomplete_scene_struct['image_filename'] = os.path.basename(incomplete_scene_image_path)
     incomplete_scene_struct['objects'] = incomplete_objects
     incomplete_scene_struct['relationships'] = scene_info.compute_all_relationships(incomplete_scene_struct)
@@ -446,7 +446,7 @@ def add_objects(scene_struct, args, properties, complete_scene_graph):
       print('object: ', i)
       print('ranges: ', x1, x2, y1, y2)
       print('x={} , y={}'.format(x, y))
-      print(complete_scene_graph[i]['shape'], complete_scene_graph[i]['color'], complete_scene_graph[i]['siz'], complete_scene_graph[i]['material'])
+      print(complete_scene_graph[i]['shape'], complete_scene_graph[i]['color'], complete_scene_graph[i]['size'], complete_scene_graph[i]['material'])
       print('-------------------------------------------')
       """
    
@@ -480,7 +480,7 @@ def add_objects(scene_struct, args, properties, complete_scene_graph):
       
     shape_name = complete_scene_graph[i]['shape']
     color_name = complete_scene_graph[i]['color']
-    size_name = complete_scene_graph[i]['siz']
+    size_name = complete_scene_graph[i]['size']
     mat_name = complete_scene_graph[i]['material']
 
     

@@ -9,14 +9,23 @@ from __future__ import print_function
 import argparse, json, os, itertools, random, shutil, sys
 import time
 import re
-
-from matplotlib.cbook import print_cycles
-
-import question_engine as qeng
+import copy
 
 
-path_root = os.path.dirname(os.getcwd())
+from pathlib import Path
+path_root = Path(__file__).parents[1]
 sys.path.append(str(path_root))
+
+path_current = str(Path(__file__).parents[0])
+
+
+
+#import question
+
+#from matplotlib.cbook import print_cycles
+
+#import question_engine as qeng
+
 from generate_dataset import parser
 
 
@@ -252,292 +261,579 @@ def other_heuristic(text, param_vals):
       text = text.replace(' other ', ' ')
     if ' another ' in text:
       text = text.replace(' another ', ' a ')
+  text = re.sub(' +', ' ', text)
   return text
 
 
-#----------------------------------------------------------------------------------------
 
-def instantiate_templates_dfs(scene_struct, template, metadata, answer_counts,
-                              synonyms, max_instances=None, verbose=False):
+#-----------------------------------------------------------------------------------------------
+#def Input_ASPEngine(preds, scene_struct, given_attribute, obj_rm):
+#    program = ""
+#    for pred in preds:
+#        if pred.split("(")[1][0] == str(obj_rm):
+#            for g in given_attribute:
+#                if g in pred:
+#                    program = program+"\n"+pred+"."
+#                    break
+#        else:    
+#            program = program+"\n"+pred+"."
+#    return program
+#------------------------------------------------------------------------------------------------------
+#def addRelations(incomplete_asp, scene_struct):
+#    rel_preds = ""
+#    
+#    relations = scene_struct['relationships']
+#    for rel in relations:
+#        list_rel = relations[rel]
+#        obj_no = 0
+#        for obj in list_rel:
+#            for other in obj:
+#                rel_preds = rel_preds+rel+"("+other+","+obj_no+")."
+#            obj_no = obj_no+1
+#    incomplete_asp = incomplete_asp+rel_preds
+#    return rel_preds
+#--------------------------------------------------------------------------------------
+def has_numbers(inputString):
+    return bool(re.search(r'\d', inputString))
+#------------------------------------------------------------------------------------
+#vals dictionary -maps param name to its instantiated value
+#fillVals - fills the value for params of type props_other of specific object 'other', id_other refers 
+#to the id in the param name - eg "2" in <S2>   
+def fillVals(param_name_to_type, vals, id_other, other, props_other, objects):
+    if id_other=="":
+        for p in props_other:
+            for param in param_name_to_type:
+                if param_name_to_type[param] == p and not(has_numbers(param))  : 
+                    vals[param] = objects[other][p]
+    else:    
+        for p in props_other:
+            for param in param_name_to_type:
+                if param_name_to_type[param] == p and id_other in param  : 
+                    vals[param] = objects[other][p]
+    return vals
+#----------------------------------------------------------------------------------
+def getOtherProps(props, n1):
+    props_other = []
+    updated_props = copy.deepcopy(props)
+    for i in range(n1):
+          p = random.choice(updated_props)
+          props_other.append(p)
+          updated_props.remove(p)
+          
+    return props_other
+#------------------------------------------------------------------------------------
+#Find an object 'other' that is not obj_interest such that obj_R is in the 'R' of other  
+def chooseRelation(relations, rels, obj_R, obj_interest):
+      other = -1
+      updated_relations = copy.deepcopy(relations)
+      while(other == -1):
+          R = random.choice(updated_relations)
+          other = getObjs_Relation(rels, R, obj_R, obj_interest)
+          if other == -1:
+              updated_relations.remove(R)
+          else:
+              return R, other
 
-  param_name_to_type = {p['name']: p['type'] for p in template['params']} 
+def getObjs_Relation(rels, R, obj_R, obj_interest):
 
-  initial_state = {
-    'nodes': [node_shallow_copy(template['nodes'][0])],
-    'vals': {},
-    'input_map': {0: 0},
-    'next_template_node': 1,
-  }
+      list_list = rels[R]
+      other_no = 0
+      possible_other = []
+      for l in list_list:
+          if obj_R in l:
+              if other_no!=obj_interest:
+                  possible_other.append(other_no)
+          other_no = other_no+1
+      if len(possible_other)==0:
+          return -1
+      other = random.choice(possible_other) 
+      return other
+##---------------------------------------------------------------------------------------------
+#def checkAmbiguity(incomplete_asp):
+#        asp_file = open("incomplete.lp", "w")
+#        n1 = asp_file.write(incomplete_asp)
+#        asp_file.close()
+#        asp_command = 'clingo 1'  + ' ' + os.path.join("incomplete.lp")
+#        output_stream = os.popen(asp_command)
+#        output = output_stream.read()
+#        answers = output.split('Answer:')
+#        #print("Answers:", answers)
+#        answers = answers[1:]
+#        count = 0
+#        for answer in answers:
+#            count = count+1
+#            if(count>=1):
+#                return False
+#                
+#        return True
+##---------------------------------------------------------------------------------------------
 
-  states = [initial_state]
-  final_states = []
-
-  while states:
-    state = states.pop()
-
-    # Check to make sure the current state is valid
-    q = {'nodes': state['nodes']}  
-    outputs = qeng.answer_question(q, metadata, scene_struct, all_outputs=True) 
-
-    answer = outputs[-1]
-    if answer == '__INVALID__': continue
-    # Check to make sure constraints are satisfied for the current state
-    skip_state = False
-
-    for constraint in template['constraints']:
-      if constraint['type'] == 'NEQ':
-        p1, p2 = constraint['params']
-        v1, v2 = state['vals'].get(p1), state['vals'].get(p2)
-        if v1 is not None and v2 is not None and v1 != v2:
-          if verbose:
-            print('skipping due to NEQ constraint')
-            print(constraint)
-            print(state['vals'])
-          skip_state = True
-          break
-      elif constraint['type'] == 'NULL':
-        p = constraint['params'][0]
-        p_type = param_name_to_type[p]
-        v = state['vals'].get(p)
-        if v is not None:
-          skip = False
-          if p_type == 'Shape' and v != 'thing': skip = True
-          if p_type != 'Shape' and v != '': skip = True
-          if skip:
-            if verbose:
-              print('skipping due to NULL constraint')
-              print(constraint)
-              print(state['vals'])
-            skip_state = True
-            break
-      elif constraint['type'] == 'OUT_NEQ':
-        i, j = constraint['params']
-        i = state['input_map'].get(i, None)
-        j = state['input_map'].get(j, None)
-        if i is not None and j is not None and outputs[i] == outputs[j]:
-          if verbose:
-            print('skipping due to OUT_NEQ constraint')
-            print(outputs[i])
-            print(outputs[j])
-          skip_state = True
-          break
-      else:
-        assert False, 'Unrecognized constraint type "%s"' % constraint['type']
-
-    if skip_state:
-      continue
-
-    # We have already checked to make sure the answer is valid, so if we have
-    # processed all the nodes in the template then the current state is a valid
-    # question, so add it if it passes our rejection sampling tests.
-    if state['next_template_node'] == len(template['nodes']):
-      # Use our rejection sampling heuristics to decide whether we should
-      # keep this template instantiation
-      #print(answer)
-      #print(answer_counts)
-      #print('-----------------------')
-      cur_answer_count = answer_counts[answer]
-      answer_counts_sorted = sorted(answer_counts.values())
-      median_count = answer_counts_sorted[len(answer_counts_sorted) // 2]
-      median_count = max(median_count, 5)
-      if cur_answer_count > 1.1 * answer_counts_sorted[-2]:
-        if verbose: print('skipping due to second count')
-        continue
-      if cur_answer_count > 5.0 * median_count:
-        if verbose: print('skipping due to median')
-        continue
-
-      # If the template contains a raw relate node then we need to check for
-      # degeneracy at the end
-      has_relate = any(n['type'] == 'relate' for n in template['nodes'])
-      if has_relate:
-        degen = qeng.is_degenerate(q, metadata, scene_struct, answer=answer,
-                                   verbose=verbose)
-        if degen:
-          continue
-
-      answer_counts[answer] += 1
-      state['answer'] = answer
-      final_states.append(state)
-      if max_instances is not None and len(final_states) == max_instances:
-        break
-      continue
-
-    # Otherwise fetch the next node from the template
-    # Make a shallow copy so cached _outputs don't leak ... this is very nasty
-    next_node = template['nodes'][state['next_template_node']]
-    next_node = node_shallow_copy(next_node)
-
-    special_nodes = {
-        'filter_unique', 'filter_count', 'filter_exist', 'filter',
-        'relate_filter', 'relate_filter_unique', 'relate_filter_count',
-        'relate_filter_exist',
-    }
-    if next_node['type'] in special_nodes:
-      if next_node['type'].startswith('relate_filter'):
-        unique = (next_node['type'] == 'relate_filter_unique')
-        include_zero = (next_node['type'] == 'relate_filter_count'
-                        or next_node['type'] == 'relate_filter_exist')
-        filter_options = find_relate_filter_options(answer, scene_struct, metadata,
-                            unique=unique, include_zero=include_zero)
-      else:
-        filter_options = find_filter_options(answer, scene_struct, metadata)
-        if next_node['type'] == 'filter':
-          # Remove null filter
-          filter_options.pop((None, None, None, None), None)
-        if next_node['type'] == 'filter_unique':
-          # Get rid of all filter options that don't result in a single object
-          filter_options = {k: v for k, v in filter_options.items()
-                            if len(v) == 1}
-        else:
-          # Add some filter options that do NOT correspond to the scene
-          if next_node['type'] == 'filter_exist':
-            # For filter_exist we want an equal number that do and don't
-            num_to_add = len(filter_options)
-          elif next_node['type'] == 'filter_count' or next_node['type'] == 'filter':
-            # For filter_count add nulls equal to the number of singletons
-            num_to_add = sum(1 for k, v in filter_options.items() if len(v) == 1)
-          add_empty_filter_options(filter_options, metadata, num_to_add)
-
-      filter_option_keys = list(filter_options.keys())
-      random.shuffle(filter_option_keys)
-      for k in filter_option_keys:
-        new_nodes = []
-        cur_next_vals = {k: v for k, v in state['vals'].items()}
-        next_input = state['input_map'][next_node['inputs'][0]]
-        filter_side_inputs = next_node['side_inputs']
-        if next_node['type'].startswith('relate'):
-          param_name = next_node['side_inputs'][0] # First one should be relate
-          filter_side_inputs = next_node['side_inputs'][1:]
-          param_type = param_name_to_type[param_name]
-          assert param_type == 'Relation'
-          param_val = k[0]
-          k = k[1]
-          new_nodes.append({
-            'type': 'relate',
-            'inputs': [next_input],
-            'side_inputs': [param_val],
-          })
-          cur_next_vals[param_name] = param_val
-          next_input = len(state['nodes']) + len(new_nodes) - 1
-        for param_name, param_val in zip(filter_side_inputs, k):
-          param_type = param_name_to_type[param_name]
-          filter_type = 'filter_%s' % param_type.lower()
-          if param_val is not None:
-            new_nodes.append({
-              'type': filter_type,
-              'inputs': [next_input],
-              'side_inputs': [param_val],
-            })
-            cur_next_vals[param_name] = param_val
-            next_input = len(state['nodes']) + len(new_nodes) - 1
-          elif param_val is None:
-            if metadata['dataset'] == 'CLEVR-v1.0' and param_type == 'Shape':
-              param_val = 'thing'
+#Find objects with value for the property 'relate_prop' similar to obj_interest's value for the same prop
+def findSimilarObjects(scene_struct, relate_prop, obj_interest):
+    similar = scene_struct["similar"]
+    similar_objects = similar[relate_prop][obj_interest]
+    return similar_objects
+#---------------------------------------------------------------------------------------------
+#def addSimilar(incomplete_asp):
+#    same_rules = ""
+#    same_rules = same_rules + "same_size(O1, O2):- hasProperty(O1, size, V1), hasProperty(O2, size, V1), O1!=O2. \n"
+#    same_rules = same_rules + "same_color(O1, O2):- hasProperty(O1, color, V1), hasProperty(O2, color, V1), O1!=O2.\n"
+#    same_rules = same_rules +"same_material(O1, O2):- hasProperty(O1, material, V1), hasProperty(O2, material, V1), O1!=O2. \n"
+#    same_rules = same_rules +"same_shape(O1, O2):- hasProperty(O1, shape, V1), hasProperty(O2, shape, V1), O1!=O2. \n"
+#    incomplete_asp = incomplete_asp + same_rules
+#    return incomplete_asp
+#-----------------------------------------------------------------------------------------------
+#Get program for single_and questions
+def getProgram_single_and(vals, param_name_to_type, program, rels, query_attribute):
+    input_prev = 0
+    for v in vals:
+        node_f = {} 
+        if "2" not in v  and "3" not in v and param_name_to_type[v] != "relation":
+            node_f['type'] = "filter_"+param_name_to_type[v]
+            node_f['side_inputs'] = [vals[v]]
+            node_f['inputs'] = [input_prev]
+            program['nodes'].append(node_f)
+            input_prev = input_prev+1
+    node_r = {}
+    node_r["type"] = "relate_"+rels[-1]
+    node_r["inputs"] = [input_prev]
+    program['nodes'].append(node_r)
+    input_prev = input_prev+1
+    inter_1 = input_prev
+    
+    count = 0
+    for v in vals:
+        node_f = {} 
+        if "2" in v and param_name_to_type[v] != "relation":
+            node_f['type'] = "filter_"+param_name_to_type[v]
+            node_f['side_inputs'] = [vals[v]]
+            if count == 0:
+                node_f['inputs'] = [0]
             else:
-              param_val = ''
-            cur_next_vals[param_name] = param_val
-        input_map = {k: v for k, v in state['input_map'].items()}
-        extra_type = None
-        if next_node['type'].endswith('unique'):
-          extra_type = 'unique'
-        if next_node['type'].endswith('count'):
-          extra_type = 'count'
-        if next_node['type'].endswith('exist'):
-          extra_type = 'exist'
-        if extra_type is not None:
-          new_nodes.append({
-            'type': extra_type,
-            'inputs': [input_map[next_node['inputs'][0]] + len(new_nodes)],
-          })
-        input_map[state['next_template_node']] = len(state['nodes']) + len(new_nodes) - 1
-        states.append({
-          'nodes': state['nodes'] + new_nodes,
-          'vals': cur_next_vals,
-          'input_map': input_map,
-          'next_template_node': state['next_template_node'] + 1,
-        })
+                node_f['inputs'] = [input_prev]
+            program['nodes'].append(node_f)
+            input_prev = input_prev+1
+    node_r = {}
+    node_r["type"] = "relate_"+rels[0]
+    node_r["inputs"] = [input_prev]
+    program['nodes'].append(node_r)
+    input_prev = input_prev+1
+    inter_2 = input_prev
+    
+    node_inter = {}
+    node_inter["type"] = "inter"
+    node_inter["inputs"] = [inter_1, inter_2]
+    program['nodes'].append(node_inter)
+    input_prev = input_prev+1
+    
+    node_query = {}
+    node_query['type'] = "query_"+query_attribute
+    node_query['inputs'] = [input_prev]
+    program["nodes"].append(node_query)
+    return program
+    
+#-----------------------------------------------------------------------------------------------
+#Get program for same_relate questions
+def getProgram_sim(vals, param_name_to_type, program, relate_prop, query_attribute):
+    input_prev = 0
+    for v in vals:
+        node_f = {} 
+        if "2" not in v and param_name_to_type[v] != "relation":
+            node_f['type'] = "filter_"+param_name_to_type[v]
+            node_f['side_inputs'] = [vals[v]]
+            node_f['inputs'] = [input_prev]
+            program['nodes'].append(node_f)
+            input_prev = input_prev+1
+    node_r = {}
+    node_r["type"] = "same_"+relate_prop
+    node_r["inputs"] = [input_prev]
+    program['nodes'].append(node_r)
+    input_prev = input_prev+1
+    
+    for v in vals:
+        node_f = {} 
+        if "2" in v and param_name_to_type[v] != "relation":
+            node_f['type'] = "filter_"+param_name_to_type[v]
+            node_f['side_inputs'] = [vals[v]]
+            node_f['inputs'] = [input_prev]
+            program['nodes'].append(node_f)
+            input_prev = input_prev+1
+    node_query = {}
+    node_query['type'] = "query_"+query_attribute
+    node_query['inputs'] = [input_prev]
+    program["nodes"].append(node_query)
+    return program
+#--------------------------------------------------------------------------------------------------
+#Get program for one_hop, two_hop and three_hop questions
+def getProgram_rel(vals, param_name_to_type, program, hop, rels, query_attribute):
+    input_prev = 0
+    for v in vals:
+        node_f = {} 
+        if "2" not in v and "3" not in v and "4" not in v and param_name_to_type[v] != "relation" :
+            node_f['type'] = "filter_"+param_name_to_type[v]
+            node_f['side_inputs'] = [vals[v]]
+            node_f['inputs'] = [input_prev]
+            program['nodes'].append(node_f)
+            input_prev = input_prev+1
+    node_r = {}
+    node_r["type"] = "relate_"+rels[-1]
+    node_r["inputs"] = [input_prev]
+    program['nodes'].append(node_r)
+    input_prev = input_prev+1
+    
+    r = 1
+    for i in range(2, hop+2):
+        for v in vals:
+            node_f = {} 
+            if str(i) in v and param_name_to_type[v] != "relation":
+                node_f['type'] = "filter_"+param_name_to_type[v]
+                node_f['side_inputs'] = [vals[v]]
+                node_f['inputs'] = [input_prev]
+                program['nodes'].append(node_f)
+                input_prev = input_prev+1
+        if (hop-r)-1 < 0:
+            continue
+        node_r = {}
+        node_r["type"] = "relate_"+rels[(hop-r)-1]
+        node_r["inputs"] = [input_prev]
+        program['nodes'].append(node_r)
+        input_prev = input_prev+1
+        r = r+1
+    
+    
+    node_query = {}
+    node_query['type'] = "query_"+query_attribute
+    node_query['inputs'] = [input_prev]
+    program["nodes"].append(node_query)
+    return program
+                
+    
+    
+#---------------------------------------------------------------------------------------------------
+def instantiate_templates_dfs(args, scene_struct, query_attribute, given_attribute, obj_interest, preds, template, template_type, template_id,  metadata, answer_counts, synonyms, max_instances=None, verbose=False):
 
-    elif 'side_inputs' in next_node:
-      # If the next node has template parameters, expand them out
-      # TODO: Generalize this to work for nodes with more than one side input
-      assert len(next_node['side_inputs']) == 1, 'NOT IMPLEMENTED'
+  
+  #print("Scene_struct:", scene_struct)
+  #print("Template:", template)
+  #print("metadata:", metadata)
+  #print("Answer_counts:", answer_counts)
+  #print("Synonyms:", synonyms)
+  
+  objects = scene_struct["objects"]
+  param_name_to_type = {p['name']: p['type'].lower() for p in template['params']} 
+  
+  vals = {}
+  
+  #incomplete_asp = Input_ASPEngine(preds, scene_struct, given_attribute, obj_interest)
+  
+  relations = ['left', 'right', 'behind', 'front']
+  props =  ['shape', 'color', 'size', 'material']
+  query = ""
+  program = {"nodes": [{'type': 'scene', 'inputs': []}]}
+  #print("--query_attribute:",query_attribute, "--given:", given_attribute, "--obj_interest:", obj_interest)
+  if "zero_hop" in template_type:
+      
+      input_prev = 0
+      for g in given_attribute:
+          node_g = {}
+          #print("Given::", g, "param_name_to_type:", param_name_to_type)
+          for param in param_name_to_type:
+              if param_name_to_type[param] == g: 
+                  vals[param] = objects[obj_interest][g]
+                  node_g['type'] = "filter_"+g
+                  node_g['side_inputs'] = [vals[param]]
+                  node_g['inputs'] = [input_prev]
+                  input_prev = input_prev+1
+                  program["nodes"].append(node_g)
+      
+      pred_v = []
+      
+      for v in vals:
+          
+          pred_v.append("hasProperty(X,"+param_name_to_type[v]+","+vals[v]+")")
+      
+      query = "missing(Q):-hasProperty(X,"+query_attribute+", Q),"
+      node_query = {}
+      node_query['type'] = "query_"+query_attribute
+      node_query['inputs'] = [input_prev]
+      program["nodes"].append(node_query)
+      for i in range(len(pred_v)):
+          if i == len(pred_v)-1:
+              query = query + pred_v[i]+"."
+          else:
+              query = query + pred_v[i]+","
+      
+     #!!! (query_attribute, vals), 
+          
+  elif "one_hop" in template_type:
+      #incomplete_asp = addRelations(incomplete_asp, scene_struct)
+      
+      for g in given_attribute:
+          for param in param_name_to_type:
+              if param_name_to_type[param] == g and "2" in param: 
+                  vals[param] = objects[obj_interest][g]
+      #print("vals after filling given:", vals)
+      rels = scene_struct["relationships"]
+      
+      R, other = chooseRelation(relations, rels, obj_interest, obj_interest)
+      
+              
+      #allowed_props_other = copy.deepcopy(props)
+          
+      n1 = random.randint(1, 4)
+      props_other = getOtherProps(props, n1)
+      vals = fillVals(param_name_to_type, vals, "", other, props_other, objects)
+      
+      for param in param_name_to_type:
+          if param_name_to_type[param] == "relation":
+              vals[param] = R
+      query = ""
+      pred_v = []
+      for v in vals:
+          if param_name_to_type[v]!="relation":
+              if "2" in v : 
+                  pred_v.append("hasProperty(X,"+param_name_to_type[v]+","+vals[v]+")")
+              else:
+                  pred_v.append("hasProperty(Y,"+param_name_to_type[v]+","+vals[v]+")")
+      
+      rel_pred = R+"(Y,X), X!=Y."
+      query = "missing(Q):- hasProperty(X,"+query_attribute+",Q),"
+      for i in range(len(pred_v)):
+          query = query + pred_v[i]+","
+      query = query+ rel_pred
+      program = getProgram_rel(vals, param_name_to_type, program, 1, [R], query_attribute)
+      
+  
+  elif  "two_hop" in template_type:
+      rels = scene_struct["relationships"]
+      R2, other2 = chooseRelation(relations, rels, obj_interest, obj_interest)
+      R, other =  chooseRelation(relations, rels, other2, obj_interest)
+      for param in param_name_to_type:
+          if param_name_to_type[param] == "relation" and "2" in param: 
+              vals[param] = R2
+          elif param_name_to_type[param] == "relation" and "2" not in param: 
+              vals[param] = R
+         
+      
+      for g in given_attribute:
+          for param in param_name_to_type:
+              if param_name_to_type[param] == g and "3" in param: 
+                  vals[param] = objects[obj_interest][g]
+      
+      #What is query attribute of given that is R2 of other2 props that is R of other props
+      
+          
+      n1 = random.randint(1, 4)
+      n2 = random.randint(1, 4)
+      props_other2 = getOtherProps(props, n1)
+      props_other = getOtherProps(props, n2)
+      vals = fillVals(param_name_to_type, vals, "2", other2, props_other2, objects)
+      vals = fillVals(param_name_to_type, vals, "", other, props_other, objects)
+      
+      
+      query = ""
+      pred_v = []
+      for v in vals:
+          if param_name_to_type[v]!="relation":
+              if "3" in v:
+                  pred_v.append("hasProperty(X"+","+param_name_to_type[v]+","+vals[v]+")")
+              elif "2" in v: 
+                  pred_v.append("hasProperty(Y1,"+param_name_to_type[v]+","+vals[v]+")")
+              else:
+                  pred_v.append("hasProperty(Y2,"+param_name_to_type[v]+","+vals[v]+")")
+      
+      rel_pred1 = R2+"(Y1, X),"
+      rel_pred2 = R+"(Y2, Y1), X!=Y1, Y1!=Y2."
+      query = "missing(Q):-hasProperty(X,"+query_attribute+",Q),"
+      for i in range(len(pred_v)):
+          query = query + pred_v[i]+","
+      query = query+ rel_pred1+rel_pred2
+      program = getProgram_rel(vals, param_name_to_type, program, 2, [R2, R], query_attribute)
+      
+  elif "three_hop" in template_type:
+      #incomplete_asp = addRelations(incomplete_asp, scene_struct)
+      rels = scene_struct["relationships"]
+      R3, other3 = chooseRelation(relations, rels, obj_interest, obj_interest)
+      R2, other2 = chooseRelation(relations, rels, other3, obj_interest)
+      R, other =  chooseRelation(relations, rels, other2, obj_interest)
+      for param in param_name_to_type:
+          if param_name_to_type[param] == "relation" and "2" in param: 
+              vals[param] = R2
+          elif param_name_to_type[param] == "relation" and "3" in param: 
+              vals[param] = R3
+          elif param_name_to_type[param] == "relation" and "2" not in param and "3" not in param: 
+              vals[param] = R
+              
+      for g in given_attribute:
+          for param in param_name_to_type:
+              if param_name_to_type[param] == g and "4" in param: 
+                  vals[param] = objects[obj_interest][g]
+      
+      #What is query attribute of given that is R2 of other2 props that is R of other props
+      
+      n1 = random.randint(1, 4)
+      n2 = random.randint(1, 4)
+      n3 = random.randint(1, 4)
+      props_other3 = getOtherProps(props, n1)
+      props_other2 = getOtherProps(props, n2)
+      props_other = getOtherProps(props, n3)
+      vals = fillVals(param_name_to_type, vals, "3", other3, props_other3, objects)
+      vals = fillVals(param_name_to_type, vals, "2", other2, props_other2, objects)
+      vals = fillVals(param_name_to_type, vals, "", other, props_other, objects)
+      
+      
+      query = ""
+      pred_v = []
+      for v in vals:
+          if param_name_to_type[v]!="relation":
+              if "4" in v:
+                  pred_v.append("hasProperty(X,"+param_name_to_type[v]+","+vals[v]+")")
+              elif "3" in v: 
+                  pred_v.append("hasProperty(Y1,"+param_name_to_type[v]+","+vals[v]+")")
+              elif "2" in v:
+                  pred_v.append("hasProperty(Y2,"+param_name_to_type[v]+","+vals[v]+")")
+              else :
+                  pred_v.append("hasProperty(Y3,"+param_name_to_type[v]+","+vals[v]+")")
 
-      # Use metadata to figure out domain of valid values for this parameter.
-      # Iterate over the values in a random order; then it is safe to bail
-      # from the DFS as soon as we find the desired number of valid template
-      # instantiations.
-      param_name = next_node['side_inputs'][0]
-      param_type = param_name_to_type[param_name]
-      param_vals = metadata['types'][param_type][:]
-      random.shuffle(param_vals)
-      for val in param_vals:
-        input_map = {k: v for k, v in state['input_map'].items()}
-        input_map[state['next_template_node']] = len(state['nodes'])
-        cur_next_node = {
-          'type': next_node['type'],
-          'inputs': [input_map[idx] for idx in next_node['inputs']],
-          'side_inputs': [val],
-        }
-        cur_next_vals = {k: v for k, v in state['vals'].items()}
-        cur_next_vals[param_name] = val
+      rel_pred1 = R3+"(Y1,X),"
+      rel_pred2 = R2+"(Y2, Y1),"
+      rel_pred3 = R+"(Y3, Y2), X!=Y1, Y1!=Y2, Y2!=Y3."
+      
+      query = "missing(Q):-hasProperty(X,"+query_attribute+",Q),"
+      for i in range(len(pred_v)):
+          query = query + pred_v[i]+","
+      query = query+ rel_pred1+rel_pred2+rel_pred3
+      program = getProgram_rel(vals, param_name_to_type, program, 3, [R3, R2, R], query_attribute)
+      
+  elif "same_relate" in template_type:
+      #incomplete_asp = addSimilar(incomplete_asp)
+      relate_prop = ""
+      if template_id == 0 or template_id == 1:
+          relate_prop = "size"
+      elif template_id == 2 or template_id == 3 or template_id == 4:
+          relate_prop = "color"
+      elif template_id == 5 or template_id == 6 or template_id == 7:
+          relate_prop = "material"
+      elif template_id == 8 or template_id == 9 or template_id == 10:
+          relate_prop = "shape"
+      
+      #print("Relate_prop:", relate_prop)
 
-        states.append({
-          'nodes': state['nodes'] + [cur_next_node],
-          'vals': cur_next_vals,
-          'input_map': input_map,
-          'next_template_node': state['next_template_node'] + 1,
-        })
-    else:
-      input_map = {k: v for k, v in state['input_map'].items()}
-      input_map[state['next_template_node']] = len(state['nodes'])
-      next_node = {
-        'type': next_node['type'],
-        'inputs': [input_map[idx] for idx in next_node['inputs']],
-      }
-      states.append({
-        'nodes': state['nodes'] + [next_node],
-        'vals': state['vals'],
-        'input_map': input_map,
-        'next_template_node': state['next_template_node'] + 1,
-      })
-
-  # Actually instantiate the template with the solutions we've found
-  text_questions, structured_questions, answers = [], [], []
-  for state in final_states:
-    structured_questions.append(state['nodes'])
-    answers.append(state['answer'])
-    text = random.choice(template['text'])
-    for name, val in state['vals'].items():
+      for g in given_attribute:
+          for param in param_name_to_type:
+              if param_name_to_type[param] == g and "2" in param: 
+                  vals[param] = objects[obj_interest][g]
+                  
+      sim_objects = findSimilarObjects(scene_struct, relate_prop, obj_interest)
+      other = random.choice(sim_objects)
+      n1 = random.randint(1, 2)
+      allowedProps = []
+      for p in props :
+          if p != relate_prop:
+              allowedProps.append(p)
+              
+      props_other = getOtherProps(allowedProps, n1)
+      vals = fillVals(param_name_to_type, vals, "", other, props_other, objects)
+      query = ""
+      pred_v = []
+      for v in vals:
+          if param_name_to_type[v]!="relation":
+              if "2" in v: 
+                  pred_v.append("hasProperty(X,"+param_name_to_type[v]+","+vals[v]+")")
+              else:
+                  pred_v.append("hasProperty(Y,"+param_name_to_type[v]+","+vals[v]+")")
+      
+      rel_pred = "same_"+relate_prop+"(Y,X)."
+      query = "missing(Q):-hasProperty(X,"+query_attribute+",Q),"
+      for i in range(len(pred_v)):
+          query = query + pred_v[i]+","
+      query = query+ rel_pred
+      program = getProgram_sim(vals, param_name_to_type, program, relate_prop, query_attribute)
+      
+  elif "single_and" in template_type:
+      rels = scene_struct["relationships"]
+      
+      R2, other2 = chooseRelation(relations, rels, obj_interest, obj_interest)
+      R, other =  chooseRelation(relations, rels, obj_interest, obj_interest)
+      
+      
+      for param in param_name_to_type:
+          if param_name_to_type[param] == "relation" and "2" in param: 
+              vals[param] = R2
+          elif param_name_to_type[param] == "relation" and "2" not in param: 
+              vals[param] = R
+      
+      for g in given_attribute:
+          for param in param_name_to_type:
+              if param_name_to_type[param] == g and "3" in param: 
+                  vals[param] = objects[obj_interest][g]
+      
+      #What is query attribute of given that is R2 of other2 props and R of other props
+      
+      n1 = random.randint(1, 4)
+      n2 = random.randint(1, 4)
+      props_other2 = getOtherProps(props, n1)
+      props_other = getOtherProps(props, n2)
+      vals = fillVals(param_name_to_type, vals, "2", other2, props_other2, objects)
+      vals = fillVals(param_name_to_type, vals, "", other, props_other, objects)
+      
+      
+      query = ""
+      pred_v = []
+      for v in vals:
+          if param_name_to_type[v]!="relation":
+              if "3" in v:
+                  pred_v.append("hasProperty(X"+","+param_name_to_type[v]+","+vals[v]+")")
+              elif "2" in v: 
+                  pred_v.append("hasProperty(Y1,"+param_name_to_type[v]+","+vals[v]+")")
+              else:
+                  pred_v.append("hasProperty(Y2,"+param_name_to_type[v]+","+vals[v]+")")
+      
+      rel_pred1 = R2+"(Y1, X),"
+      rel_pred2 = R+"(Y2, X), X!=Y1, Y1!=Y2."
+      query = "missing(Q):-hasProperty(X,"+query_attribute+",Q),"
+      for i in range(len(pred_v)):
+          query = query + pred_v[i]+","
+      query = query+ rel_pred1+rel_pred2
+      
+      program = getProgram_single_and(vals, param_name_to_type, program, [R2, R], query_attribute)
+      
+      
+  
+  text = random.choice(template['text'])
+  for name, val in vals.items():
       if val in synonyms:
-        val = random.choice(synonyms[val])
+          val = random.choice(synonyms[val])
+      
       text = text.replace(name, val)
       text = ' '.join(text.split())
-    text = replace_optionals(text)
-    text = ' '.join(text.split())
-    text = other_heuristic(text, state['vals'])
-    text_questions.append(text)
-
-  return text_questions, structured_questions, answers
-
-
+  text = replace_optionals(text)
+  text = ' '.join(text.split())
+  pattern = re.compile("<S*[0-9]*>")
+  syn_thing = random.choice(synonyms['thing'])
+  text = pattern.sub(syn_thing,text)  
+  pattern = re.compile("<.*?>")
+  text = pattern.sub('',text)
+  text_question = other_heuristic(text, vals)
+  text_question = re.sub(' +', ' ', text_question)
+  print("Text_question:", text_question)   
+  return text_question, program, query
+      
+  
 #----------------------------------------------------------------------------------------
 
 def replace_optionals(s):
   """
   Each substring of s that is surrounded in square brackets is treated as
-  optional and is removed with probability 0.5. For example the string
+  optional and is removed. For example the string
 
   "A [aa] B [bb]"
 
-  could become any of
+  would become any of
 
-  "A aa B bb"
-  "A  B bb"
-  "A aa B "
   "A  B "
 
-  with probability 1/4.
+  
   """
   pat = re.compile(r'\[([^\[]*)\]')
 
@@ -554,10 +850,37 @@ def replace_optionals(s):
   return s
 
 
-#----------------------------------------------------------------------------------------
 
-def main(args):
-  with open(args.metadata_file, 'r') as f:
+#----------------------------------------------------------------------------------------
+#Given an answer (prop_value), find the property to which it belongs to
+def findQueryAttribute(prop_value):
+    domain = {}
+    domain['color'] = ['red', 'blue', 'green', 'yellow'] #'green', 'purple', 'red', 'yellow', 'coral']
+    domain['material'] = ['rubber', 'metal']
+    domain['shape'] = ['cube', 'cylinder', 'sphere', 'cone']
+    domain['size'] = ['large', 'small']
+    for key in domain:
+        if prop_value in domain[key]:
+            return key
+    return None
+#----------------------------------------------------------------------------------------
+#to check whether the template in same_relate is allowed for the query_attribute, obj_interest and given_attribute
+def checkAllowed(prop, given_attribute, query_attribute, obj_interest, complete_scene_struct):
+     not_allowed = False
+     if prop==query_attribute:
+         not_allowed = True
+     for g in given_attribute:
+         if g == prop:
+             not_allowed = True
+     sim_objects = findSimilarObjects(complete_scene_struct, prop, obj_interest)
+     if len(sim_objects) == 0:
+         not_allowed = True
+     return not_allowed
+#-----------------------------------------------------------------------------------------
+
+def generate_question(args,query_attribute, given_attribute, obj_interest, possible_sols, complete_scene_struct, complete_scene_path, scene_count):
+  
+  with open(os.path.join(path_current, args.metadata_file), 'r') as f:
     metadata = json.load(f)
     dataset = metadata['dataset']
     if dataset != 'CLEVR-v1.0':
@@ -571,11 +894,13 @@ def main(args):
   # Load templates from disk
   # Key is (filename, file_idx)
   num_loaded_templates = 0
+  
   templates = {}
-  for fn in os.listdir(args.template_dir):
+  for fn in os.listdir(os.path.join(path_current, args.template_dir)):
+    
     if not fn.endswith('.json'): continue
-    with open(os.path.join(args.template_dir, fn), 'r') as f:
-      base = os.path.splitext(fn)[0]
+    with open(os.path.join(path_current, args.template_dir, fn), 'r') as f:
+      #base = os.path.splitext(fn)[0]
       for i, template in enumerate(json.load(f)):
         num_loaded_templates += 1
         key = (fn, i)
@@ -590,6 +915,7 @@ def main(args):
     # number of questions so far of that template type with that answer
     template_answer_counts = {}
     node_type_to_dtype = {n['name']: n['output'] for n in metadata['functions']}
+    
     for key, template in templates.items():
       template_counts[key[:2]] = 0
       final_node_type = template['nodes'][-1]['type']
@@ -611,50 +937,71 @@ def main(args):
 
   # Read file containing input scenes
   all_scenes = []
-  with open(os.path.join(args.complete_data_dir, args.scene_dir, args.split + '.json'), 'r') as f:
+  with open(complete_scene_path, 'r') as f:
     scene_data = json.load(f)
-   
-    all_scenes = scene_data['scenes']
-    scene_info = scene_data['info']
-  begin = args.scene_start_idx
-  if args.num_scenes > 0:
-    end = args.scene_start_idx + args.num_scenes
-    all_scenes = all_scenes[begin:end]
-  else:
-    all_scenes = all_scenes[begin:]
+    
+    all_scenes = [scene_data]
+    
 
   # Read synonyms file
-  with open(args.synonyms_json, 'r') as f:
+  with open(os.path.join(path_current, args.synonyms_json), 'r') as f:
     synonyms = json.load(f)
-
-  questions = []
-  scene_count = 0
+    
   for i, scene in enumerate(all_scenes):
     scene_fn = scene['image_filename']
-    scene_struct = scene
+    scene_info = scene['info']
     print('starting image %s (%d / %d)'
           % (scene_fn, i + 1, len(all_scenes)))
 
     if scene_count % args.reset_counts_every == 0:
       print('resetting counts')
       template_counts, template_answer_counts = reset_counts()
-    scene_count += 1
-
+    
     # Order templates by the number of questions we have so far for those
     # templates. This is a simple heuristic to give a flat distribution over
     # templates.
     templates_items = list(templates.items())
     templates_items = sorted(templates_items,
                         key=lambda x: template_counts[x[0][:2]])
-    num_instantiated = 0
+    #num_instantiated = 0
     for (fn, idx), template in templates_items:
+      answer_counts = template_answer_counts[(fn, idx)]
+      prop = ""
+      for key in answer_counts:
+          prop = findQueryAttribute(key)
+          break
+      if (prop!=query_attribute):
+          continue
+      if "same_relate" in fn:
+          not_allowed = False
+          if idx == 0 or idx == 1:
+              not_allowed = checkAllowed("size", given_attribute, query_attribute, obj_interest, complete_scene_struct)
+          elif idx == 2 or idx == 3 or idx == 4:
+              not_allowed = checkAllowed("color", given_attribute, query_attribute, obj_interest, complete_scene_struct)
+          elif idx == 5 or idx == 6 or idx == 7:
+              not_allowed = checkAllowed("material", given_attribute, query_attribute, obj_interest, complete_scene_struct)
+          elif idx == 8 or idx == 9 or idx == 10:
+              not_allowed = checkAllowed("shape", given_attribute, query_attribute, obj_interest, complete_scene_struct)
+          if not_allowed:
+             continue
+      if len(given_attribute) == 0 and "zero_hop" in fn:
+          continue
+          
+            
       if args.verbose:
         print('trying template ', fn, idx)
       if args.time_dfs and args.verbose:
         tic = time.time()
-      ts, qs, ans = instantiate_templates_dfs(
-                      scene_struct,
+      ts, qs, asp_query = instantiate_templates_dfs(
+                      args,
+                      complete_scene_struct,
+                      query_attribute, 
+                      given_attribute, 
+                      obj_interest, 
+                      complete_scene_struct, 
                       template,
+                      fn,
+                      idx,
                       metadata,
                       template_answer_counts[(fn, idx)],
                       synonyms,
@@ -665,28 +1012,30 @@ def main(args):
         toc = time.time()
         print('that took ', toc - tic)
       image_index = int(os.path.splitext(scene_fn)[0].split('_')[-1])
-      for t, q, a in zip(ts, qs, ans):
-        questions.append({
+      question = {
           'split': scene_info['split'],
           'image_filename': scene_fn,
           'image_index': image_index,
           'image': os.path.splitext(scene_fn)[0],
-          'question': t,
-          'program': q,
-          'answer': a,
+          'question': ts,
+          'program': qs,
+          'asp_query': asp_query,
+          'answer': possible_sols,
+          'object_interest': obj_interest,
           'template_filename': fn,
           'question_family_index': idx,
-          'question_index': len(questions),
-        })
-      if len(ts) > 0:
-        if args.verbose:
-          print('got one!')
-        num_instantiated += 1
-        template_counts[(fn, idx)] += 1
-      elif args.verbose:
-        print('did not get any =(')
-      if num_instantiated >= args.templates_per_image:
-        break
+          'question_index': image_index
+              }
+      return question
+#      if len(ts) > 0:
+#        if args.verbose:
+#          print('got one!')
+#        num_instantiated += 1
+#        template_counts[(fn, idx)] += 1
+#      elif args.verbose:
+#        print('did not get any =(')
+#      if num_instantiated >= args.templates_per_image:
+#        break
 
   # Change "side_inputs" to "value_inputs" in all functions of all functional
   # programs. My original name for these was "side_inputs" but I decided to
@@ -700,35 +1049,35 @@ def main(args):
   # no value inputs. Again this should probably be refactored, but the quick and
   # dirty solution is to keep the code above as-is, but here make "value_inputs"
   # an empty list for those functions that do not have "side_inputs". Gross.
-  for q in questions:
-    for f in q['program']:
-      if 'side_inputs' in f:
-        f['value_inputs'] = f['side_inputs']
-        del f['side_inputs']
-      else:
-        f['value_inputs'] = []
-
-  question_dir = os.path.join(args.incomplete_data_dir, args.question_dir)
-  if not os.path.isdir(question_dir):
-    os.makedirs(question_dir)
-
-  questions_file = os.path.join(question_dir, args.split + '.json')
-
-
-  with open(questions_file, 'w') as f:
-    print('Writing output to %s' % questions_file)
-    json.dump({
-        'info': scene_info,
-        'questions': questions,
-      }, f)
+#  for q in questions:
+#    for f in q['program']:
+#      if 'side_inputs' in f:
+#        f['value_inputs'] = f['side_inputs']
+#        del f['side_inputs']
+#      else:
+#        f['value_inputs'] = []
+#
+#  question_dir = os.path.join(args.incomplete_data_dir, args.question_dir)
+#  if not os.path.isdir(question_dir):
+#    os.makedirs(question_dir)
+#
+#  questions_file = os.path.join(question_dir, args.split + '.json')
+#
+#
+#  with open(questions_file, 'w') as f:
+#    print('Writing output to %s' % questions_file)
+#    json.dump({
+#        'info': scene_info,
+#        'questions': questions,
+#      }, f)
 
 #----------------------------------------------------------------------------------------
 
-if __name__ == '__main__':
-  args = parser.parse_args()
-  if args.profile:
-    import cProfile
-    cProfile.run('main(args)')
-  else:
-    main(args)
-
+#if __name__ == '__main__':
+#  args = parser.parse_args()
+#  if args.profile:
+#    import cProfile
+#    cProfile.run('main(args)')
+#  else:
+#    main(args)
+#
