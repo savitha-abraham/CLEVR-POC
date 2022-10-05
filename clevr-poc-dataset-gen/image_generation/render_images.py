@@ -80,20 +80,41 @@ def main(args):
   with open(args.properties_json, 'r') as f:
     properties = json.load(f)
   
-  i = args.start_idx
+  
 
   # we have in total 9 regions, and we do not want to have more than one object at each region
   #if args.max_objects > 9:
   #  args.max_objects = 9
 
-  num_image_per_constraint_type = [0 for i in range(args.num_constraint_types)]
+  num_image_per_constraint_type = [0 for ind in range(args.num_constraint_types)]
   max_number_of_images_per_constraint = math.floor(args.num_images/args.num_constraint_types)
+  
+  
 
+  
+  #Loading question templates
+  templates = {}
+  num_loaded_templates = 0
+  for fn in os.listdir(os.path.join(str(path_root), "question_generation", args.template_dir)):
+      if not fn.endswith('.json'): continue
+      with open(os.path.join(str(path_root), "question_generation", args.template_dir, fn), 'r') as f:
+          for i, template in enumerate(json.load(f)):
+              num_loaded_templates = num_loaded_templates + 1
+              key = (fn, i)
+              templates[key] = template
+          print('Read %d templates from disk' % num_loaded_templates)
+  
+  num_questions_per_template_type = {}
+  for key in templates:
+      num_questions_per_template_type[key] = 0
+  max_number_of_questions_per_template = math.floor(args.num_images/args.num_templates)
+  
   env_id = 0
   objNum_env = {i:[] for i in range(args.min_objects,args.max_objects+1)}
   env_answers = {}
   possible_num_objects = [i for i in range(args.min_objects, args.max_objects)]
   questions = []
+  i = args.start_idx
   while i < args.num_images:
   #for i in range(args.num_images):
         possible_sols = None
@@ -102,6 +123,7 @@ def main(args):
         query_attribute = "" 
         given_query = "" 
         complete_scene = None
+        env_creation_flag = True
         while(possible_sols == None or complete_scene == None):
                 #print('HEREEEEE')
                 complete_scene_image_path = complete_img_template % i
@@ -115,13 +137,12 @@ def main(args):
                 
                 if (env_id < args.num_constraint_types):
                     generateEnvironment(args, environment_constraints_dir, num_objects, env_id)
-                    objNum_env[num_objects].append(env_id) 
-                    num_image_per_constraint_type[env_id]= num_image_per_constraint_type[env_id] +1
+                    env_creation_flag = True
                     constraint_type_index = env_id
-                    env_id = env_id +1
                 else:
                     list_env = objNum_env[num_objects]
                     constraint_type_index = balance_constraint_type(list_env, num_image_per_constraint_type, max_number_of_images_per_constraint)
+                    env_creation_flag = False
                     if constraint_type_index == None:
                       possible_num_objects.remove(num_objects)
                       continue
@@ -153,11 +174,17 @@ def main(args):
                             json.dump(complete_scene, f)  
                         with open(incomplete_scene_path, 'w') as f:
                             json.dump(incomplete_scene, f)
+                        if env_creation_flag:
+                            objNum_env[num_objects].append(env_id) 
+                            num_image_per_constraint_type[env_id]= num_image_per_constraint_type[env_id] +1
+                            env_id = env_id +1
                         #Generate question for the scene...
-                        question = generate_question(args,query_attribute, given_query, obj_rm, possible_sols, complete_scene, complete_scene_path, i)
+                        question = generate_question(args,templates, num_loaded_templates, query_attribute, given_query, obj_rm, possible_sols, complete_scene, complete_scene_path, i, num_questions_per_template_type, max_number_of_questions_per_template )
                         questions.append(question)
+                        #print(question)
                     else:
                         possible_sols = None
+                        
 
 
         i = i + 1
@@ -278,7 +305,7 @@ def render_scene(args,
     complete_scene_struct['similar'] = scene_info.compute_all_similar(complete_scene_struct)
     #scene_struct['objects_blender_info'] = objects_blender_info    
     
-    ##blender_obj.render()
+    blender_obj.render()
 
     
     blender_incomplete_obj = blender.Blender(incomplete_scene_image_path, 
@@ -297,7 +324,7 @@ def render_scene(args,
     incomplete_objects, incomplete_blender_info = get_incomplete_scene_info(complete_scene_graph, incomplete_scene_graph, objects, objects_blender_info)
     incomplete_objects, incomplete_blender_objects = get_blender_objects(incomplete_objects, incomplete_blender_info, blender_incomplete_obj)    
 
-    ##blender_incomplete_obj.render()
+    blender_incomplete_obj.render()
 
 
     incomplete_scene_struct = copy.deepcopy(complete_scene_struct)

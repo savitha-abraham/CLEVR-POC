@@ -877,8 +877,40 @@ def checkAllowed(prop, given_attribute, query_attribute, obj_interest, complete_
          not_allowed = True
      return not_allowed
 #-----------------------------------------------------------------------------------------
+def get_allowed_templates(templates_items, num_questions_per_template_type, max_number_of_questions_per_template, template_answer_counts, given_attribute, query_attribute, obj_interest, complete_scene_struct):
+    allowed_counter = {}
+    not_allowed = False
+    for (fn, idx), template in templates_items:
+        answer_counts = template_answer_counts[(fn, idx)]
+        prop = ""
+        for key in answer_counts:
+            prop = findQueryAttribute(key)
+            break
+        if (prop!=query_attribute):
+            not_allowed = True
+          
+        if "same_relate" in fn:
+          
+            if idx == 0 or idx == 1:
+                not_allowed = checkAllowed("size", given_attribute, query_attribute, obj_interest, complete_scene_struct)
+            elif idx == 2 or idx == 3 or idx == 4:
+                not_allowed = checkAllowed("color", given_attribute, query_attribute, obj_interest, complete_scene_struct)
+            elif idx == 5 or idx == 6 or idx == 7:
+                not_allowed = checkAllowed("material", given_attribute, query_attribute, obj_interest, complete_scene_struct)
+            elif idx == 8 or idx == 9 or idx == 10:
+                not_allowed = checkAllowed("shape", given_attribute, query_attribute, obj_interest, complete_scene_struct)
+      
+        if len(given_attribute) == 0 and "zero_hop" in fn:
+            not_allowed = True            
+          
+        if not(not_allowed):
+            allowed_counter[(fn,idx)] = num_questions_per_template_type[(fn, idx)]
+    return allowed_counter
+    
+      
 
-def generate_question(args,query_attribute, given_attribute, obj_interest, possible_sols, complete_scene_struct, complete_scene_path, scene_count):
+#-----------------------------------------------------------------------------------------
+def generate_question(args,templates, num_loaded_templates, query_attribute, given_attribute, obj_interest, possible_sols, complete_scene_struct, complete_scene_path, scene_count, num_questions_per_template_type, max_number_of_questions_per_template):
   
   with open(os.path.join(path_current, args.metadata_file), 'r') as f:
     metadata = json.load(f)
@@ -893,19 +925,19 @@ def generate_question(args,query_attribute, given_attribute, obj_interest, possi
 
   # Load templates from disk
   # Key is (filename, file_idx)
-  num_loaded_templates = 0
-  
-  templates = {}
-  for fn in os.listdir(os.path.join(path_current, args.template_dir)):
-    
-    if not fn.endswith('.json'): continue
-    with open(os.path.join(path_current, args.template_dir, fn), 'r') as f:
-      #base = os.path.splitext(fn)[0]
-      for i, template in enumerate(json.load(f)):
-        num_loaded_templates += 1
-        key = (fn, i)
-        templates[key] = template
-  print('Read %d templates from disk' % num_loaded_templates)
+#  num_loaded_templates = 0
+#  
+#  templates = {}
+#  for fn in os.listdir(os.path.join(path_current, args.template_dir)):
+#    
+#    if not fn.endswith('.json'): continue
+#    with open(os.path.join(path_current, args.template_dir, fn), 'r') as f:
+#      #base = os.path.splitext(fn)[0]
+#      for i, template in enumerate(json.load(f)):
+#        num_loaded_templates += 1
+#        key = (fn, i)
+#        templates[key] = template
+#  print('Read %d templates from disk' % num_loaded_templates)
 
   def reset_counts():
     # Maps a template (filename, index) to the number of questions we have
@@ -963,36 +995,17 @@ def generate_question(args,query_attribute, given_attribute, obj_interest, possi
     templates_items = list(templates.items())
     templates_items = sorted(templates_items,
                         key=lambda x: template_counts[x[0][:2]])
-    #num_instantiated = 0
-    for (fn, idx), template in templates_items:
-      answer_counts = template_answer_counts[(fn, idx)]
-      prop = ""
-      for key in answer_counts:
-          prop = findQueryAttribute(key)
-          break
-      if (prop!=query_attribute):
-          continue
-      if "same_relate" in fn:
-          not_allowed = False
-          if idx == 0 or idx == 1:
-              not_allowed = checkAllowed("size", given_attribute, query_attribute, obj_interest, complete_scene_struct)
-          elif idx == 2 or idx == 3 or idx == 4:
-              not_allowed = checkAllowed("color", given_attribute, query_attribute, obj_interest, complete_scene_struct)
-          elif idx == 5 or idx == 6 or idx == 7:
-              not_allowed = checkAllowed("material", given_attribute, query_attribute, obj_interest, complete_scene_struct)
-          elif idx == 8 or idx == 9 or idx == 10:
-              not_allowed = checkAllowed("shape", given_attribute, query_attribute, obj_interest, complete_scene_struct)
-          if not_allowed:
-             continue
-      if len(given_attribute) == 0 and "zero_hop" in fn:
-          continue
-          
-            
-      if args.verbose:
+    
+        
+    allowed_counter = get_allowed_templates(templates_items, num_questions_per_template_type, max_number_of_questions_per_template, template_answer_counts, given_attribute, query_attribute, obj_interest, complete_scene_struct)
+    (fn, idx) = min(allowed_counter, key=allowed_counter.get) 
+    template = templates[(fn, idx)]         
+    num_questions_per_template_type[(fn, idx)] = num_questions_per_template_type[(fn, idx)] +1        
+    if args.verbose:
         print('trying template ', fn, idx)
-      if args.time_dfs and args.verbose:
+    if args.time_dfs and args.verbose:
         tic = time.time()
-      ts, qs, asp_query = instantiate_templates_dfs(
+    ts, qs, asp_query = instantiate_templates_dfs(
                       args,
                       complete_scene_struct,
                       query_attribute, 
@@ -1008,11 +1021,11 @@ def generate_question(args,query_attribute, given_attribute, obj_interest, possi
                       max_instances=args.instances_per_template,
                       verbose=False)
 
-      if args.time_dfs and args.verbose:
+    if args.time_dfs and args.verbose:
         toc = time.time()
         print('that took ', toc - tic)
-      image_index = int(os.path.splitext(scene_fn)[0].split('_')[-1])
-      question = {
+    image_index = int(os.path.splitext(scene_fn)[0].split('_')[-1])
+    question = {
           'split': scene_info['split'],
           'image_filename': scene_fn,
           'image_index': image_index,
@@ -1026,7 +1039,7 @@ def generate_question(args,query_attribute, given_attribute, obj_interest, possi
           'question_family_index': idx,
           'question_index': image_index
               }
-      return question
+    return question
 #      if len(ts) > 0:
 #        if args.verbose:
 #          print('got one!')

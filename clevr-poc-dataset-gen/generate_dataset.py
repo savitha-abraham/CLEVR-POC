@@ -85,7 +85,7 @@ parser.add_argument('--min_objects', default=5, type=int,
     help="The minimum number of objects to place in each scene")
 parser.add_argument('--max_objects', default=10, type=int,
     help="The maximum number of objects to place in each scene")
-parser.add_argument('--min_dist', default=0.25, type=float,
+parser.add_argument('--min_dist', default=0.3, type=float,
     help="The minimum allowed distance between object centers")
 parser.add_argument('--margin', default=0.42, type=float,
     help="Along all cardinal directions (left, right, front, back), all " +
@@ -172,6 +172,9 @@ parser.add_argument('--temp_dir', default='render_temp',
     help="Directory containing temp JSON files required to control indexing of incomplete scenes")
 
 # Control which and how many images to process
+parser.add_argument('--num_templates', default=28, type=int,
+    help="The number of question templates")
+
 parser.add_argument('--scene_start_idx', default=0, type=int,
     help="The image at which to start generating questions; this allows " +
          "question generation to be split across many workers")
