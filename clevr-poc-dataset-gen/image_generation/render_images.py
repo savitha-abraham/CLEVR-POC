@@ -242,7 +242,9 @@ def render_scene(args,
     args.use_gpu,
     args.render_num_samples,
     args.render_min_bounces, 
-    args.render_max_bounces)
+    args.render_max_bounces, 
+    None,
+    args.camera_jitter)
 
    
 
@@ -306,8 +308,8 @@ def render_scene(args,
     #scene_struct['objects_blender_info'] = objects_blender_info    
     
     blender_obj.render()
+    camera_location = blender_obj.get_camera_location()
 
-    
     blender_incomplete_obj = blender.Blender(incomplete_scene_image_path, 
       args.material_dir, 
       args.base_scene_blendfile, 
@@ -317,7 +319,9 @@ def render_scene(args,
       args.use_gpu,
       args.render_num_samples,
       args.render_min_bounces, 
-      args.render_max_bounces) 
+      args.render_max_bounces,
+      camera_location,
+      args.camera_jitter) 
     
     blender_incomplete_obj.get_plane_direction()
 

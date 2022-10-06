@@ -24,11 +24,11 @@ if INSIDE_BLENDER:
 
 
 class Blender():
-  def __init__(self, image_path, material_dir, base_scene_blendfile, width, height, render_tile_size, use_gpu, render_num_samples, render_min_bounces, render_max_bounces):
-    self.initialize(image_path, material_dir, base_scene_blendfile, width, height, render_tile_size, use_gpu, render_num_samples, render_min_bounces, render_max_bounces)
+  def __init__(self, image_path, material_dir, base_scene_blendfile, width, height, render_tile_size, use_gpu, render_num_samples, render_min_bounces, render_max_bounces, location, camera_jitter):
+    self.initialize(image_path, material_dir, base_scene_blendfile, width, height, render_tile_size, use_gpu, render_num_samples, render_min_bounces, render_max_bounces, location, camera_jitter)
 
 
-  def initialize(self, image_path, material_dir, base_scene_blendfile, width, height, render_tile_size, use_gpu, render_num_samples, render_min_bounces, render_max_bounces):
+  def initialize(self, image_path, material_dir, base_scene_blendfile, width, height, render_tile_size, use_gpu, render_num_samples, render_min_bounces, render_max_bounces, location, camera_jitter):
     # Load the main blendfile
     bpy.ops.wm.open_mainfile(filepath=base_scene_blendfile)
 
@@ -72,7 +72,25 @@ class Blender():
     # them in the scene structure
     self.camera = bpy.data.objects['Camera']
 
+    self.set_camera_location(location=location, camera_jitter=camera_jitter)
 
+
+  def get_camera_location(self):
+      return bpy.data.objects['Camera'].location
+  
+
+  def set_camera_location(self, camera_jitter, location):
+
+    if location is not None:
+      bpy.data.objects['Camera'].location = location
+    else:
+      # Add random jitter to camera position
+      if camera_jitter > 0:
+        for i in range(3):
+          bpy.data.objects['Camera'].location[i] += Blender.rand(camera_jitter)     
+
+  def rand(L):
+    return 2.0 * L * (random.random() - 0.5)
 
   def get_plane_direction(self):
     plane_normal = self.plane.data.vertices[0].normal
