@@ -879,8 +879,9 @@ def checkAllowed(prop, given_attribute, query_attribute, obj_interest, complete_
 #-----------------------------------------------------------------------------------------
 def get_allowed_templates(templates_items, num_questions_per_template_type, max_number_of_questions_per_template, template_answer_counts, given_attribute, query_attribute, obj_interest, complete_scene_struct):
     allowed_counter = {}
-    not_allowed = False
+    
     for (fn, idx), template in templates_items:
+        not_allowed = False
         answer_counts = template_answer_counts[(fn, idx)]
         prop = ""
         for key in answer_counts:
@@ -888,6 +889,7 @@ def get_allowed_templates(templates_items, num_questions_per_template_type, max_
             break
         if (prop!=query_attribute):
             not_allowed = True
+            continue
           
         if "same_relate" in fn:
           
@@ -899,9 +901,12 @@ def get_allowed_templates(templates_items, num_questions_per_template_type, max_
                 not_allowed = checkAllowed("material", given_attribute, query_attribute, obj_interest, complete_scene_struct)
             elif idx == 8 or idx == 9 or idx == 10:
                 not_allowed = checkAllowed("shape", given_attribute, query_attribute, obj_interest, complete_scene_struct)
-      
+            if not_allowed:
+                continue
+        
         if len(given_attribute) == 0 and "zero_hop" in fn:
-            not_allowed = True            
+            not_allowed = True    
+            continue        
           
         if not(not_allowed):
             allowed_counter[(fn,idx)] = num_questions_per_template_type[(fn, idx)]

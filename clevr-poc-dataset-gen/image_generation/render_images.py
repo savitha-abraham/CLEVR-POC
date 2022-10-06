@@ -86,6 +86,7 @@ def main(args):
   #if args.max_objects > 9:
   #  args.max_objects = 9
 
+
   num_image_per_constraint_type = [0 for ind in range(args.num_constraint_types)]
   max_number_of_images_per_constraint = math.floor(args.num_images/args.num_constraint_types)
   
