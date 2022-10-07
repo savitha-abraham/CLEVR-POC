@@ -105,8 +105,8 @@ parser.add_argument('--template_dir', default='CLEVR_ABDUCTIVE_templates',
 parser.add_argument('--render_batch_size', default=500, type=int,
     help="the batch size indicates how often to restrat rendering")
 
-parser.add_argument('--num_constraint_types', default=5, type=int,
-    help="The number of environments (constraint types) in each blender batch size of 250 instances")
+parser.add_argument('--num_constraint_types', default=100, type=int,
+    help="The number of environments (constraint types) in each blender batch size of instances")
 
 parser.add_argument('--constraint_template_path', default='../image_generation/ConstraintTemplates/constraint_templates.txt',
     help="File containing templates for constraints")

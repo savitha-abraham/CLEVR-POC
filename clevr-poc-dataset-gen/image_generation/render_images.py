@@ -1,6 +1,8 @@
 import math, sys, random, argparse, json, os, tempfile
 import collections 
 import copy
+import torch
+import gc
 
 from pathlib import Path
 path_root = Path(__file__).parents[1]
@@ -39,7 +41,11 @@ if INSIDE_BLENDER:
 
 def directory_management(main_dir):
   image_dir = os.path.join(main_dir, args.image_dir, args.split)
-  scene_dir = os.path.join(main_dir, args.scene_dir)
+  scene_dir = os.path.join(main_dir, args.scene_dir, args.split)
+
+  
+  
+
 
   
   if not os.path.isdir(image_dir):
@@ -47,6 +53,8 @@ def directory_management(main_dir):
 
   if not os.path.isdir(scene_dir):
     os.makedirs(scene_dir) 
+
+   
 
   num_digits = 6
 
@@ -69,6 +77,9 @@ def main(args):
   complete_scene_dir, complete_img_template, complete_scene_template = directory_management(args.complete_data_dir)
   incomplete_scene_dir, incomplete_img_template, incomplete_scene_template = directory_management(args.incomplete_data_dir)
 
+  question_dir = os.path.join(args.incomplete_data_dir, args.question_dir)
+  if not os.path.isdir(question_dir):
+    os.makedirs(question_dir) 
 
   environment_constraints_dir = os.path.join(args.incomplete_data_dir, args.environment_constraints_dir)
   if not os.path.isdir(environment_constraints_dir):
@@ -156,6 +167,7 @@ def main(args):
                 while(possible_sols == None and trials<100):
                     complete_scene_graph, incomplete_scene_graph, query_attribute, possible_sols, given_query, obj_rm, updated_env_ans = getSceneGraph(num_objects, constraint_type_index, env_answers, environment_constraints_dir, args)
                     env_answers = copy.deepcopy(updated_env_ans)
+                    print("Before cache clearing:", len(env_answers))
                     trials = trials+1
                     
                 if possible_sols is not None:
@@ -189,13 +201,18 @@ def main(args):
 
 
         i = i + 1
+        if args.use_gpu == 1:
+          torch.cuda.empty_cache()
+          gc.collect()
+          print("After cache clearing:", len(env_answers))
+          print("\n")
         if i == args.start_idx + args.render_batch_size:  #to avoid GPU CUDA overflow!
           break
 
-  question_dir = os.path.join(args.incomplete_data_dir, args.question_dir)
-  if not os.path.isdir(question_dir):
-    os.makedirs(question_dir)
 
+
+
+  
   questions_file = os.path.join(question_dir, args.split + '.json')
 
 
