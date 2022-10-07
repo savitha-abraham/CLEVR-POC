@@ -1,7 +1,6 @@
 import math, sys, random, argparse, json, os, tempfile
 import collections 
 import copy
-import torch
 import gc
 
 from pathlib import Path
@@ -16,6 +15,7 @@ from image_generation import scene_info, blender
 from generate_dataset import parser
 from generate_environment import generateEnvironment, getSceneGraph
 from question_generation.generate_questions import generate_question
+
 
 
 INSIDE_BLENDER = True
@@ -202,7 +202,6 @@ def main(args):
 
         i = i + 1
         if args.use_gpu == 1:
-          torch.cuda.empty_cache()
           gc.collect()
           print("After cache clearing:", len(env_answers))
           print("\n")
