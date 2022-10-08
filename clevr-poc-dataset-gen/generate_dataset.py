@@ -105,7 +105,7 @@ parser.add_argument('--template_dir', default='CLEVR_ABDUCTIVE_templates',
 parser.add_argument('--render_batch_size', default=500, type=int,
     help="the batch size indicates how often to restrat rendering")
 
-parser.add_argument('--num_constraint_types', default=100, type=int,
+parser.add_argument('--num_constraint_types', default=200, type=int,
     help="The number of environments (constraint types) in each blender batch size of instances")
 
 parser.add_argument('--constraint_template_path', default='../image_generation/ConstraintTemplates/constraint_templates.txt',
@@ -206,6 +206,10 @@ parser.add_argument('--profile', action='store_true',
     help="If given then run inside cProfile")
 # args = parser.parse_args()
 
+
+parser.add_argument('--phase_constraint', default=1, type=int,
+    help="Indicating whether we are in constraint generation phase or data generation phase")
+# args = parser.parse_args()
 
 
 if __name__ == '__main__':

@@ -8,7 +8,7 @@ Created on Tue Sep 20 09:14:53 2022
 
 import random
 import copy, os
-import sys
+import sys, math
 
 from pathlib import Path
 path_root = Path(__file__).parents[1]
@@ -259,12 +259,13 @@ def generateEnvironment(args, environment_constraints_dir, num_objects, env_id):
         line = line.strip()       
         templates_list.append(line)
     templates, negation, across, within  = createTemplateInstance(templates_list)
+    file1.close()
     file1 = open(args.general_constraints_path, 'r')
     Lines = file1.readlines()
     background = ""
     for line in Lines:
         background = background+line
-
+    file1.close()
     background = background+"\n"+"object(0.."+str(num_objects)+")."+"\n"    
     satisfiable = False
     while(not(satisfiable)):
@@ -398,6 +399,7 @@ def createQuery_Incomplete(asp_file, preds, obj_rm, environment_constraints_dir,
          if "#" in line:
              continue
          complete = complete+line
+     file2.close()
      #Add details about current scene graph (except about obj_rm) in preds
      incomplete_details = []
      for pred in preds:
@@ -432,10 +434,16 @@ def createQuery_Incomplete(asp_file, preds, obj_rm, environment_constraints_dir,
         
 def getSceneGraph(num_objects, constraint_type_index, env_answers, environment_constraints_dir, args):
     MAX_NUMBER_OF_ANSWERS = 1000000
+    asp_file = environment_constraints_dir + str(constraint_type_index)+".lp"
+
+    print('constraint_type_index:', constraint_type_index)
     if constraint_type_index in env_answers:
         answers = env_answers[constraint_type_index]
+        print('** 8')
+
     else:
-        asp_file = environment_constraints_dir + str(constraint_type_index)+".lp"
+        print('** 9')
+        #asp_file = environment_constraints_dir + str(constraint_type_index)+".lp"
         ASP_FILE_PATH = os.path.join(asp_file)
         #ASP_FILE_PATH = os.path.join(args.environment_constraints_dir, str(constraint_type_index)+".lp")
         asp_command = 'clingo ' + str(MAX_NUMBER_OF_ANSWERS) + ' ' + ASP_FILE_PATH
@@ -446,28 +454,39 @@ def getSceneGraph(num_objects, constraint_type_index, env_answers, environment_c
         answers = output.split('Answer:')
         answers = answers[1:]
         random.shuffle(answers)
-        number_answers  = min(len(answers), MAX_NUMBER_OF_ANSWERS)
-        number_sample = int(10.0/100*(number_answers))
-        env_answers[constraint_type_index] = random.sample(answers, number_sample)
-    
+        
+        if len(answers) <=  int(math.ceil(10.0/100*(MAX_NUMBER_OF_ANSWERS))):
+            number_sample = len(answers)
+        else:
+            number_sample = int(math.ceil(10.0/100*(MAX_NUMBER_OF_ANSWERS)))
+
+        answers = random.sample(answers, number_sample)
+        #input(len(answers))
     query_attr = "" 
     possible_sols = [] 
-    given_query = ""
+    given_query = []
     updated_answers = []
     objects =list(range(num_objects))
+    #print(objects, num_objects)
+    #input("EMPTY!!")
+
     for answer_index, answer in enumerate(answers):
+            print("Answer:::", answer_index)
             preds = answer.split('\n')[1].split(' ')
             obj_rm = random.choice(objects)
+            #print(asp_file)
             query_attr, possible_sols, given_query = createQuery_Incomplete(asp_file, preds, obj_rm, environment_constraints_dir, args)
             if len(possible_sols)==0:
+                print('** 10')
                 continue
             else:
+                print('** 11')
                 updated_answers = answers[answer_index+1:]
-                env_answers[constraint_type_index] = updated_answers
+                #env_answers[constraint_type_index] = updated_answers
                 complete, incomplete = getObjects(preds, obj_rm, given_query)
                 #print("Possible sols:", possible_sols)
                 return complete, incomplete, query_attr, possible_sols, given_query, obj_rm, updated_answers
 
-
+    return complete, incomplete, query_attr, None, given_query, obj_rm, None
 
     

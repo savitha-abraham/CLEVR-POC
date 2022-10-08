@@ -2,6 +2,7 @@ import math, sys, random, argparse, json, os, tempfile
 import collections 
 import copy
 import gc
+import pickle
 
 from pathlib import Path
 path_root = Path(__file__).parents[1]
@@ -44,10 +45,6 @@ def directory_management(main_dir):
   scene_dir = os.path.join(main_dir, args.scene_dir, args.split)
 
   
-  
-
-
-  
   if not os.path.isdir(image_dir):
     os.makedirs(image_dir) 
 
@@ -81,6 +78,14 @@ def main(args):
   if not os.path.isdir(question_dir):
     os.makedirs(question_dir) 
 
+  num_digits = 6
+  prefix = '%s_' % (args.filename_prefix)
+  question_temp = '%s%%0%dd.png' % (prefix, num_digits)
+  question_template = os.path.join(question_dir, question_temp)
+
+
+
+
   environment_constraints_dir = os.path.join(args.incomplete_data_dir, args.environment_constraints_dir)
   if not os.path.isdir(environment_constraints_dir):
     os.makedirs(environment_constraints_dir)     
@@ -98,34 +103,73 @@ def main(args):
   #  args.max_objects = 9
 
 
-  num_image_per_constraint_type = [0 for ind in range(args.num_constraint_types)]
-  max_number_of_images_per_constraint = math.floor(args.num_images/args.num_constraint_types)
-  
-  
+  if args.phase_constraint == 1:
+    num_images = args.num_constraint_types
+    possible_num_objects = [i for i in range(args.min_objects, args.max_objects+1)]
 
-  
-  #Loading question templates
-  templates = {}
-  num_loaded_templates = 0
-  for fn in os.listdir(os.path.join(str(path_root), "question_generation", args.template_dir)):
-      if not fn.endswith('.json'): continue
-      with open(os.path.join(str(path_root), "question_generation", args.template_dir, fn), 'r') as f:
+    objNum_env = {i:[] for i in range(args.min_objects,args.max_objects+1)}
+    env_answers = {}
+    num_env_per_numObj = [0 for i in range(args.min_objects, args.max_objects+1)]    
+    max_number_of_env_per_numObj = args.num_constraint_types/len(num_env_per_numObj)
+    env_id = 0
+    
+  else:
+    num_images = args.num_images
+    #Load env details - give path!!
+    env_ans_file = open(os.path.join(environment_constraints_dir,"env_answers.obj"),"r")
+    env_answers = pickle.load(env_ans_file)
+    env_ans_file.close()
+    objNum_env_file = open(os.path.join(environment_constraints_dir,"objNum_env.obj"),"r")
+    objNum_env = pickle.load(objNum_env_file)
+    objNum_env_file.close()
+    max_number_of_images_per_constraint = math.floor(num_images/args.num_constraint_types)
+    
+
+    if args.start_idx == 0:
+        possible_num_objects = [i for i in range(args.min_objects, args.max_objects+1)]
+        num_image_per_constraint_type = [0 for ind in range(args.num_constraint_types)]
+ 
+    else: 
+        num_image_per_constraint_type_file = open(os.path.join(environment_constraints_dir,"num_image_per_constraint_type.pickle"),'r')
+        num_image_per_constraint_type = pickle.load(num_image_per_constraint_type_file)
+        num_image_per_constraint_type_file.close()
+        possible_num_objects_file = open(os.path.join(environment_constraints_dir,"possible_num_objects_type.pickle"),'r')
+        possible_num_objects = pickle.load(possible_num_objects_file)
+        possible_num_objects_file.close()
+
+
+      #Loading question templates
+    templates = {}
+    num_loaded_templates = 0
+    for fn in os.listdir(os.path.join(str(path_root), "question_generation", args.template_dir)):
+        if not fn.endswith('.json'): continue
+        with open(os.path.join(str(path_root), "question_generation", args.template_dir, fn), 'r') as f:
           for i, template in enumerate(json.load(f)):
               num_loaded_templates = num_loaded_templates + 1
               key = (fn, i)
               templates[key] = template
           print('Read %d templates from disk' % num_loaded_templates)
   
-  num_questions_per_template_type = {}
-  for key in templates:
-      num_questions_per_template_type[key] = 0
-  max_number_of_questions_per_template = math.floor(args.num_images/args.num_templates)
+    num_questions_per_template_type = {}
+    for key in templates:
+        num_questions_per_template_type[key] = 0
+
+    max_number_of_questions_per_template = math.floor(args.num_images/args.num_templates) 
+    questions = []
+
+
+
   
-  env_id = 0
-  objNum_env = {i:[] for i in range(args.min_objects,args.max_objects+1)}
-  env_answers = {}
-  possible_num_objects = [i for i in range(args.min_objects, args.max_objects)]
-  questions = []
+  
+  
+
+  
+
+  
+  
+  
+
+  
   i = args.start_idx
   while i < args.num_images:
   #for i in range(args.num_images):
@@ -133,11 +177,11 @@ def main(args):
         complete_scene_graph = {} 
         incomplete_scene_graph = {} 
         query_attribute = "" 
-        given_query = "" 
+        given_query = [] 
         complete_scene = None
-        env_creation_flag = True
+        #env_creation_flag = True
         while(possible_sols == None or complete_scene == None):
-                #print('HEREEEEE')
+
                 complete_scene_image_path = complete_img_template % i
                 incomplete_scene_image_path = incomplete_img_template % i
             
@@ -145,16 +189,27 @@ def main(args):
                 complete_scene_path = complete_scene_template % i
                 incomplete_scene_path = incomplete_scene_template % i
                 
-                num_objects = random.choice(possible_num_objects)
+                question_path = question_template % i
                 
-                if (env_id < args.num_constraint_types):
+                #if (env_id < args.num_constraint_types):
+                if args.phase_constraint == 1:
+                    
+                    print('** 1')
+                    index_num_obj = balance_env_numObj(num_env_per_numObj, max_number_of_env_per_numObj)
+                    num_objects = possible_num_objects[index_num_obj]
                     generateEnvironment(args, environment_constraints_dir, num_objects, env_id)
-                    env_creation_flag = True
+                    #env_creation_flag = True
                     constraint_type_index = env_id
+                    
+                    
+                    
                 else:
+                    print('** 2')
+                    
+                    num_objects = random.choice(possible_num_objects)
                     list_env = objNum_env[num_objects]
                     constraint_type_index = balance_constraint_type(list_env, num_image_per_constraint_type, max_number_of_images_per_constraint)
-                    env_creation_flag = False
+                    #env_creation_flag = False
                     if constraint_type_index == None:
                       possible_num_objects.remove(num_objects)
                       continue
@@ -165,12 +220,13 @@ def main(args):
                 #updated_env_ans 
                 trials = 0
                 while(possible_sols == None and trials<100):
-                    complete_scene_graph, incomplete_scene_graph, query_attribute, possible_sols, given_query, obj_rm, updated_env_ans = getSceneGraph(num_objects, constraint_type_index, env_answers, environment_constraints_dir, args)
-                    env_answers = copy.deepcopy(updated_env_ans)
-                    print("Before cache clearing:", len(env_answers))
+                    complete_scene_graph, incomplete_scene_graph, query_attribute, possible_sols, given_query, obj_rm, updated_answers = getSceneGraph(num_objects, constraint_type_index, env_answers, environment_constraints_dir, args)
+                    
+                    
                     trials = trials+1
                     
                 if possible_sols is not None:
+                    print('** 3')
                     print("Scene graph for image ",i, " created!!")
                     complete_scene, incomplete_scene = render_scene(args,
                       complete_scene_graph=complete_scene_graph,
@@ -179,24 +235,43 @@ def main(args):
                       complete_scene_image_path=complete_scene_image_path,
                       incomplete_scene_image_path= incomplete_scene_image_path,
                       properties=properties,
-                      constraint_type_index=constraint_type_index
+                      constraint_type_index=constraint_type_index,
+                      phase = args.phase_constraint
                     )
 
                     if complete_scene is not None:
-                        with open(complete_scene_path, 'w') as f:
-                            json.dump(complete_scene, f)  
-                        with open(incomplete_scene_path, 'w') as f:
-                            json.dump(incomplete_scene, f)
-                        if env_creation_flag:
+                        
+                        print('** 4')
+                        if args.phase_constraint == 1:
+                            print('** 5')
+                            env_answers[constraint_type_index] = updated_answers
                             objNum_env[num_objects].append(env_id) 
-                            num_image_per_constraint_type[env_id]= num_image_per_constraint_type[env_id] +1
                             env_id = env_id +1
-                        #Generate question for the scene...
-                        question = generate_question(args,templates, num_loaded_templates, query_attribute, given_query, obj_rm, possible_sols, complete_scene, complete_scene_path, i, num_questions_per_template_type, max_number_of_questions_per_template )
-                        questions.append(question)
-                        #print(question)
+
+                            
+
+                        else:
+                            print('** 6')
+                            with open(complete_scene_path, 'w') as f:
+                                json.dump(complete_scene, f)  
+                            with open(incomplete_scene_path, 'w') as f:
+                                json.dump(incomplete_scene, f)                          
+                            
+                            
+                            num_image_per_constraint_type[constraint_type_index]= num_image_per_constraint_type[constraint_type_index] +1
+                            
+
+                            #Generate question for the scene...
+                            question = generate_question(args,templates, num_loaded_templates, query_attribute, given_query, obj_rm, possible_sols, complete_scene, complete_scene_path, i, num_questions_per_template_type, max_number_of_questions_per_template )
+
+                            with open(question_path, 'w') as f:
+                                json.dump(question, f)                                        
+                            #questions.append(question)
+                            #print(question)
                     else:
+                        print('** 7')
                         possible_sols = None
+                        
                         
 
 
@@ -206,21 +281,36 @@ def main(args):
           print("After cache clearing:", len(env_answers))
           print("\n")
         if i == args.start_idx + args.render_batch_size:  #to avoid GPU CUDA overflow!
+          if args.phase_constraint!=1:
+            #Pickle
+
+              num_image_per_constraint_type_file = open("num_image_per_constraint_type.obj","wb")
+              pickle.dump(num_image_per_constraint_type,num_image_per_constraint_type_file)
+              num_image_per_constraint_type_file.close()
+
+              possible_num_objects_file = open("possible_num_objects.obj","wb")
+              pickle.dump(possible_num_objects, possible_num_objects_file)
+              possible_num_objects_file.close()
           break
 
 
 
 
-  
-  questions_file = os.path.join(question_dir, args.split + '.json')
+  if args.phase_constraint == 1:
+      #Pickle env details - give path!!
+      env_ans_file = open(os.path.join(environment_constraints_dir,"env_answers.obj"),"wb")
+      pickle.dump(env_answers,env_ans_file)
+      env_ans_file.close()
 
-
-  with open(questions_file, 'w') as f:
-    print('Writing output to %s' % questions_file)
-    json.dump({
-        #'info': scene_info,
-        'questions': questions,
-      }, f)
+      objNum_env_file = open(os.path.join(environment_constraints_dir,"objNum_env.obj"),"wb")
+      pickle.dump(objNum_env,objNum_env_file)
+      objNum_env_file.close()
+#----------------------------------------------------------------------------------------------------------------------
+def balance_env_numObj(num_env_per_numObj, max_number_of_env_per_numObj):
+  for i in num_env_per_numObj:
+     if num_env_per_numObj[i] < max_number_of_env_per_numObj:
+      return i
+  return None  
 
 
 #-----------------------------------------------------------------------------------------------------------------------
@@ -238,7 +328,6 @@ def get_already_rendered_scenes(split, scene_dir):
 
 
 ##---------------------------------------------------------------------------------------------------------------------------
-
 def render_scene(args,
       complete_scene_graph=None,
       incomplete_scene_graph=None,
@@ -246,7 +335,8 @@ def render_scene(args,
       complete_scene_image_path='render.png',
       incomplete_scene_image_path='render.png',
       properties=None,
-      constraint_type_index=None
+      constraint_type_index=None,
+      phase=None
 
   ):
 
@@ -259,9 +349,7 @@ def render_scene(args,
     args.use_gpu,
     args.render_num_samples,
     args.render_min_bounces, 
-    args.render_max_bounces, 
-    None,
-    args.camera_jitter)
+    args.render_max_bounces)
 
    
 
@@ -324,8 +412,9 @@ def render_scene(args,
     complete_scene_struct['similar'] = scene_info.compute_all_similar(complete_scene_struct)
     #scene_struct['objects_blender_info'] = objects_blender_info    
     
-    blender_obj.render()
-    camera_location = blender_obj.get_camera_location()
+    if args.phase_constraint != 1:
+      blender_obj.render()
+
 
     blender_incomplete_obj = blender.Blender(incomplete_scene_image_path, 
       args.material_dir, 
@@ -336,16 +425,15 @@ def render_scene(args,
       args.use_gpu,
       args.render_num_samples,
       args.render_min_bounces, 
-      args.render_max_bounces,
-      camera_location,
-      args.camera_jitter) 
+      args.render_max_bounces) 
     
     blender_incomplete_obj.get_plane_direction()
 
     incomplete_objects, incomplete_blender_info = get_incomplete_scene_info(complete_scene_graph, incomplete_scene_graph, objects, objects_blender_info)
     incomplete_objects, incomplete_blender_objects = get_blender_objects(incomplete_objects, incomplete_blender_info, blender_incomplete_obj)    
 
-    blender_incomplete_obj.render()
+    if args.phase_constraint != 1:
+      blender_incomplete_obj.render()
 
 
     incomplete_scene_struct = copy.deepcopy(complete_scene_struct)
@@ -430,16 +518,6 @@ def balance_constraint_type(constraints_types_list, num_image_per_constraint_typ
   
 
 
-# to make sure constraint types are equally distributed among images
-def select_constraint_type(constraints_types_list, num_image_per_constraint_type, max_number_of_constraints_per_image):
-  a = [i for i in range(len(num_image_per_constraint_type)) if num_image_per_constraint_type[i] < max_number_of_constraints_per_image]
-
-  if len(a) > 0:
-    constraint_type_index = random.choice(a)
-  else:
-    constraint_type_index = None
-
-  return constraint_type_index
 
 
 ##---------------------------------------------------------------------------------------------------------------------------
@@ -582,4 +660,4 @@ if __name__ == '__main__':
     print('python render_images.py --help')  
 
     ## blender --background -noaudio --python render_images.py -- --num_images 1
-    ## blender --background -noaudio --python render_images.py -- --num_images 3 --use_gpu 0 --start_idx 0
+    ## blender --background -noaudio --python render_images.py -- --num_images 200 --use_gpu 1 --start_idx 0
