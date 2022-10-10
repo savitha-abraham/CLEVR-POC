@@ -126,13 +126,18 @@ def main(args):
     
 
     if args.start_idx == 0:
-        env_ans_file = open(os.path.join(environment_constraints_dir,"env_answers.obj"),"rb")
-        env_answers = pickle.load(env_ans_file)
-        env_ans_file.close()
-        possible_num_objects = [i for i in range(args.min_objects, args.max_objects+1)]
-        num_image_per_constraint_type = [0 for ind in range(args.num_constraint_types)]
-        
- 
+    	possible_num_objects = [i for i in range(args.min_objects, args.max_objects+1)]
+    	num_image_per_constraint_type = [0 for ind in range(args.num_constraint_types)]
+    	
+    	if args.split == 'training':
+	        env_ans_file = open(os.path.join(environment_constraints_dir,"env_answers.obj"),"rb")
+        	env_answers = pickle.load(env_ans_file)
+        	env_ans_file.close()
+	else:
+        	env_ans_file = open(os.path.join(environment_constraints_dir,"env_answers_updated.obj"),"rb")
+	        env_answers = pickle.load(env_ans_file)
+        	env_ans_file.close()
+        	
     else: 
         env_ans_file = open(os.path.join(environment_constraints_dir,"env_answers_updated.obj"),"rb")
         env_answers = pickle.load(env_ans_file)
