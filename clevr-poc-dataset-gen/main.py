@@ -9,9 +9,8 @@ def remove_tem_file(file_name):
         print("The file does not exist!")
 
 
-
-num_constraint_types = 2
-training_size = 400 #900000
+num_constraint_types = 200
+training_size = 2000 #900000
 testing_size = int(math.ceil(training_size/10))
 validation_size = int(math.ceil(training_size/10))
 num_constraints_per_round = 2
@@ -20,10 +19,9 @@ use_gpu=1
 render_batch_size=40
 start_idx=0
 
-#dataset_names=['training', 'testing', 'validation']
-dataset_names=['testing', 'validation']
-#dataset_sizes=[training_size, testing_size, validation_size]
-dataset_sizes=[5, 5]
+dataset_names=['training', 'testing', 'validation']
+dataset_sizes=[training_size, testing_size, validation_size]
+
 
 
 
@@ -40,8 +38,9 @@ for i, dataset in enumerate(dataset_names):
         if start_idx >= num_images:
             break
         print('complete: start_index_', start_idx)
-    
-path = 'environment_constraints'
+
+
+path = '../environment_constraints'
 remove_tem_file(os.path.join(path, 'env_answers_updated.obj'))
 remove_tem_file(os.path.join(path, 'num_image_per_constraint_type.pickle'))
 remove_tem_file(os.path.join(path, 'possible_num_objects.pickle'))

@@ -74,7 +74,7 @@ def main(args):
   complete_scene_dir, complete_img_template, complete_scene_template = directory_management(args.complete_data_dir)
   incomplete_scene_dir, incomplete_img_template, incomplete_scene_template = directory_management(args.incomplete_data_dir)
 
-  question_dir = os.path.join(args.incomplete_data_dir, args.question_dir)
+  question_dir = os.path.join(args.incomplete_data_dir, args.question_dir, args.split)
   if not os.path.isdir(question_dir):
     os.makedirs(question_dir) 
 
@@ -179,7 +179,9 @@ def main(args):
         given_query = [] 
         complete_scene = None
         #env_creation_flag = True
+        end_of_process = False
         while(possible_sols == None or complete_scene == None):
+                
 
                 complete_scene_image_path = complete_img_template % i
                 incomplete_scene_image_path = incomplete_img_template % i
@@ -204,9 +206,12 @@ def main(args):
                     
                 else:
                     print('** 2')
-                    
+                    if len(possible_num_objects)== 0:
+                      end_of_process = True
+                      break
                     num_objects = random.choice(possible_num_objects)
                     list_env = objNum_env[num_objects]
+                  
                     constraint_type_index = balance_constraint_type(list_env, num_image_per_constraint_type, max_number_of_images_per_constraint)
                     #env_creation_flag = False
                     if constraint_type_index == None:
@@ -270,13 +275,19 @@ def main(args):
                         print('** 7')
                         env_answers[constraint_type_index] = updated_answers
                         possible_sols = None
+                
+                else:
+                    num_image_per_constraint_type[constraint_type_index] = max_number_of_images_per_constraint
+                    env_answers[constraint_type_index] = updated_answers
+                
+        if not end_of_process:
+          i = i + 1
 
-        i = i + 1
         if args.use_gpu == 1:
           gc.collect()
           print("After cache clearing:", len(env_answers))
           print("\n")
-        if i == args.start_idx + args.render_batch_size:  #to avoid GPU CUDA overflow!
+        if (i == args.start_idx + args.render_batch_size)  or end_of_process:  #to avoid GPU CUDA overflow!
           if args.phase_constraint != 1:
             #Pickle
 
