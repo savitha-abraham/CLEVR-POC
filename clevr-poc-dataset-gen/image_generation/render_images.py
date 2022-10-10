@@ -141,7 +141,7 @@ def main(args):
         num_image_per_constraint_type_file = open(os.path.join(environment_constraints_dir,"num_image_per_constraint_type.pickle"),'rb')
         num_image_per_constraint_type = pickle.load(num_image_per_constraint_type_file)
         num_image_per_constraint_type_file.close()
-        possible_num_objects_file = open(os.path.join(environment_constraints_dir,"possible_num_objects_type.pickle"),'rb')
+        possible_num_objects_file = open(os.path.join(environment_constraints_dir,"possible_num_objects.pickle"),'rb')
         possible_num_objects = pickle.load(possible_num_objects_file)
         possible_num_objects_file.close()
 
@@ -277,11 +277,11 @@ def main(args):
           if args.phase_constraint!=1:
             #Pickle
 
-              num_image_per_constraint_type_file = open(os.path.join(environment_constraints_dir, "num_image_per_constraint_type.obj"),"wb")
+              num_image_per_constraint_type_file = open(os.path.join(environment_constraints_dir, "num_image_per_constraint_type.pickle"),"wb")
               pickle.dump(num_image_per_constraint_type,num_image_per_constraint_type_file)
               num_image_per_constraint_type_file.close()
 
-              possible_num_objects_file = open(os.path.join(environment_constraints_dir, "possible_num_objects.obj"),"wb")
+              possible_num_objects_file = open(os.path.join(environment_constraints_dir, "possible_num_objects.pickle"),"wb")
               pickle.dump(possible_num_objects, possible_num_objects_file)
               possible_num_objects_file.close()
 
