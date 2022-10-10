@@ -86,7 +86,7 @@ def main(args):
 
 
 
-  environment_constraints_dir = os.path.join(args.incomplete_data_dir, args.environment_constraints_dir)
+  environment_constraints_dir = os.path.join(args.environment_constraints_dir)
   if not os.path.isdir(environment_constraints_dir):
     os.makedirs(environment_constraints_dir)     
 
@@ -277,15 +277,15 @@ def main(args):
           if args.phase_constraint!=1:
             #Pickle
 
-              num_image_per_constraint_type_file = open("num_image_per_constraint_type.obj","wb")
+              num_image_per_constraint_type_file = open(os.path.join(environment_constraints_dir, "num_image_per_constraint_type.obj"),"wb")
               pickle.dump(num_image_per_constraint_type,num_image_per_constraint_type_file)
               num_image_per_constraint_type_file.close()
 
-              possible_num_objects_file = open("possible_num_objects.obj","wb")
+              possible_num_objects_file = open(os.path.join(environment_constraints_dir, "possible_num_objects.obj"),"wb")
               pickle.dump(possible_num_objects, possible_num_objects_file)
               possible_num_objects_file.close()
 
-              env_answers_updated_file = open("env_answers_updated.obj","wb")
+              env_answers_updated_file = open(os.path.join(environment_constraints_dir, "env_answers_updated.obj"),"wb")
               pickle.dump(env_answers, env_answers_updated_file)
               env_answers_updated_file.close()
           break

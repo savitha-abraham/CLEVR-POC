@@ -1,7 +1,17 @@
 import os, math
 ## sizes are w.r.t incomplete dataset i.e., number of incomplete scenes
-num_constraint_types = 2
-training_size = 6 #900000
+
+def remove_tem_file(file_name):
+	if os.path.exists(file_name):
+	    os.remove(file_name)
+	    print("The file has been deleted successfully")
+	else:
+	    print("The file does not exist!")
+
+
+
+num_constraint_types = 200
+training_size = 400 #900000
 testing_size = int(math.ceil(training_size/10))
 validation_size = int(math.ceil(training_size/10))
 num_constraints_per_round = 2
@@ -28,4 +38,12 @@ for i, dataset in enumerate(dataset_names):
             break
         print('complete: start_index_', start_idx)
     
+path = 'environment_constraints'
+remove_tem_file(os.path.join(path, 'env_answers_updated.obj'))
+remove_tem_file(os.path.join(path, 'num_image_per_constraint_type.pickle'))
+remove_tem_file(os.path.join(path, 'possible_num_objects_type.pickle'))
+
+
     
+    
+
