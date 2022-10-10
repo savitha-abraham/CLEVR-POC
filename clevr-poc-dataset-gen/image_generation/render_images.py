@@ -80,7 +80,7 @@ def main(args):
 
   num_digits = 6
   prefix = '%s_' % (args.filename_prefix)
-  question_temp = '%s%%0%dd.png' % (prefix, num_digits)
+  question_temp = '%s%%0%dd.json' % (prefix, num_digits)
   question_template = os.path.join(question_dir, question_temp)
 
 

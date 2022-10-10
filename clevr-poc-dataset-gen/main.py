@@ -6,7 +6,7 @@ testing_size = int(math.ceil(training_size/10))
 validation_size = int(math.ceil(training_size/10))
 num_constraints_per_round = 2
 
-use_gpu=0
+use_gpu=1
 render_batch_size=40
 start_idx=0
 
