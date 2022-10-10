@@ -2,11 +2,11 @@ import os, math
 ## sizes are w.r.t incomplete dataset i.e., number of incomplete scenes
 
 def remove_tem_file(file_name):
-	if os.path.exists(file_name):
-	    os.remove(file_name)
-	    print("The file has been deleted successfully")
-	else:
-	    print("The file does not exist!")
+    if os.path.exists(file_name):
+        os.remove(file_name)
+        print("The file has been deleted successfully")
+    else:
+        print("The file does not exist!")
 
 
 
