@@ -114,7 +114,7 @@ parser.add_argument('--constraint_template_path', default='../image_generation/C
 parser.add_argument('--general_constraints_path', default='../data/general_constraints.txt',
     help="File containing general constraints")
 
-parser.add_argument('--environment_constraints_dir', default='environment_constraints/',
+parser.add_argument('--environment_constraints_dir', default='../environment_constraints/',
     help="The directory where constraints about environments will be placed.")    
 
 # Rendering options
