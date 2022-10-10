@@ -114,14 +114,16 @@ def main(args):
     env_id = 0
     
   else:
+    print('Loading environments...')
     num_images = args.num_images
     #Load env details - give path!!
-    env_ans_file = open(os.path.join(environment_constraints_dir,"env_answers.obj"),"r")
+    env_ans_file = open(os.path.join(environment_constraints_dir,"env_answers.obj"),"rb")
     env_answers = pickle.load(env_ans_file)
     env_ans_file.close()
-    objNum_env_file = open(os.path.join(environment_constraints_dir,"objNum_env.obj"),"r")
+    objNum_env_file = open(os.path.join(environment_constraints_dir,"objNum_env.obj"),"rb")
     objNum_env = pickle.load(objNum_env_file)
     objNum_env_file.close()
+    print('Environments loaded!')
     max_number_of_images_per_constraint = math.floor(num_images/args.num_constraint_types)
     
 
@@ -130,10 +132,10 @@ def main(args):
         num_image_per_constraint_type = [0 for ind in range(args.num_constraint_types)]
  
     else: 
-        num_image_per_constraint_type_file = open(os.path.join(environment_constraints_dir,"num_image_per_constraint_type.pickle"),'r')
+        num_image_per_constraint_type_file = open(os.path.join(environment_constraints_dir,"num_image_per_constraint_type.pickle"),'rb')
         num_image_per_constraint_type = pickle.load(num_image_per_constraint_type_file)
         num_image_per_constraint_type_file.close()
-        possible_num_objects_file = open(os.path.join(environment_constraints_dir,"possible_num_objects_type.pickle"),'r')
+        possible_num_objects_file = open(os.path.join(environment_constraints_dir,"possible_num_objects_type.pickle"),'rb')
         possible_num_objects = pickle.load(possible_num_objects_file)
         possible_num_objects_file.close()
 
@@ -155,19 +157,7 @@ def main(args):
         num_questions_per_template_type[key] = 0
 
     max_number_of_questions_per_template = math.floor(args.num_images/args.num_templates) 
-    questions = []
-
-
-
-  
-  
-  
-
-  
-
-  
-  
-  
+      
 
   
   i = args.start_idx
@@ -270,10 +260,7 @@ def main(args):
                             #print(question)
                     else:
                         print('** 7')
-                        possible_sols = None
-                        
-                        
-
+                        possible_sols = Noneb
 
         i = i + 1
         if args.use_gpu == 1:
@@ -316,15 +303,6 @@ def balance_env_numObj(num_env_per_numObj, max_number_of_env_per_numObj):
 #-----------------------------------------------------------------------------------------------------------------------
 
 
-def get_already_rendered_scenes(split, scene_dir):
-  if os.path.exists(os.path.join(scene_dir, split + '.json')):
-    with open(os.path.join(scene_dir, split + '.json'), 'r') as f:
-      data = json.load(f)
-    scenes = data['scenes']
-  else:
-    scenes = []
-  
-  return scenes
 
 
 ##---------------------------------------------------------------------------------------------------------------------------
