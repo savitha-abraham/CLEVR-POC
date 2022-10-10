@@ -126,19 +126,17 @@ def main(args):
     
 
     if args.start_idx == 0:
-    	possible_num_objects = [i for i in range(args.min_objects, args.max_objects+1)]
-    	num_image_per_constraint_type = [0 for ind in range(args.num_constraint_types)]
-    	
-    	if args.split == 'training':
-	        env_ans_file = open(os.path.join(environment_constraints_dir,"env_answers.obj"),"rb")
-        	env_answers = pickle.load(env_ans_file)
-        	env_ans_file.close()
-	else:
-        	env_ans_file = open(os.path.join(environment_constraints_dir,"env_answers_updated.obj"),"rb")
-	        env_answers = pickle.load(env_ans_file)
-        	env_ans_file.close()
-        	
-    else: 
+      possible_num_objects = [i for i in range(args.min_objects, args.max_objects+1)]
+      num_image_per_constraint_type = [0 for ind in range(args.num_constraint_types)]
+      if args.split == 'training':
+          env_ans_file = open(os.path.join(environment_constraints_dir,"env_answers.obj"),"rb")
+          env_answers = pickle.load(env_ans_file)
+          env_ans_file.close()
+      else:
+          env_ans_file = open(os.path.join(environment_constraints_dir,"env_answers_updated.obj"),"rb")
+          env_answers = pickle.load(env_ans_file)
+          env_ans_file.close()
+    else:
         env_ans_file = open(os.path.join(environment_constraints_dir,"env_answers_updated.obj"),"rb")
         env_answers = pickle.load(env_ans_file)
         env_ans_file.close()
@@ -279,7 +277,7 @@ def main(args):
           print("After cache clearing:", len(env_answers))
           print("\n")
         if i == args.start_idx + args.render_batch_size:  #to avoid GPU CUDA overflow!
-          if args.phase_constraint!=1:
+          if args.phase_constraint != 1:
             #Pickle
 
               num_image_per_constraint_type_file = open(os.path.join(environment_constraints_dir, "num_image_per_constraint_type.pickle"),"wb")

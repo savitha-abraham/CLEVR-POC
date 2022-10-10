@@ -44,7 +44,7 @@ for i, dataset in enumerate(dataset_names):
 path = 'environment_constraints'
 remove_tem_file(os.path.join(path, 'env_answers_updated.obj'))
 remove_tem_file(os.path.join(path, 'num_image_per_constraint_type.pickle'))
-remove_tem_file(os.path.join(path, 'possible_num_objects_type.pickle'))
+remove_tem_file(os.path.join(path, 'possible_num_objects.pickle'))
 
 
     
