@@ -117,9 +117,7 @@ def main(args):
     print('Loading environments...')
     num_images = args.num_images
     #Load env details - give path!!
-    env_ans_file = open(os.path.join(environment_constraints_dir,"env_answers.obj"),"rb")
-    env_answers = pickle.load(env_ans_file)
-    env_ans_file.close()
+    
     objNum_env_file = open(os.path.join(environment_constraints_dir,"objNum_env.obj"),"rb")
     objNum_env = pickle.load(objNum_env_file)
     objNum_env_file.close()
@@ -128,10 +126,18 @@ def main(args):
     
 
     if args.start_idx == 0:
+        env_ans_file = open(os.path.join(environment_constraints_dir,"env_answers.obj"),"rb")
+        env_answers = pickle.load(env_ans_file)
+        env_ans_file.close()
         possible_num_objects = [i for i in range(args.min_objects, args.max_objects+1)]
         num_image_per_constraint_type = [0 for ind in range(args.num_constraint_types)]
+        
  
     else: 
+        env_ans_file = open(os.path.join(environment_constraints_dir,"env_answers_updated.obj"),"rb")
+        env_answers = pickle.load(env_ans_file)
+        env_ans_file.close()
+        
         num_image_per_constraint_type_file = open(os.path.join(environment_constraints_dir,"num_image_per_constraint_type.pickle"),'rb')
         num_image_per_constraint_type = pickle.load(num_image_per_constraint_type_file)
         num_image_per_constraint_type_file.close()
@@ -247,10 +253,9 @@ def main(args):
                             with open(incomplete_scene_path, 'w') as f:
                                 json.dump(incomplete_scene, f)                          
                             
-                            
                             num_image_per_constraint_type[constraint_type_index]= num_image_per_constraint_type[constraint_type_index] +1
                             
-
+                            env_answers[constraint_type_index] = updated_answers
                             #Generate question for the scene...
                             question = generate_question(args,templates, num_loaded_templates, query_attribute, given_query, obj_rm, possible_sols, complete_scene, complete_scene_path, i, num_questions_per_template_type, max_number_of_questions_per_template )
 
@@ -260,7 +265,8 @@ def main(args):
                             #print(question)
                     else:
                         print('** 7')
-                        possible_sols = Noneb
+                        env_answers[constraint_type_index] = updated_answers
+                        possible_sols = None
 
         i = i + 1
         if args.use_gpu == 1:
@@ -278,6 +284,10 @@ def main(args):
               possible_num_objects_file = open("possible_num_objects.obj","wb")
               pickle.dump(possible_num_objects, possible_num_objects_file)
               possible_num_objects_file.close()
+
+              env_answers_updated_file = open("env_answers_updated.obj","wb")
+              pickle.dump(env_answers, env_answers_updated_file)
+              env_answers_updated_file.close()
           break
 
 
