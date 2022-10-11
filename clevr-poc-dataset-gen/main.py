@@ -1,4 +1,4 @@
-import os, math
+import os, math, gc
 ## sizes are w.r.t incomplete dataset i.e., number of incomplete scenes
 
 def remove_tem_file(file_name):
@@ -13,7 +13,6 @@ num_constraint_types = 200
 training_size = 2000 #900000
 testing_size = int(math.ceil(training_size/10))
 validation_size = int(math.ceil(training_size/10))
-num_constraints_per_round = 2
 
 use_gpu=1
 render_batch_size=40
@@ -33,15 +32,19 @@ for i, dataset in enumerate(dataset_names):
     print(num_images)
     start_idx=0
     while(True):
+        gc.collect()
         os.system('blender --background -noaudio --python render_images.py -- --num_images ' + str(num_images) + ' --split ' + dataset_names[i] + ' --use_gpu ' + str(use_gpu) + ' --render_batch_size ' + str(render_batch_size) + ' --start_idx ' + str(start_idx) + ' --num_constraint_types ' + str(num_constraint_types) + ' --phase_constraint 0')
+        
         start_idx += render_batch_size
         if start_idx >= num_images:
             break
         print('complete: start_index_', start_idx)
+    	
 
-
+	
 path = '../environment_constraints'
-remove_tem_file(os.path.join(path, 'env_answers_updated.obj'))
+#remove_tem_file(os.path.join(path, 'env_answers_updated.obj'))
+remove_tem_file(os.path.join(path, 'env_answers.obj'))
 remove_tem_file(os.path.join(path, 'num_image_per_constraint_type.pickle'))
 remove_tem_file(os.path.join(path, 'possible_num_objects.pickle'))
 

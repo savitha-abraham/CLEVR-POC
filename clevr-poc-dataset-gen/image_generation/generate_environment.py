@@ -432,7 +432,7 @@ def createQuery_Incomplete(asp_file, preds, obj_rm, environment_constraints_dir,
 #2. Creates an incomplete scene graph with an obj_interest, query_attribute, given_attributes and set of possible soluions for it.
       
         
-def getSceneGraph(num_objects, constraint_type_index, env_answers, environment_constraints_dir, args):
+def getSceneGraph(num_objects, constraint_type_index, env_answers, environment_constraints_dir, args, start_from):
     MAX_NUMBER_OF_ANSWERS = 1000000
     asp_file = environment_constraints_dir + str(constraint_type_index)+".lp"
 
@@ -465,12 +465,14 @@ def getSceneGraph(num_objects, constraint_type_index, env_answers, environment_c
     query_attr = "" 
     possible_sols = [] 
     given_query = []
-    updated_answers = []
+
     objects =list(range(num_objects))
     #print(objects, num_objects)
     #input("EMPTY!!")
 
     for answer_index, answer in enumerate(answers):
+            if(answer_index<start_from[constraint_type_index]):
+            	continue
             print("Answer:::", answer_index)
             preds = answer.split('\n')[1].split(' ')
             obj_rm = random.choice(objects)
@@ -481,12 +483,13 @@ def getSceneGraph(num_objects, constraint_type_index, env_answers, environment_c
                 continue
             else:
                 print('** 11')
-                updated_answers = answers[answer_index+1:]
+                start_from[constraint_type_index] = answer_index+1 #answers[answer_index+1:]
                 #env_answers[constraint_type_index] = updated_answers
                 complete, incomplete = getObjects(preds, obj_rm, given_query)
                 #print("Possible sols:", possible_sols)
-                return complete, incomplete, query_attr, possible_sols, given_query, obj_rm, updated_answers
-
-    return complete, incomplete, query_attr, None, given_query, obj_rm, None
+                return complete, incomplete, query_attr, possible_sols, given_query, obj_rm, start_from
+                
+    start_from[constraint_type_index] = None
+    return complete, incomplete, query_attr, None, given_query, obj_rm, start_from
 
     
