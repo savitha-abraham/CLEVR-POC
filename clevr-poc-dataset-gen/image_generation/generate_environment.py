@@ -472,7 +472,7 @@ def getSceneGraph(num_objects, constraint_type_index, env_answers, environment_c
 
     for answer_index, answer in enumerate(answers):
             if(answer_index<start_from[constraint_type_index]):
-            	continue
+                continue
             print("Answer:::", answer_index)
             preds = answer.split('\n')[1].split(' ')
             obj_rm = random.choice(objects)

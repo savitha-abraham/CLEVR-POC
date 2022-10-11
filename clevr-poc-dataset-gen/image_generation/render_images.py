@@ -142,16 +142,16 @@ def main(args):
           updated = pickle.load(updated_file)
           updated_file.close()
     else:
-    	updated_file = open(os.path.join(environment_constraints_dir,"updated.obj"),"rb")
-    	updated = pickle.load(updated_file)
-    	updated_file.close()
-    	
-    	num_image_per_constraint_type_file = open(os.path.join(environment_constraints_dir,"num_image_per_constraint_type.pickle"),'rb')
-    	num_image_per_constraint_type = pickle.load(num_image_per_constraint_type_file)
-    	num_image_per_constraint_type_file.close()
-    	possible_num_objects_file = open(os.path.join(environment_constraints_dir,"possible_num_objects.pickle"),'rb')
-    	possible_num_objects = pickle.load(possible_num_objects_file)
-    	possible_num_objects_file.close()
+      updated_file = open(os.path.join(environment_constraints_dir,"updated.obj"),"rb")
+      updated = pickle.load(updated_file)
+      updated_file.close()
+      
+      num_image_per_constraint_type_file = open(os.path.join(environment_constraints_dir,"num_image_per_constraint_type.pickle"),'rb')
+      num_image_per_constraint_type = pickle.load(num_image_per_constraint_type_file)
+      num_image_per_constraint_type_file.close()
+      possible_num_objects_file = open(os.path.join(environment_constraints_dir,"possible_num_objects.pickle"),'rb')
+      possible_num_objects = pickle.load(possible_num_objects_file)
+      possible_num_objects_file.close()
 
 
       #Loading question templates
