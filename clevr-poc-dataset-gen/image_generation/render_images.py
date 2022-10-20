@@ -14,7 +14,7 @@ sys.path.append(str(path_current))
 
 from image_generation import scene_info, blender
 from generate_dataset import parser
-from generate_environment import generateEnvironment, getSceneGraph
+from generate_environment import generateEnvironment, getSceneGraph_data, getSceneGraph_constraint
 from question_generation.generate_questions import generate_question
 
 
@@ -203,9 +203,11 @@ def main(args):
                 if args.phase_constraint == 1:
                     
                     print('** 1')
-                    index_num_obj = balance_env_numObj(num_env_per_numObj, max_number_of_env_per_numObj)
-                    num_objects = possible_num_objects[index_num_obj]
-                    generateEnvironment(args, environment_constraints_dir, num_objects, env_id)
+                    #index_num_obj = balance_env_numObj(num_env_per_numObj, max_number_of_env_per_numObj)
+                    ### REMEMBER  ######################################################
+                    num_objects = 7 #possible_num_objects[index_num_obj]
+                    #generateEnvironment(args, environment_constraints_dir, num_objects, env_id)
+                    ##########################################################################33
                     #env_creation_flag = True
                     constraint_type_index = env_id
                     
@@ -231,8 +233,10 @@ def main(args):
                 #updated_env_ans 
                 trials = 0
                 while(possible_sols == None and trials<100):
-                    complete_scene_graph, incomplete_scene_graph, query_attribute, possible_sols, given_query, obj_rm, updated = getSceneGraph(num_objects, constraint_type_index, env_answers, environment_constraints_dir, args, updated)
-                    
+                    if args.phase_constraint == 1:                  
+                      complete_scene_graph, incomplete_scene_graph, query_attribute, possible_sols, given_query, obj_rm, updated_answers = getSceneGraph_constraint(num_objects, constraint_type_index, env_answers, environment_constraints_dir, args)
+                    else:
+                      complete_scene_graph, incomplete_scene_graph, query_attribute, possible_sols, given_query, obj_rm, updated = getSceneGraph_data(num_objects, constraint_type_index, env_answers, environment_constraints_dir, args, updated)
                     
                     trials = trials+1
                     
@@ -256,7 +260,7 @@ def main(args):
                         if args.phase_constraint == 1:
                             print('** 5')
                             #updated[constraint_type_index] = start_index 
-                            #env_answers[constraint_type_index] = updated_answers
+                            env_answers[constraint_type_index] = updated_answers
                             objNum_env[num_objects].append(env_id) 
                             env_id = env_id +1
 
@@ -282,7 +286,7 @@ def main(args):
                             #print(question)
                     else:
                         print('** 7')
-                        #env_answers[constraint_type_index] = updated_answers
+                        #env_answers[constraint_type_index] = updated_answers 
                         #updated[constraint_type_index] = start_index
                         possible_sols = None
                 
