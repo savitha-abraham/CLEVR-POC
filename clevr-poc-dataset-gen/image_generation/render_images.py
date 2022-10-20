@@ -204,10 +204,10 @@ def main(args):
                     
                     print('** 1')
                     #index_num_obj = balance_env_numObj(num_env_per_numObj, max_number_of_env_per_numObj)
-                    ### REMEMBER  ######################################################
-                    num_objects = 7 #possible_num_objects[index_num_obj]
-                    #generateEnvironment(args, environment_constraints_dir, num_objects, env_id)
-                    ##########################################################################33
+                    
+                    num_objects = possible_num_objects[index_num_obj]
+                    generateEnvironment(args, environment_constraints_dir, num_objects, env_id)
+                    
                     #env_creation_flag = True
                     constraint_type_index = env_id
                     

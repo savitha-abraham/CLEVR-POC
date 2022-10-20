@@ -9,8 +9,8 @@ def remove_tem_file(file_name):
         print("The file does not exist!")
 
 
-num_constraint_types = 200
-training_size = 10000
+num_constraint_types = 2
+training_size = 6000
 testing_size = int(math.ceil(training_size/10))
 validation_size = int(math.ceil(training_size/10))
 
