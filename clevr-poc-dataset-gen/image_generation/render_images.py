@@ -203,7 +203,7 @@ def main(args):
                 if args.phase_constraint == 1:
                     
                     print('** 1')
-                    #index_num_obj = balance_env_numObj(num_env_per_numObj, max_number_of_env_per_numObj)
+                    index_num_obj = balance_env_numObj(num_env_per_numObj, max_number_of_env_per_numObj)
                     
                     num_objects = possible_num_objects[index_num_obj]
                     generateEnvironment(args, environment_constraints_dir, num_objects, env_id)
