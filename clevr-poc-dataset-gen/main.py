@@ -10,7 +10,7 @@ def remove_tem_file(file_name):
 
 
 num_constraint_types = 200
-training_size = 2000 #900000
+training_size = 10000
 testing_size = int(math.ceil(training_size/10))
 validation_size = int(math.ceil(training_size/10))
 
