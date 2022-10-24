@@ -39,27 +39,16 @@ def train(final_classifier, clip_model, dataloader, optimizer, criterion, train_
         counter += 1
         
         data_device = to_device(data, device)
-
-        #image_input = clip_preprocess(data_device['image']).unsqueeze(0).to(device)
-        #image_emb = clip_model.encode_image(image_input)
-        #text_emb = clip_model.encode_text(data_device['input_ids'])
-        #print(data_device['question'])
-        
+       
 
         images = list(map(get_pil_image, data_device['image_path']))
 
         inputs = clip_processor(text=data_device['question'], images=images, return_tensors="pt", padding=True)
         
-        outputs = clip_model(**inputs)
-        #print(data_device['input_ids'])
-        #print(data_device['pixel_values'])
-        #print(data_device['attention_mask'])
+        clip_output = clip_model(**inputs)
         
-        #clip_output = clip_model (input_ids=data_device['input_ids'], attention_mask=data_device['attention_mask'], pixel_values=data_device['pixel_values'])
-        #clip_output = clip_model (data_device['clip_input'])
-        
-        text_emb = outputs['text_embeds']
-        image_emb = outputs['image_embeds']
+        text_emb = clip_output['text_embeds']
+        image_emb = clip_output['image_embeds']
         
         constraint_type_embedding = data_device['constraint_embedding']
 
@@ -87,7 +76,7 @@ def train(final_classifier, clip_model, dataloader, optimizer, criterion, train_
 
 
 # validation function
-def validate(final_classifier, clip_model, dataloader, criterion, val_data, device, dropout):
+def validate(final_classifier, clip_model, dataloader, criterion, val_data, device, dropout, clip_processor):
     print('Validating')
     final_classifier.eval()
     counter = 0
@@ -97,7 +86,11 @@ def validate(final_classifier, clip_model, dataloader, criterion, val_data, devi
 
             data_device = to_device(data, device)
 
-            clip_output = clip_model (input_ids=data_device['input_ids'], attention_mask=data_device['attention_mask'], pixel_values=data_device['pixel_values'])
+            images = list(map(get_pil_image, data_device['image_path']))
+
+            inputs = clip_processor(text=data_device['question'], images=images, return_tensors="pt", padding=True)
+        
+            clip_output = clip_model(**inputs)
             
             text_emb = clip_output['text_embeds']
             image_emb = clip_output['image_embeds']
