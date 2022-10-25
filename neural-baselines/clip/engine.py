@@ -57,6 +57,7 @@ def train(final_classifier, clip_model, dataloader, optimizer, criterion, train_
 
 
         optimizer.zero_grad()
+        
         outputs = final_classifier(emb)
 
         # apply sigmoid activation to get all the outputs between 0 and 1
@@ -75,6 +76,7 @@ def train(final_classifier, clip_model, dataloader, optimizer, criterion, train_
 
 
 
+
 # validation function
 def validate(final_classifier, clip_model, dataloader, criterion, val_data, device, dropout, clip_processor):
     print('Validating')
@@ -83,7 +85,8 @@ def validate(final_classifier, clip_model, dataloader, criterion, val_data, devi
     val_running_loss = 0.0
     with torch.no_grad():
         for i, data in tqdm(enumerate(dataloader), total=int(len(val_data)/dataloader.batch_size)):
-
+            counter += 1
+            
             data_device = to_device(data, device)
 
             images = list(map(get_pil_image, data_device['image_path']))
@@ -98,6 +101,7 @@ def validate(final_classifier, clip_model, dataloader, criterion, val_data, devi
 
             emb = torch.cat([text_emb, image_emb, constraint_type_embedding], dim=1)          
             emb = dropout(emb)
+            
             outputs = final_classifier(emb)
 
             # apply sigmoid activation to get all the outputs between 0 and 1
@@ -107,7 +111,7 @@ def validate(final_classifier, clip_model, dataloader, criterion, val_data, devi
             val_running_loss += loss.item()
         
         val_loss = val_running_loss / counter
-        return val_loss    
+        return val_loss       
 
 
 
