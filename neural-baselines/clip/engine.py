@@ -44,7 +44,7 @@ def train(final_classifier, clip_model, dataloader, optimizer, criterion, train_
         images = list(map(get_pil_image, data_device['image_path']))
 
         inputs = clip_processor(text=data_device['question'], images=images, return_tensors="pt", padding=True)
-        
+        inputs = inputs.to(device)
         clip_output = clip_model(**inputs)
         
         text_emb = clip_output['text_embeds']
