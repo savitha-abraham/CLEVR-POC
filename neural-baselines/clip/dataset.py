@@ -1,6 +1,6 @@
 from torch.utils.data import Dataset
 import torchvision.transforms as transforms
-import os
+import os, pickle
 import json
 import torch.nn as nn
 import torch
@@ -25,16 +25,19 @@ def clip_transform_tokenize(question, image):
 
 
 class ClevrPOCDataSet(Dataset):
-    def __init__(self, data_folder, split, total_labels_to_index, gpt2_tokenizer, gpt2_model, env_folder):
+    def __init__(self, data_folder, split, total_labels_to_index, env_folder):
         self.images_path = os.path.join(data_folder, 'images', split)
         self.questions_path = os.path.join(data_folder, 'questions', split)
         self.scenes_path = os.path.join(data_folder, 'scenes', split)
         self.total_labels_to_index = total_labels_to_index
         self.all_file_names = [f.split('.')[0] for f in os.listdir(self.images_path) if os.path.isfile(os.path.join(self.images_path, f))]
 
-        self.gpt2_tokenizer = gpt2_tokenizer
-        self.gpt2_model = gpt2_model
         self.env_folder = env_folder
+
+        with open(os.path.join(env_folder, 'total_embedding.pickle'), 'rb') as f:
+            self.total_embedding = pickle.load(f)        
+
+        
         
             
         
@@ -66,7 +69,8 @@ class ClevrPOCDataSet(Dataset):
 
         constraint_type_index = int(scene_dict['constraint_type_index'])
 
-        constraint_embedding = get_environment_embedding(self.env_folder, constraint_type_index, self.gpt2_tokenizer, self.gpt2_model)
+        #constraint_embedding = get_environment_embedding(self.env_folder, constraint_type_index, self.gpt2_tokenizer, self.gpt2_model)
+        constraint_embedding = self.total_embedding[constraint_type_index]
         
         #answer = question_dict['answer'].replace('\"', '').strip('][').split(', ')
         #

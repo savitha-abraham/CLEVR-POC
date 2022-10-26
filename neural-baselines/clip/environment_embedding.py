@@ -1,6 +1,7 @@
 import torch
 import os
-
+import pickle
+from transformers import AutoTokenizer, AutoModel
 
 def get_file(env_folder, constraint_type_index):
     sentences = []
@@ -47,3 +48,22 @@ def get_environment_embedding(env_folder, constraint_type_index, tokenizer, mode
     #print(embeddings)
     return lp_embeddings
 
+
+def get_total_embedding(env_folder):
+    gpt2_tokenizer = AutoTokenizer.from_pretrained('gpt2')    
+    gpt2_model = AutoModel.from_pretrained('gpt2')
+
+    total_embedding = {}
+    all_file_names = [f for f in os.listdir(env_folder) if '.lp' in f]
+    for f in all_file_names:
+        print(f)         
+        constraint_type_index = int(f.split('.')[0])
+        total_embedding[constraint_type_index] = get_environment_embedding(env_folder, constraint_type_index, gpt2_tokenizer, gpt2_model)         
+    
+    with open(os.path.join(env_folder, 'total_embedding.pickle'), 'wb') as t:
+        pickle.dump(total_embedding, t) 
+
+
+if __name__ == "__main__":
+    env_folder = '/home/marjan/myworks/code/python/CLEVR-POC/clevr-poc-dataset-gen/environment_constraints'
+    get_total_embedding(env_folder)
