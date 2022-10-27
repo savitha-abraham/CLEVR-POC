@@ -151,6 +151,8 @@ def test(final_classifier, clip_model, dataloader, criterion, test_data, device,
         pred = torch.max(outputs, 1)[1]
         t = torch.max(data_device['target'], 1)[1]
         correct += pred.eq(t).sum()
+        
+        
 
         """
         ## assign 0 label to those with less than 0.5
