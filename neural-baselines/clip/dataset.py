@@ -6,10 +6,11 @@ import torch.nn as nn
 import torch
 import cv2
 import numpy as np
+
 from environment_embedding import get_environment_embedding
 from transformers import CLIPProcessor
 
-
+#Comment!!
 clip_model_path = "openai/clip-vit-base-patch32"
 
 extractor = CLIPProcessor.from_pretrained(clip_model_path)
