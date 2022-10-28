@@ -1,7 +1,11 @@
-import sys
+import sys, os
 import torch
-sys.path.append("/content/drive/MyDrive/CLEVR-ABDUCTIVE/nesy/ns-vqa-master/reason/options") # Adds higher directory to python modules path.
-sys.path.append("/content/drive/MyDrive/CLEVR-ABDUCTIVE/nesy/ns-vqa-master/reason")
+from pathlib import Path
+
+sys.path.append(os.path.join(Path(__file__).parents[1], 'options'))
+sys.path.append(os.path.join(Path(__file__).parents[1]))
+#sys.path.append("/content/drive/MyDrive/CLEVR-ABDUCTIVE/nesy/ns-vqa-master/reason/options") # Adds higher directory to python modules path.
+#sys.path.append("/content/drive/MyDrive/CLEVR-ABDUCTIVE/nesy/ns-vqa-master/reason")
 #sys.path.append("/home/savitha/Documents/ns-vqa-master/reason/executors")
 #sys.path.append("/home/savitha/Documents/ns-vqa-master/reason/models")
 
@@ -12,7 +16,7 @@ from datasets import get_dataloader
 from models.parser import Seq2seqParser
 from trainer import Trainer
 
-import pdb
+
 
 import warnings
 

@@ -8,10 +8,11 @@ class TrainOptions(BaseOptions):
         super(TrainOptions, self).__init__()
         # Data
         self.parser.add_argument('--max_train_samples', default=None, type=int, help='max number of training samples')
-        self.parser.add_argument('--max_val_samples', default=10000, type=int, help='max number of val samples')
+        self.parser.add_argument('--max_val_samples', default=1000, type=int, help='max number of val samples')
         # Model
-        self.parser.add_argument('--scene_path', default='../data/raw/output-2000/incomplete/scenes/training', type=str, help='scene path path')
-        self.parser.add_argument('--load_checkpoint_path', default='../data/reason/output-2000/checkpoint_best.pt', type=str, help='checkpoint path')
+        
+        self.parser.add_argument('--scene_path', default=None, type=str, help='scene path')
+        self.parser.add_argument('--load_checkpoint_path', default=None, type=str, help='checkpoint path')
         self.parser.add_argument('--load_checkpoint_path_ct', default=None, type=str, help='checkpoint path-ct')
         self.parser.add_argument('--encoder_max_len', default=50, type=int, help='max length of input sequence')
         self.parser.add_argument('--decoder_max_len', default=27, type=int, help='max length of output sequence')

@@ -1,4 +1,4 @@
-from .base_options import BaseOptions
+from base_options import BaseOptions
 
 
 class TestOptions(BaseOptions):
@@ -6,8 +6,8 @@ class TestOptions(BaseOptions):
 
     def __init__(self):
         super(TestOptions, self).__init__()
-        self.parser.add_argument('--load_checkpoint_path', default = '/content/drive/MyDrive/ns-vqa-master/data/reason/outputs/model_reinforce_uniform_270pg_15M/checkpoint_best.pt', required=True, type=str, help='checkpoint path')
-        self.parser.add_argument('--load_checkpoint_path_ct', required=True, type=str, help='checkpoint path-ct')
+        self.parser.add_argument('--load_checkpoint_path', default = None, required=True, type=str, help='checkpoint path')
+        #self.parser.add_argument('--load_checkpoint_path_ct', required=True, type=str, help='checkpoint path-ct')
         self.parser.add_argument('--save_result_path', required=True, type=str, help='save result path')
         self.parser.add_argument('--max_val_samples', default=None, type=int, help='max val data')
         self.parser.add_argument('--batch_size', default=64, type=int, help='batch_size')

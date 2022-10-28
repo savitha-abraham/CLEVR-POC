@@ -10,33 +10,30 @@ two_hop = 3
 zero_hop = 3
 """
 
-import sys
-sys.path.append("/content/drive/MyDrive/CLEVR-ABDUCTIVE/nesy/ns-vqa-master/reason")
-import os
+
+
 import argparse
-import json
 
 import h5py
 import numpy as np
 
-import utils.programs as program_utils
-import utils.preprocess as preprocess_utils
-import utils.utils as utils
+import os, json
 
-print('a')
+
+
 parser = argparse.ArgumentParser()
 parser.add_argument('--mode', default='chain',
                     choices=['chain', 'prefix', 'postfix'])
-parser.add_argument('--input_questions_json', required=True)
-parser.add_argument('--input_vocab_json', default='')
+
 parser.add_argument('--expand_vocab', default=0, type=int)
 parser.add_argument('--unk_threshold', default=1, type=int)
 parser.add_argument('--encode_unk', default=0, type=int)
+parser.add_argument('--main_root', default=None, type=str)
+parser.add_argument('--ns_vqa_root', default=None, type=str)
+parser.add_argument('--data_folder_name', default=None, type=str)
+parser.add_argument('--vocab_flag', default=None, type=int)
 
-parser.add_argument('--output_h5_file', required=True)
-parser.add_argument('--output_vocab_json', default='')
-parser.add_argument('--input_scenes_json', required=True)
-
+        
 
 def program_to_str(program, mode):
     if mode == 'chain':
@@ -58,55 +55,69 @@ def read_files(file_path):
    with open(file_path, 'r') as file:
       print(file.read())
 
-def read_labels():
-        with open('../data/properties.json', encoding="utf-8") as f:
+def read_labels(main_root):
+        path = os.path.join(main_root, 'clevr-poc-dataset-gen/data/properties.json')
+        print(main_root)
+        print(path)
+        with open(os.path.join(main_root, 'clevr-poc-dataset-gen/data/properties.json'), encoding="utf-8") as f:
             properties = json.load(f)
         sorted_key_properties = sorted(properties.keys())
 
         key_properties_values = []
         for key_property in sorted_key_properties:
+            if key_property=='regions':
+                continue
             key_properties_values.extend(sorted(properties[key_property].keys()))
         labels = {k: v for v, k in enumerate(key_properties_values)}
         return labels
 
 def main(args):
 
-    labels = read_labels()
     
-    # Opening JSON file
-    #f = open('/home/savitha/Documents/ns-vqa-master/data/raw/CLEVR_v1.0/questions/CLEVR_test_questions.json', 'r')
-    #questions = json.load(f)['questions']
-    #print(questions[0])
-    # returns JSON object as
-    # a dictionary
-    #data = json.load(f)
- 
-    # Iterating through the json
-    # list
-    #for i in data['emp_details']:
-     #   print(i)
- 
-    # Closing file
-    #f.close()
     
-    if (args.input_vocab_json == '') and (args.output_vocab_json == ''):
-        print('Must give one of --input_vocab_json or --output_vocab_json')
-        return
+    
+         
+    main_root = args.main_root
+    ns_vqa_root = args.ns_vqa_root
+    data_folder_name = args.data_folder_name
+
+    import sys
+    sys.path.append(os.path.join(main_root,"nesy-baseline/ns-vqa-master/reason"))
+    import utils.programs as program_utils
+    import utils.preprocess as preprocess_utils
+    import utils.utils as utils
+
+    
+    output_vocab_json = os.path.join(ns_vqa_root, 'data/reason', data_folder_name, 'clevr-poc-vocab.json')
+    input_vocab_json = os.path.join(ns_vqa_root, 'data/reason', data_folder_name, 'clevr-poc-vocab.json')
+    labels = read_labels(main_root)
+    #if (vocab_flag == 0) and (output_vocab_json == ''):
+    #    print('Must give one of --input_vocab_json or --output_vocab_json')
+    #    return
 
     print('Loading data')
-    
-    path = args.input_questions_json
+    if args.vocab_flag == 0:
+        path = os.path.join(main_root, 'clevr-poc-dataset-gen', data_folder_name, 'incomplete/questions/training')
+    elif args.vocab_flag == 1: 
+        path = os.path.join(main_root, 'clevr-poc-dataset-gen', data_folder_name, 'incomplete/questions/validation')
+    else:
+        path = os.path.join(main_root, 'clevr-poc-dataset-gen', data_folder_name, 'incomplete/questions/testing')
     os.chdir(path)
     
     questions = []
-    for file in os.listdir():
+    for f in os.listdir():
       # Create the filepath of particular file
-        file_path =f"{path}/{file}"
+        file_path =f"{path}/{f}"
         with open(file_path, 'r') as f:
           question_dict  = json.load(f)
           questions.append(question_dict)
-    
-    path = args.input_scenes_json
+
+    if args.vocab_flag == 0:
+        path = os.path.join(main_root, 'clevr-poc-dataset-gen', data_folder_name, 'incomplete/scenes/training')
+    elif args.vocab_flag == 1: 
+        path = os.path.join(main_root, 'clevr-poc-dataset-gen', data_folder_name, 'incomplete/scenes/validation')    
+    else:
+        path = os.path.join(main_root, 'clevr-poc-dataset-gen', data_folder_name, 'incomplete/scenes/testing')    
     os.chdir(path)
     scenes = []
     for file in os.listdir():
@@ -121,7 +132,7 @@ def main(args):
     #    questions = json.load(f)['questions']
     #print("Loading:", questions)
     # Either create the vocab or load it from disk
-    if args.input_vocab_json == '' or args.expand_vocab == 1:
+    if args.vocab_flag == 0 or args.expand_vocab == 1:
         print('Building vocab')
         #if 'answer' in questions[0]:
         #    answer_token_to_idx = preprocess_utils.build_vocab(
@@ -148,11 +159,11 @@ def main(args):
             'labels': labels
         }
         print("VOCAB::", vocab)
-    if args.input_vocab_json != '':
+    if args.vocab_flag != 0:
         print('Loading vocab given..')
         if args.expand_vocab == 1:
             new_vocab = vocab
-        with open(args.input_vocab_json, 'r') as f:
+        with open(input_vocab_json, 'r') as f:
             vocab = json.load(f)
         if args.expand_vocab == 1:
             num_new_words = 0
@@ -178,9 +189,9 @@ def main(args):
             #        num_new_words += 1
             #print('Found %d new words' % num_new_words)
 
-    if args.output_vocab_json != '':
-        utils.mkdirs(os.path.dirname(args.output_vocab_json))
-        with open(args.output_vocab_json, 'w') as f:
+    if output_vocab_json != '':
+        utils.mkdirs(os.path.dirname(output_vocab_json))
+        with open(output_vocab_json, 'w') as f:
             json.dump(vocab, f)
 
     # Encode all questions and programs
@@ -253,13 +264,20 @@ def main(args):
 
     # Create h5 file
     print('##############Writing output.....')
-    print(temp_file)
+    
     questions_encoded = np.asarray(questions_encoded, dtype=np.int32)
     programs_encoded = np.asarray(programs_encoded, dtype=np.int32)
     print(questions_encoded.shape)
     print(programs_encoded.shape)
-    utils.mkdirs(os.path.dirname(args.output_h5_file))
-    with h5py.File(args.output_h5_file, 'w') as f:
+    if args.vocab_flag == 0:
+        output_h5_file = os.path.join(ns_vqa_root, 'data/reason', data_folder_name, 'clevr-poc-train_questions.h5')
+    elif args.vocab_flag == 1:
+        output_h5_file = os.path.join(ns_vqa_root, 'data/reason', data_folder_name, 'clevr-poc-val_questions.h5')
+    else:
+                output_h5_file = os.path.join(ns_vqa_root, 'data/reason', data_folder_name, 'clevr-poc-test_questions.h5')
+
+    utils.mkdirs(os.path.dirname(output_h5_file)) 
+    with h5py.File(output_h5_file, 'w') as f:
         f.create_dataset('questions', data=questions_encoded)
         f.create_dataset('image_idxs', data=np.asarray(image_idxs))
         f.create_dataset('orig_idxs', data=np.asarray(orig_idxs))
@@ -277,4 +295,8 @@ def main(args):
 
 if __name__ == '__main__':
     args = parser.parse_args()
+    
     main(args)
+    
+    
+

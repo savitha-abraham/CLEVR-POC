@@ -27,7 +27,7 @@ def main(args):
     input_questions = h5py.File(args.input_question_h5, 'r')
     N = len(input_questions['questions'])
 
-    questions, programs, answers, question_families, orig_idxs, img_idxs, complete_image_idxs, constraint_type = [], [], [], [], [], [], [], []
+    questions, programs, answers, question_families, orig_idxs, img_idxs,  constraint_type = [], [], [], [], [], [], []
     family_count = np.zeros(28)
 
     if args.random_sample:

@@ -21,26 +21,30 @@ class BaseOptions():
         self.parser.add_argument('--visualize', default=0, type=int, help='visualize experiment')
         # Dataset catalog
         # - CLEVR
-        self.parser.add_argument('--clevr_train_scene_path', default='../data/raw/output-2000/incomplete/scenes/training',
+        self.parser.add_argument('--main_root',default = None, type=str, help='main root')
+        self.parser.add_argument('--ns_vqa_root',default=None, type=str, help='ns-vqa root')
+        self.parser.add_argument('--clevr_train_scene_path', default=None,
                                  type=str, help='path to clevr train scenes')
         
-        self.parser.add_argument('--clevr_val_scene_path', default='../data/raw/output-2000/incomplete/scenes/validation',
+        self.parser.add_argument('--clevr_val_scene_path', default=None,
                                  type=str, help='path to clevr val scenes')
                                  
-        self.parser.add_argument('--clevr_constraint_scene_path', default='../data/raw/output-2000/incomplete/environment_constraints',
+        self.parser.add_argument('--clevr_constraint_scene_path', default=None,
                                  type=str, help='path to constraints')
         
         
-        self.parser.add_argument('--clevr_train_question_path', default='../data/reason/output-2000/training',
+        self.parser.add_argument('--clevr_train_question_path', default=None,
                                  type=str, help='path to clevr train questions')
-        self.parser.add_argument('--clevr_val_question_path', default='../data/reason/output-2000/validation',
+        self.parser.add_argument('--clevr_val_question_path', default=None,
                                  type=str, help='path to clevr val questions')
-        self.parser.add_argument('--train_image_path', default='../data/raw/output-2000/incomplete/images/training',
+        self.parser.add_argument('--train_image_path', default=None,
                                  type=str, help='path to train images clevr ')
-        self.parser.add_argument('--val_image_path', default='../data/raw/output-2000/incomplete/images/validation',
+        self.parser.add_argument('--val_image_path', default=None,
                                  type=str, help='path to val images clevr ')
-        self.parser.add_argument('--clevr_vocab_path', default='../data/reason/output-2000/clevr_vocab.json',
+        self.parser.add_argument('--clevr_vocab_path', default=None,
                                  type=str, help='path to clevr vocab')
+        self.parser.add_argument('--data_folder_name', default=None,
+                                 type=str, help='data folder')
         #self.parser.add_argument('--clevr_vocab_path', default='../data/reason/clevr_h5_500/clevr_vocab.json',
         #                         type=str, help='path to clevr vocab')
         

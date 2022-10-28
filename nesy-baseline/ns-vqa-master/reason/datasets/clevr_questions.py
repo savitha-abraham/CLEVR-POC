@@ -59,15 +59,7 @@ class ClevrQuestionDataset(Dataset):
         #l = len(str(complete_image))
         #print("Complete_idx:", complete_image)
         #print("Image idx:", image_idx)
-        if (len(str(image_idx))==1):
-          inc_ind = str(image_idx)
-        else:
-          inc_ind = str(image_idx)[l:]
-        num_zero = 6-l
-        zeros = ""
-        for z in range(0, num_zero):
-          zeros = zeros+"0"
-        scene_filename = "CLEVR_"+zeros+"_"+inc_ind+".json"
+        
         #img_path = os.path.join(self.image_path, image_filename)
         #img_path = os.path.normpath(img_path)
         #img = Image.open(img_path).convert('RGB')#img_path.convert("RGB")

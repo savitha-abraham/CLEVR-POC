@@ -25,7 +25,7 @@ def load_vocab(path):
         vocab = json.load(f)
         vocab['question_idx_to_token'] = invert_dict(vocab['question_token_to_idx'])
         vocab['program_idx_to_token'] = invert_dict(vocab['program_token_to_idx'])
-        vocab['answer_idx_to_token'] = invert_dict(vocab['answer_token_to_idx'])
+        vocab['labels_idx_to_token'] = invert_dict(vocab['labels'])
     # Sanity check: make sure <NULL>, <START>, and <END> are consistent
     assert vocab['question_token_to_idx']['<NULL>'] == 0
     assert vocab['question_token_to_idx']['<START>'] == 1
