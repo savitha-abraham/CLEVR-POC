@@ -121,7 +121,7 @@ def test(final_classifier, clip_model, dataloader, criterion, test_data, device,
     final_classifier.eval()
     counter = 0
     correct = 0
-    test_running_loss = 0.0
+    
     for i, data in tqdm(enumerate(dataloader), total=int(len(test_data)/dataloader.batch_size)):
         counter += 1
         
@@ -145,8 +145,8 @@ def test(final_classifier, clip_model, dataloader, criterion, test_data, device,
         # apply sigmoid activation to get all the outputs between 0 and 1
         outputs = torch.sigmoid(outputs)        
         
-        loss = criterion(outputs, data_device['target'])
-        test_running_loss += loss.item()
+        #loss = criterion(outputs, data_device['target'])
+        #test_running_loss += loss.item()
 
         pred = torch.max(outputs, 1)[1]
         t = torch.max(data_device['target'], 1)[1]
@@ -162,6 +162,6 @@ def test(final_classifier, clip_model, dataloader, criterion, test_data, device,
         N,C = data_device['target'].shape
         accuracy = (outputs == data_device['target']).sum() / (N*C) * 100   
         """
-    test_loss = test_running_loss / counter
+    #test_loss = test_running_loss / counter
     accuracy = 100 * correct / counter
-    return test_loss, accuracy
+    return accuracy
