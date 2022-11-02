@@ -274,7 +274,14 @@ def main(args):
                             props = ['color', 'shape', 'size', 'material']
                             flag_good = False
                             for k in range(10):
-                              question, flag_good = generate_question(args,templates, num_loaded_templates, query_attribute, given_query, obj_rm, possible_sols, complete_scene, complete_scene_path, i, num_questions_per_template_type, max_number_of_questions_per_template, constraint_type_index, incomplete_scene_path, environment_constraints_dir )
+                                
+                              #question, flag_good = generate_question(args,templates, num_loaded_templates, query_attribute, given_query, obj_rm, possible_sols, complete_scene, complete_scene_path, i, num_questions_per_template_type, max_number_of_questions_per_template, constraint_type_index, incomplete_scene_path, environment_constraints_dir)
+                              incomplete_scene_path_rel = str(os.path.join(args.incomplete_data_dir, args.scene_dir, args.split))
+                              incomplete_scene_main_path = os.path.join(str(path_root), incomplete_scene_path_rel.split("../")[1])
+                              environment_constraints_main = os.path.join(str(path_root), 'environment_constraints')
+                              #input(incomplete_scene_main_path)
+                              #input(environment_constraints_main)
+                              question, flag_good = generate_question(args,templates, num_loaded_templates, query_attribute, given_query, obj_rm, possible_sols, complete_scene, complete_scene_path, i, num_questions_per_template_type, max_number_of_questions_per_template, constraint_type_index, incomplete_scene_main_path, environment_constraints_main)
                               if flag_good:
                                 break
                               query_attribute= random.choice(props)
@@ -282,12 +289,12 @@ def main(args):
                               given_query = chooseGiven(props, query_attribute, n1)
                             if flag_good:
                               print('Question generated')
-                              input(question)
+                              #input(question)
                               with open(question_path, 'w') as f:
                                   json.dump(question, f)
                               num_image_per_constraint_type[constraint_type_index]= num_image_per_constraint_type[constraint_type_index] +1
                             else:
-                              print('Bad question!')
+                              #print('Bad question!')
                               possible_sols = None
                     else:
                         print('** 7')

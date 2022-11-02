@@ -10,7 +10,7 @@ import argparse, json, os, itertools, random, shutil, sys
 import time
 import re
 import copy
-import os
+
 
 from pathlib import Path
 path_root = Path(__file__).parents[1]
@@ -18,7 +18,7 @@ sys.path.append(str(path_root))
 
 path_current = str(Path(__file__).parents[0])
 
-main_root = Path(__file__).parents[2]
+main_root = str(Path(__file__).parents[2])
 sys.path.append(os.path.join(main_root, 'nesy-baseline/ns-vqa-master/reason/executors'))
 from aspsolver import solve
 #import question
@@ -1031,14 +1031,17 @@ def generate_question(args,templates, num_loaded_templates, query_attribute, giv
                       max_instances=args.instances_per_template,
                       verbose=False)
 
-
-    possible_sols = solve(asp_query, idx, constraint_type_index, '', scene_folder, env_folder)
+    
+    image_index = int(os.path.splitext(scene_fn)[0].split('_')[-1])
+    possible_sols = solve(asp_query, image_index, constraint_type_index, '', scene_folder, env_folder)
+    if possible_sols == None:
+        return None, False
     if len(possible_sols) == len(domain[query_attribute]):
          return None, False
     if args.time_dfs and args.verbose:
         toc = time.time()
         print('that took ', toc - tic)
-    image_index = int(os.path.splitext(scene_fn)[0].split('_')[-1])
+    
     question = {
           'split': scene_info['split'],
           'image_filename': scene_fn,
