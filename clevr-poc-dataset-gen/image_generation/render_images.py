@@ -264,9 +264,6 @@ def main(args):
                             env_answers[constraint_type_index] = updated_answers
                             objNum_env[num_objects].append(env_id) 
                             env_id = env_id +1
-
-                            
-
                         else:
                             print('** 6')
                             with open(complete_scene_path, 'w') as f:
@@ -277,29 +274,24 @@ def main(args):
                             props = ['color', 'shape', 'size', 'material']
                             flag_good = False
                             for k in range(10):
-                            	question, flag_good = generate_question(args,templates, num_loaded_templates, query_attribute, given_query, obj_rm, possible_sols, complete_scene, complete_scene_path, i, num_questions_per_template_type, max_number_of_questions_per_template, constraint_type_index, incomplete_scene_path, environment_constraints_dir )
-                            	if flag_good:
-                            		break
-                            	query_attribute = random.choice(props)
-                            	n1 = random.randint(0, 2)
-                            	given_query = chooseGiven(props, query_attribute, n1)
+                              question, flag_good = generate_question(args,templates, num_loaded_templates, query_attribute, given_query, obj_rm, possible_sols, complete_scene, complete_scene_path, i, num_questions_per_template_type, max_number_of_questions_per_template, constraint_type_index, incomplete_scene_path, environment_constraints_dir )
+                              if flag_good:
+                                break
+                              query_attribute= random.choice(props)
+                              n1 = random.randint(0, 2)
+                              given_query = chooseGiven(props, query_attribute, n1)
                             if flag_good:
-                            	print('Question generated')
-                            	input(question)
-                            	with open(question_path, 'w') as f:
-                                	json.dump(question, f)
-                                    
-                                num_image_per_constraint_type[constraint_type_index]= num_image_per_constraint_type[constraint_type_index] +1
+                              print('Question generated')
+                              input(question)
+                              with open(question_path, 'w') as f:
+                                  json.dump(question, f)
+                              num_image_per_constraint_type[constraint_type_index]= num_image_per_constraint_type[constraint_type_index] +1
                             else:
-                            	print('Bad question!')
-                            	possible_sols = None
-                                                                
-                            
-                            
+                              print('Bad question!')
+                              possible_sols = None
                     else:
                         print('** 7')
                         possible_sols = None
-                
                 else:
                     print('** NEW ELSE')
                     num_image_per_constraint_type[constraint_type_index] = max_number_of_images_per_constraint
