@@ -396,7 +396,7 @@ def createQuery_Incomplete(asp_file, preds, obj_rm, environment_constraints_dir,
      Lines = file2.readlines()
      complete = ""
      for line in Lines:
-         if "#" in line:
+         if "#show" in line:
              continue
          complete = complete+line
      file2.close()
@@ -475,6 +475,7 @@ def getSceneGraph_data(num_objects, constraint_type_index, env_answers, environm
                 continue
             print("Answer:::", answer_index)
             preds = answer.split('\n')[1].split(' ')
+            print('Preds for complete scene:', preds)
             obj_rm = random.choice(objects)
             #print(asp_file)
             query_attr, possible_sols, given_query = createQuery_Incomplete(asp_file, preds, obj_rm, environment_constraints_dir, args)

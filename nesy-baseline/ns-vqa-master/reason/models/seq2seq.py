@@ -33,8 +33,8 @@ class Seq2seq(nn.Module):
         assert self.output_logprobs is not None and self.output_symbols is not None, 'must call reinforce_forward first'
         losses = []
         grad_output = []
-        print("Output_symbols:",self.output_symbols[0].shape, self.output_symbols[1].shape)
-        print("Output logprobs:",self.output_logprobs[0].shape,self.output_logprobs[1].shape)
+        #print("Output_symbols:",self.output_symbols[0].shape, self.output_symbols[1].shape)
+        #print("Output logprobs:",self.output_logprobs[0].shape,self.output_logprobs[1].shape)
         for i, symbol in enumerate(self.output_symbols):
             if len(self.output_symbols[0].shape) == 1:
                 loss = - torch.diag(torch.index_select(self.output_logprobs[i], 1, symbol)).sum()*reward \

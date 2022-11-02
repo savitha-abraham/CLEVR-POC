@@ -9,7 +9,7 @@ import pickle
 
 sys.path.append(os.path.join(Path(__file__).parents[0]))
 
-from executors.aspsolver import solve, getToken 
+from executors.aspsolver import solve, getToken, getToken_program 
 import utils.utils as utils
 import numpy
 class Trainer():
@@ -156,7 +156,7 @@ class Trainer():
             path_trainReward = os.path.join(self.ns_vqa_root, 'data/reason', self.data_folder_name, 'train_reward.pickle')
             path_valAcc = os.path.join(self.ns_vqa_root, 'data/reason', self.data_folder_name, 'val_acc_R.pickle')
             path_valRes = os.path.join(self.ns_vqa_root, 'data/reason', self.data_folder_name, 'val_res.txt')
-            print("Writing to print_res:", len(print_res))
+            
             with open(path_trainLoss, 'wb') as f:
                 pickle.dump(trainPlot_loss, f)
             with open(path_trainReward, 'wb') as f:
@@ -171,12 +171,19 @@ class Trainer():
         else:
             path_trainLoss = os.path.join(self.ns_vqa_root, 'data/reason', self.data_folder_name, 'train_loss_P.pickle')
             path_valLoss = os.path.join(self.ns_vqa_root, 'data/reason', self.data_folder_name, 'val_loss.pickle')
+            path_valAcc = os.path.join(self.ns_vqa_root, 'data/reason', self.data_folder_name, 'val_acc_P.pickle')
+            path_valRes = os.path.join(self.ns_vqa_root, 'data/reason', self.data_folder_name, 'val_res_P.txt')
             with open(path_trainLoss, 'wb') as f:
                 pickle.dump(trainPlot_loss, f)
             with open(path_valLoss, 'wb') as f:
-                pickle.dump(valPlot_loss, f) 
-            f.close()           
-    
+                pickle.dump(valPlot_loss, f)
+            with open(path_valAcc, 'wb') as f:
+                pickle.dump(validationPlot_acc, f) 
+            f.close()   
+            with open(path_valRes, 'w') as f1:
+                for line in print_res:
+                    f1.write(f"{line}\n")        
+            f1.close()
     
     
     def check_val_loss(self):
@@ -214,7 +221,7 @@ class Trainer():
             ans = ans_np[i]
             ans_tokens = [self.vocab["labels_idx_to_token"][j]  for j, x in enumerate(list(ans)) if ans[j]==1]
             ans_tokens_str = ' '.join(ans_tokens)
-            pred_pgm = getToken(pg_np[i], self.vocab['program_idx_to_token'])
+            pred_pgm = getToken_program(pg_np[i], self.vocab['program_idx_to_token'])
             
             if split == "train":
                 pred= solve(pred_pgm, scene[i],  ct_np[i], split, self.train_scene_path, self.env_folder)
@@ -231,11 +238,12 @@ class Trainer():
                 
                 if numpy.array_equal(predicted, ans):
                     reward += 1.0
+                    #print('Equal answers', pred, predicted, ans)
                     
             if split=='val':
               
               quest_token = getToken(quests[i], self.vocab['question_idx_to_token'])
-              gt_token = getToken(gt[i], self.vocab['program_idx_to_token'])
+              gt_token = getToken_program(gt[i], self.vocab['program_idx_to_token'])
               print_res.append("Question:"+quest_token+"\n GT:"+gt_token+"\n Pred pg:"+pred_pgm+"\n Ans:"+ans_tokens_str+"\n Pred ans: "+str(pred))
         reward /= pg_np.shape[0]
         return reward,print_res

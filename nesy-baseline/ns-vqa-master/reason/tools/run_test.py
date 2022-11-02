@@ -7,7 +7,7 @@ import numpy
 sys.path.append(os.path.join(Path(__file__).parents[1], 'options'))
 sys.path.append(os.path.join(Path(__file__).parents[1]))
 
-from executors.aspsolver import solve, getToken
+from executors.aspsolver import solve, getToken, getToken_program
 from test_options import TestOptions
 from datasets import get_dataloader
 from models.parser import Seq2seqParser
@@ -35,12 +35,32 @@ def find_clevr_question_type(out_mod):
 
 def check_program(pred, gt):
     """Check if the input programs matches"""
+    len_pred = 0
+    for i in range(len(pred)):
+    	if pred[i]==2:
+    		break
+    		
+    		
+    len_pred = i
+    
+    for i in range(1, len(gt)):
+    	if gt[i]==2:
+    		break
+    len_gt = i-1
+    #print(pred, len_pred)
+    #print(gt, len_gt)
+    
+    	
+    
+    if len_pred!= len_gt:
+    	return False
     # ground truth programs have a start token as the first entry
     for i in range(len(pred)):
-        if pred[i] != gt[i+1]:
+        if pred[i] not in gt:
             return False
         if pred[i] == 2:
             break
+    
     return True
 
 if torch.cuda.is_available():
@@ -70,32 +90,59 @@ stats = {
 vocab = utils.load_vocab(opt.clevr_vocab_path)
 test_scene_path = opt.clevr_val_scene_path
 env_folder =  opt.clevr_constraint_scene_path
-
+#count=0
+print_res = [] 
 for x, y, answer, idx,constraint_type in loader:
+
     x = x.to(device = device)
     y = y.to(device = device)
+    #count=count+1
+    
     model.set_input(x, y)
+    
     programs = model.parse()
     pg_np = programs.cpu().detach().numpy()
     y_np = y.cpu().detach().numpy()
-    ans_np = answer.to(device = device)
+    ans_np = answer.cpu().detach().numpy()
+    
     ct_np = constraint_type.cpu().detach().numpy()
     
     for i in range(pg_np.shape[0]): 
         ans = ans_np[i]
+        
+        #print_res.append(idx)
+        
         ans_tokens = [vocab["labels_idx_to_token"][j]  for j, ab in enumerate(list(ans)) if ans[j]==1]
         ans_tokens_str = ' '.join(ans_tokens)
-        pred_pgm = getToken(pg_np[i], vocab['program_idx_to_token'])
+        
+        pred_pgm = getToken_program(pg_np[i], vocab['program_idx_to_token'])
+        
+        gt_pgm = getToken_program(y[i], vocab['program_idx_to_token'])
+        
+        
         pred= solve(pred_pgm, idx[i],  ct_np[i], 'val', test_scene_path, env_folder)
+        
+        ans_eq = False
         if pred != None:
             a = [vocab['labels'][d] for d in pred]
             b = [1 if c in a else 0 for c in range(len(vocab['labels']))]
             predicted = numpy.array(b)
-            if numpy.array_equal(predicted, ans):
-                stats['correct_ans']+=1
             
+            if numpy.array_equal(predicted, ans):
+            	stats['correct_ans']+=1
+            	#print('Equal answers..', pred, predicted, ans)
+            	ans_eq=True
         if check_program(pg_np[i], y_np[i]):
             stats['correct_prog'] += 1
+            #print('Equal programs..', pg_np[i], y_np[i])
+            if(not (ans_eq)):
+            	print('Testing question number:', idx[i])
+            	print('Constraint type:', ct_np[i])
+            	print('GT pgm:', gt_pgm, ans_tokens_str)
+            	print('Predicted program:', pred_pgm, pred)
+            	#print('Predicted vectors:', predicted, ans)
+            	#print('Ground truth ans:', ans_tokens_str)
+            	#print('Predicted ans:', pred)
        
         stats['total'] += 1
         

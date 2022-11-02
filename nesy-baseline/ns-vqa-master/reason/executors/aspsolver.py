@@ -47,6 +47,16 @@ def getInPredicate(scene_dict):
       preds.append(region)
     return preds
 
+def getToken_program(seq_ids, idx_to_token):
+      tokens = ""
+      for i in seq_ids:
+        if (i.item()==0 or i.item()==1 or i.item()==2 or i.item()==3):
+          continue  
+        tokens= tokens+idx_to_token[i.item()]+','
+      tokens = 'missing(Q):-'+tokens[:-1]+'.'
+      return tokens
+
+
 def getToken(seq_ids, idx_to_token):
       tokens = ""
       for i in seq_ids:
@@ -79,11 +89,17 @@ def solve(pred_pgm, scene_filename,  constraint_type_index, split, scene_folder,
     Lines = file2.readlines()
     complete = ""
     for line in Lines:
-      if "#" in line:
+      if "#show" in line:
         continue
       complete = complete+line
     file2.close()
-
+    
+    #Add definitions for same_color, same_material, same_size, same_shape
+    complete = complete+'\n'+'same_color(X,Y):- sameProperty(X, Y, color).'
+    complete = complete+'\n'+'same_size(X,Y):- sameProperty(X, Y, size).'
+    complete = complete+'\n'+'same_shape(X,Y):- sameProperty(X, Y, shape).'
+    complete = complete+'\n'+'same_material(X,Y):- sameProperty(X, Y, material).'
+	
     #Add scene information
     
     scene_predicates = getInPredicate(scene_dict)
@@ -96,15 +112,18 @@ def solve(pred_pgm, scene_filename,  constraint_type_index, split, scene_folder,
     file1 = open(temp_file, 'w')
     n1 = file1.write(complete)
     file1.close()
-
+    if constraint_type_index==122:
+    	print('COMPLETE:::', complete)
+		
     asp_command = 'clingo 0'  + ' ' + temp_file
     output_stream = os.popen(asp_command)
     output = output_stream.read()
-    print(output)
+    #print('OUTPUT::')
+    #print(output)
     possible_values = None
     if ("Answer" in output):
         answers = output.split('Answer:')
-        print("Answers:", answers)
+        #print("Answers:", answers)
         answers = answers[1:]
         possible_values = []
         for answer_index, answer in enumerate(answers):
