@@ -352,11 +352,14 @@ def getQA(query_attribute, given_query, complete, incomplete_details, obj_rm, en
      file1 = open(temp_file, 'w')
      n1 = file1.write(complete_qa)
      file1.close()
+     input(complete_qa)
+     print('Give, queryn:', given_query, query_attribute)
+     input()
      asp_command = 'clingo 0'  + ' ' + temp_file
      output_stream = os.popen(asp_command)
      output = output_stream.read()
      answers = output.split('Answer:')
-     #print("Answers:", answers)
+     input(answers)
      answers = answers[1:]
      possible_values = []
      for answer_index, answer in enumerate(answers):
@@ -400,9 +403,12 @@ def createQuery_Incomplete(asp_file, preds, obj_rm, environment_constraints_dir,
              continue
          complete = complete+line
      file2.close()
+     complete = complete+ '\n'+ ':-not missing(_).'+'\n'
      #Add details about current scene graph (except about obj_rm) in preds
      incomplete_details = []
+     
      for pred in preds:
+     
          if pred.split("(")[1][0] == str(obj_rm):
             incomplete_details.append(pred)
             continue
@@ -418,7 +424,7 @@ def createQuery_Incomplete(asp_file, preds, obj_rm, environment_constraints_dir,
          possible_sols_qa = getQA(query_attribute, given, complete, incomplete_details, obj_rm, environment_constraints_dir)
          if possible_sols_qa!=None :
              #question, structured = generate_question(args,query_attribute, given, obj_rm, preds, possible_sols_qa)
-             #print("Question generated::", question)
+             #print("Question generated::")
              return query_attribute, possible_sols_qa, given
              
                  
@@ -475,7 +481,7 @@ def getSceneGraph_data(num_objects, constraint_type_index, env_answers, environm
                 continue
             print("Answer:::", answer_index)
             preds = answer.split('\n')[1].split(' ')
-            print('Preds for complete scene:', preds)
+            #print('Preds for complete scene:', preds)
             obj_rm = random.choice(objects)
             #print(asp_file)
             query_attr, possible_sols, given_query = createQuery_Incomplete(asp_file, preds, obj_rm, environment_constraints_dir, args)

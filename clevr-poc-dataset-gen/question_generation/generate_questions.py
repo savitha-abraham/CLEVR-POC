@@ -10,7 +10,7 @@ import argparse, json, os, itertools, random, shutil, sys
 import time
 import re
 import copy
-
+import os
 
 from pathlib import Path
 path_root = Path(__file__).parents[1]
@@ -18,8 +18,9 @@ sys.path.append(str(path_root))
 
 path_current = str(Path(__file__).parents[0])
 
-
-
+main_root = Path(__file__).parents[2]
+sys.path.append(os.path.join(main_root, 'nesy-baseline/ns-vqa-master/reason/executors'))
+from aspsolver import solve
 #import question
 
 #from matplotlib.cbook import print_cycles
@@ -110,6 +111,11 @@ parser.add_argument('--profile', action='store_true',
 """
 
 #----------------------------------------------------------------------------------------
+domain = {}
+domain['color'] = ['red', 'blue', 'green', 'yellow'] 
+domain['material'] = ['rubber', 'metal']
+domain['shape'] = ['cube', 'cylinder', 'sphere', 'cone']
+domain['size'] = ['large', 'small']
 
 def precompute_filter_options(scene_struct, metadata):
   # Keys are tuples (size, color, shape, material) (where some may be None)
@@ -510,7 +516,7 @@ def getProgram_rel(vals, param_name_to_type, program, hop, rels, query_attribute
     
     
 #---------------------------------------------------------------------------------------------------
-def instantiate_templates_dfs(args, scene_struct, query_attribute, given_attribute, obj_interest, preds, template, template_type, template_id,  metadata, answer_counts, synonyms, max_instances=None, verbose=False):
+def instantiate_templates_dfs(args, scene_struct, query_attribute, given_attribute, obj_interest,  template, template_type, template_id,  metadata, answer_counts, synonyms, max_instances=None, verbose=False):
 
   
   #print("Scene_struct:", scene_struct)
@@ -915,7 +921,7 @@ def get_allowed_templates(templates_items, num_questions_per_template_type, max_
       
 
 #-----------------------------------------------------------------------------------------
-def generate_question(args,templates, num_loaded_templates, query_attribute, given_attribute, obj_interest, possible_sols, complete_scene_struct, complete_scene_path, scene_count, num_questions_per_template_type, max_number_of_questions_per_template):
+def generate_question(args,templates, num_loaded_templates, query_attribute, given_attribute, obj_interest, possible_sols, complete_scene_struct, complete_scene_path, scene_count, num_questions_per_template_type, max_number_of_questions_per_template, constraint_type_index, scene_folder, env_folder):
   
   with open(os.path.join(path_current, args.metadata_file), 'r') as f:
     metadata = json.load(f)
@@ -1016,7 +1022,6 @@ def generate_question(args,templates, num_loaded_templates, query_attribute, giv
                       query_attribute, 
                       given_attribute, 
                       obj_interest, 
-                      complete_scene_struct, 
                       template,
                       fn,
                       idx,
@@ -1026,6 +1031,10 @@ def generate_question(args,templates, num_loaded_templates, query_attribute, giv
                       max_instances=args.instances_per_template,
                       verbose=False)
 
+
+    possible_sols = solve(asp_query, idx, constraint_type_index, '', scene_folder, env_folder)
+    if len(possible_sols) == len(domain[query_attribute]):
+         return None, False
     if args.time_dfs and args.verbose:
         toc = time.time()
         print('that took ', toc - tic)
@@ -1044,7 +1053,10 @@ def generate_question(args,templates, num_loaded_templates, query_attribute, giv
           'question_family_index': idx,
           'question_index': image_index
               }
-    return question
+    return question, True
+
+
+
 #      if len(ts) > 0:
 #        if args.verbose:
 #          print('got one!')

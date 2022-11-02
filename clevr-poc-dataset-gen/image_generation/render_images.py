@@ -122,6 +122,7 @@ def main(args):
     env_answers = pickle.load(env_ans_file)
     env_ans_file.close()
     
+    
     objNum_env_file = open(os.path.join(environment_constraints_dir,"objNum_env.obj"),"rb")
     objNum_env = pickle.load(objNum_env_file)
     objNum_env_file.close()
@@ -273,16 +274,30 @@ def main(args):
                             with open(incomplete_scene_path, 'w') as f:
                                 json.dump(incomplete_scene, f)                          
                             
-                            num_image_per_constraint_type[constraint_type_index]= num_image_per_constraint_type[constraint_type_index] +1
+                            props = ['color', 'shape', 'size', 'material']
+                            flag_good = False
+                            for k in range(10):
+                            	question, flag_good = generate_question(args,templates, num_loaded_templates, query_attribute, given_query, obj_rm, possible_sols, complete_scene, complete_scene_path, i, num_questions_per_template_type, max_number_of_questions_per_template, constraint_type_index, incomplete_scene_path, environment_constraints_dir )
+                            	if flag_good:
+                            		break
+                            	query_attribute = random.choice(props)
+                            	n1 = random.randint(0, 2)
+                            	given = chooseGiven(props, query_attribute, n1)
+                    	
+                            		
+                    	
+		
+                            if flag_good:
+                            	print('Question generated')
+                            	input(question)
+                            	with open(question_path, 'w') as f:
+                                	json.dump(question, f)
+                        	num_image_per_constraint_type[constraint_type_index]= num_image_per_constraint_type[constraint_type_index] +1
+        		     else:
+                            	print('Bad question!')
+                            	possible_sols = None
+                                                                
                             
-                            #env_answers[constraint_type_index] = updated_answers
-                            #updated[constraint_type_index] = start_index
-                            #Generate question for the scene...
-                            question = generate_question(args,templates, num_loaded_templates, query_attribute, given_query, obj_rm, possible_sols, complete_scene, complete_scene_path, i, num_questions_per_template_type, max_number_of_questions_per_template )
-
-                            with open(question_path, 'w') as f:
-                                json.dump(question, f)                                        
-                            #questions.append(question)
                             #print(question)
                     else:
                         print('** 7')
@@ -351,7 +366,18 @@ def main(args):
       objNum_env_file.close()
  
 
-     
+#------------------------------------------------------------------------------------------------------------------------
+def chooseGiven(props, query_attribute, n1):
+    #Choose n1 props that is not query_attribute
+    given = []
+    allowed = copy.deepcopy(props)
+    allowed.remove(query_attribute)
+    for i in range(n1):
+        g = random.choice(allowed)
+        given.append(g)
+        allowed.remove(g)
+       
+    return given     
       
 #----------------------------------------------------------------------------------------------------------------------
 def balance_env_numObj(num_env_per_numObj, max_number_of_env_per_numObj):
