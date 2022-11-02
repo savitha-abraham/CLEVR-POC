@@ -352,14 +352,14 @@ def getQA(query_attribute, given_query, complete, incomplete_details, obj_rm, en
      file1 = open(temp_file, 'w')
      n1 = file1.write(complete_qa)
      file1.close()
-     input(complete_qa)
-     print('Give, queryn:', given_query, query_attribute)
-     input()
+     #input(complete_qa)
+     #print('Give, queryn:', given_query, query_attribute)
+     #input()
      asp_command = 'clingo 0'  + ' ' + temp_file
      output_stream = os.popen(asp_command)
      output = output_stream.read()
      answers = output.split('Answer:')
-     input(answers)
+     #input(answers)
      answers = answers[1:]
      possible_values = []
      for answer_index, answer in enumerate(answers):
