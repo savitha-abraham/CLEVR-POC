@@ -282,35 +282,28 @@ def main(args):
                             		break
                             	query_attribute = random.choice(props)
                             	n1 = random.randint(0, 2)
-                            	given = chooseGiven(props, query_attribute, n1)
-                    	
-                            		
-                    	
-		
+                            	given_query = chooseGiven(props, query_attribute, n1)
                             if flag_good:
                             	print('Question generated')
                             	input(question)
                             	with open(question_path, 'w') as f:
                                 	json.dump(question, f)
-                        	num_image_per_constraint_type[constraint_type_index]= num_image_per_constraint_type[constraint_type_index] +1
-        		     else:
+                                    
+                                num_image_per_constraint_type[constraint_type_index]= num_image_per_constraint_type[constraint_type_index] +1
+                            else:
                             	print('Bad question!')
                             	possible_sols = None
                                                                 
                             
-                            #print(question)
+                            
                     else:
                         print('** 7')
-                        #env_answers[constraint_type_index] = updated_answers 
-                        #updated[constraint_type_index] = start_index
                         possible_sols = None
                 
                 else:
                     print('** NEW ELSE')
                     num_image_per_constraint_type[constraint_type_index] = max_number_of_images_per_constraint
-                    #updated[constraint_type_index] = None
-                    #env_answers[constraint_type_index] = []
-                
+                                    
         if not end_of_process:
           i = i + 1
 

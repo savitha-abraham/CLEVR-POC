@@ -14,7 +14,7 @@ training_size = 100
 testing_size = int(math.ceil(training_size/10))
 validation_size = int(math.ceil(training_size/10))
 
-use_gpu=1
+use_gpu=0
 render_batch_size=40
 start_idx=0
 
