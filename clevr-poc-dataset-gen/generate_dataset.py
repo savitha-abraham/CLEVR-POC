@@ -83,7 +83,7 @@ parser.add_argument('--split', default='training',
 # Settings for objects
 parser.add_argument('--min_objects', default=5, type=int,
     help="The minimum number of objects to place in each scene")
-parser.add_argument('--max_objects', default=6, type=int,
+parser.add_argument('--max_objects', default=8, type=int,
     help="The maximum number of objects to place in each scene")
 parser.add_argument('--min_dist', default=0.25, type=float,
     help="The minimum allowed distance between object centers")
