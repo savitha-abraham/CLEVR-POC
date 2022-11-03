@@ -240,11 +240,9 @@ def main(args):
                     
                     if (num_image_per_constraint_type.count(num_image_per_constraint_type[0]) == len(num_image_per_constraint_type)):
                     	if(num_image_per_constraint_type[0] == 1000000):
-                    		end_of_process = True
-                    		break
-                    
-                    
-    		
+                          end_of_process = True
+                          break
+
                     if constraint_type_index == None:
                       possible_num_objects.remove(num_objects)
                       
@@ -275,31 +273,33 @@ def main(args):
                     )
 
                     if complete_scene is not None:
-                    	print('** 4')
-                    	with open(complete_scene_path, 'w') as f:
-                    		json.dump(complete_scene, f)
-            		with open(incomplete_scene_path, 'w') as f:
-            			json.dump(incomplete_scene, f)
-    			props = ['color', 'shape', 'size', 'material']
-    			flag_good = False
+                        print('** 4')
+                        with open(complete_scene_path, 'w') as f:
+                          json.dump(complete_scene, f)
+            		
+                        with open(incomplete_scene_path, 'w') as f:
+                          json.dump(incomplete_scene, f)
+                        props = ['color', 'shape', 'size', 'material']
+                        flag_good = False
     			
-    			for k in range(10):
-    				incomplete_scene_path_rel = str(os.path.join(args.incomplete_data_dir, args.scene_dir, args.split))
-    				incomplete_scene_main_path = os.path.join(str(path_root), incomplete_scene_path_rel.split("../")[1])
-    				environment_constraints_main = os.path.join(str(path_root), 'environment_constraints')
-    				question, flag_good = generate_question(args,templates, num_loaded_templates, query_attribute, given_query, obj_rm, possible_sols, complete_scene, complete_scene_path, i, num_questions_per_template_type, max_number_of_questions_per_template, constraint_type_index, incomplete_scene_main_path, environment_constraints_main)
-    				if flag_good:
-    					break
-				query_attribute= random.choice(props)
-				n1 = random.randint(0, 2)
-				given_query = chooseGiven(props, query_attribute, n1)
+                        for k in range(10):
+                            incomplete_scene_path_rel = str(os.path.join(args.incomplete_data_dir, args.scene_dir, args.split))
+                            incomplete_scene_main_path = os.path.join(str(path_root), incomplete_scene_path_rel.split("../")[1])
+                            environment_constraints_main = os.path.join(str(path_root), 'environment_constraints')
+                            question, flag_good = generate_question(args,templates, num_loaded_templates, query_attribute, given_query, obj_rm, possible_sols, complete_scene, complete_scene_path, i, num_questions_per_template_type, max_number_of_questions_per_template, constraint_type_index, incomplete_scene_main_path, environment_constraints_main)
+                            if flag_good:
+                              break
+
+                            query_attribute= random.choice(props)
+                            n1 = random.randint(0, 2)
+                            given_query = chooseGiven(props, query_attribute, n1)
 			
-			if flag_good:
-				print('Question generated')
-				no_question = False
-				with open(question_path, 'w') as f:
-					json.dump(question, f)
-				num_image_per_constraint_type[constraint_type_index]= num_image_per_constraint_type[constraint_type_index] +1
+                        if flag_good:
+                            print('Question generated')
+                            no_question = False
+                            with open(question_path, 'w') as f:
+                              json.dump(question, f)
+                            num_image_per_constraint_type[constraint_type_index]= num_image_per_constraint_type[constraint_type_index] +1
                             
                     
                 else:

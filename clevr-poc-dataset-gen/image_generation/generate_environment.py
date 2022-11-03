@@ -499,31 +499,24 @@ def getSceneGraph_data(num_objects, constraint_type_index, env_answers, environm
     start_from[constraint_type_index] = None
     return complete, incomplete, query_attr, None, given_query, obj_rm, start_from
 
-    
 def getSceneGraph_constraint(num_objects, constraint_type_index, env_answers, environment_constraints_dir, args):
-    
-	MAX_NUMBER_OF_ANSWERS = 1000000
-	asp_file = environment_constraints_dir + str(constraint_type_index)+".lp"
-	
-	#asp_file = environment_constraints_dir + str(constraint_type_index)+".lp"
-	
-	ASP_FILE_PATH = os.path.join(asp_file)
-	#ASP_FILE_PATH = os.path.join(args.environment_constraints_dir, str(constraint_type_index)+".lp")
-	asp_command = 'clingo ' + str(MAX_NUMBER_OF_ANSWERS) + ' ' + ASP_FILE_PATH
-	output_stream = os.popen(asp_command)
-	output = output_stream.read()
-	## parsing answer sets
+    MAX_NUMBER_OF_ANSWERS = 1000000
+    asp_file = environment_constraints_dir + str(constraint_type_index)+".lp"
+    ASP_FILE_PATH = os.path.join(asp_file)
+	# ASP_FILE_PATH = os.path.join(args.environment_constraints_dir, str(constraint_type_index)+".lp")
+    asp_command = 'clingo ' + str(MAX_NUMBER_OF_ANSWERS) + ' ' + ASP_FILE_PATH
+    output_stream = os.popen(asp_command)
+    output = output_stream.read()
+    ## parsing answer sets
 
-	answers = output.split('Answer:')
-	answers = answers[1:]
-	random.shuffle(answers)
+    answers = output.split('Answer:')
+    answers = answers[1:]
+    random.shuffle(answers)
 
-	if len(answers) <=  int(math.ceil(10.0/100*(MAX_NUMBER_OF_ANSWERS))):
-	    number_sample = len(answers)
-	else:
-	    number_sample = int(math.ceil(10.0/100*(MAX_NUMBER_OF_ANSWERS)))
-
-	answers = random.sample(answers, number_sample)
-	#input(len(answers))
+    if len(answers) <=  int(math.ceil(10.0/100*(MAX_NUMBER_OF_ANSWERS))):
+        number_sample = len(answers)
+    else:
+        number_sample = int(math.ceil(10.0/100*(MAX_NUMBER_OF_ANSWERS)))
+        
+    answers = random.sample(answers, number_sample)
     return answers
-    
