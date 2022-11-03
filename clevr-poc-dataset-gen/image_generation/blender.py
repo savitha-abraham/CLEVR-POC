@@ -110,7 +110,7 @@ class Blender():
   def render(self):
     while True:
       try:
-        #bpy.ops.render.render(write_still=True)
+        bpy.ops.render.render(write_still=True)
         #bpy.ops.wm.save_as_mainfile(filepath='/home/marjan/test.blend')
         
         break

@@ -468,8 +468,8 @@ def render_scene(args,
     complete_scene_struct['similar'] = scene_info.compute_all_similar(complete_scene_struct)
     #scene_struct['objects_blender_info'] = objects_blender_info    
     
-    if args.phase_constraint != 1:
-      blender_obj.render()
+    #if args.phase_constraint != 1:
+    #  blender_obj.render()
 
 
     blender_incomplete_obj = blender.Blender(incomplete_scene_image_path, 
