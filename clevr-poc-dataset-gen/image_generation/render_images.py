@@ -121,14 +121,17 @@ def main(args):
     env_ans_file = open(os.path.join(environment_constraints_dir,"env_answers.obj"),"rb")
     env_answers = pickle.load(env_ans_file)
     env_ans_file.close()
-    
+    #for e in env_answers:
+    #	print('Env e:', e, len(env_answers[e]))
+
+
+
     
     objNum_env_file = open(os.path.join(environment_constraints_dir,"objNum_env.obj"),"rb")
     objNum_env = pickle.load(objNum_env_file)
     objNum_env_file.close()
-    print('Environments loaded!')
-    
     max_number_of_images_per_constraint = math.ceil(num_images/args.num_constraint_types)
+    #input()
     
 
     if args.start_idx == 0:
@@ -206,8 +209,10 @@ def main(args):
                 if args.phase_constraint == 1:
                     
                     print('** 1')
+                    #input(max_number_of_env_per_numObj)
                     index_num_obj = balance_env_numObj(num_env_per_numObj, max_number_of_env_per_numObj)
-                    
+                    #print('index_num_obj:')
+                    #input(index_num_obj)
                     num_objects = possible_num_objects[index_num_obj]
                     generateEnvironment(args, environment_constraints_dir, num_objects, env_id)
                     
@@ -216,6 +221,7 @@ def main(args):
                     env_answers[constraint_type_index] = updated_answers
                     objNum_env[num_objects].append(env_id)
                     num_env_per_numObj[index_num_obj] = num_env_per_numObj[index_num_obj]+1
+                    #input(num_env_per_numObj)
                     env_id = env_id +1
                     break
                     
@@ -230,7 +236,7 @@ def main(args):
                       possible_num_objects = [num for num in range(args.min_objects, args.max_objects+1)]
                       
                       
-                      #print('EOP True!!')
+                      #input('Pos = 0!!')
                       
                       
                     num_objects = random.choice(possible_num_objects)
@@ -253,13 +259,16 @@ def main(args):
                 #Extracting a scene graph conforming to the environment
                 #updated_env_ans 
                 trials = 0
+                possible_sols = None
                 while(possible_sols == None and trials<100):
+                
                     complete_scene_graph, incomplete_scene_graph, query_attribute, possible_sols, given_query, obj_rm, updated = getSceneGraph_data(num_objects, constraint_type_index, env_answers, environment_constraints_dir, args, updated)
+                    #input('Trials')
                     
                     trials = trials+1
                     
                 if possible_sols is not None:
-                    print('** 3')
+                    #input('** 3')
                     print("Scene graph for image ",i, " created!!")
                     complete_scene, incomplete_scene = render_scene(args,
                       complete_scene_graph=complete_scene_graph,
@@ -273,7 +282,7 @@ def main(args):
                     )
 
                     if complete_scene is not None:
-                        print('** 4')
+                        #input('** 4')
                         with open(complete_scene_path, 'w') as f:
                           json.dump(complete_scene, f)
             		
@@ -283,10 +292,12 @@ def main(args):
                         flag_good = False
     			
                         for k in range(10):
+                        
                             incomplete_scene_path_rel = str(os.path.join(args.incomplete_data_dir, args.scene_dir, args.split))
                             incomplete_scene_main_path = os.path.join(str(path_root), incomplete_scene_path_rel.split("../")[1])
                             environment_constraints_main = os.path.join(str(path_root), 'environment_constraints')
                             question, flag_good = generate_question(args,templates, num_loaded_templates, query_attribute, given_query, obj_rm, possible_sols, complete_scene, complete_scene_path, i, num_questions_per_template_type, max_number_of_questions_per_template, constraint_type_index, incomplete_scene_main_path, environment_constraints_main)
+                            #input('Trying question!!')
                             if flag_good:
                               break
 
@@ -295,15 +306,25 @@ def main(args):
                             given_query = chooseGiven(props, query_attribute, n1)
 			
                         if flag_good:
-                            print('Question generated')
-                            no_question = False
-                            with open(question_path, 'w') as f:
-                              json.dump(question, f)
-                            num_image_per_constraint_type[constraint_type_index]= num_image_per_constraint_type[constraint_type_index] +1
+                        	no_question = False
+                        	with open(question_path, 'w') as f:
+                        		json.dump(question, f)
+                        	num_image_per_constraint_type[constraint_type_index]= num_image_per_constraint_type[constraint_type_index] +1
+                        	
+                	
+                        		
+                        else:
+                        	possible_sols = None
+                        	
+                        		
+                		
+        		
                             
                     
+                        
+                    
                 else:
-                    print('** NEW ELSE')
+                    #input('** NEW ELSE')
                     num_image_per_constraint_type[constraint_type_index] = 1000000
                     
                                     
@@ -354,7 +375,7 @@ def main(args):
       objNum_env_file = open(os.path.join(environment_constraints_dir,"objNum_env.obj"),"wb")
       pickle.dump(objNum_env,objNum_env_file)
       objNum_env_file.close()
- 
+       
 
 #------------------------------------------------------------------------------------------------------------------------
 def chooseGiven(props, query_attribute, n1):

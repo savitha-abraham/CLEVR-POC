@@ -124,6 +124,7 @@ def solve(pred_pgm, scene_filename,  constraint_type_index, split, scene_folder,
     asp_command = 'clingo 0'  + ' ' + temp_file
     output_stream = os.popen(asp_command)
     output = output_stream.read()
+    output_stream.close()
     #print('OUTPUT::')
     #print(output)
     possible_values = None

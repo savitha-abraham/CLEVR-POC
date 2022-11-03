@@ -277,6 +277,7 @@ def generateEnvironment(args, environment_constraints_dir, num_objects, env_id):
         asp_command = 'clingo 1'  + ' ' + os.path.join(environment_constraints_dir, str(env_id)+".lp")
         output_stream = os.popen(asp_command)
         output = output_stream.read()
+        output_stream.close()
         answers = output.split('Answer:')
         #print("Answers:", answers)
         answers = answers[1:]
@@ -358,6 +359,7 @@ def getQA(query_attribute, given_query, complete, incomplete_details, obj_rm, en
      asp_command = 'clingo 0'  + ' ' + temp_file
      output_stream = os.popen(asp_command)
      output = output_stream.read()
+     output_stream.close()
      answers = output.split('Answer:')
      #input(answers)
      answers = answers[1:]
@@ -454,7 +456,9 @@ def getSceneGraph_data(num_objects, constraint_type_index, env_answers, environm
         #ASP_FILE_PATH = os.path.join(args.environment_constraints_dir, str(constraint_type_index)+".lp")
         asp_command = 'clingo ' + str(MAX_NUMBER_OF_ANSWERS) + ' ' + ASP_FILE_PATH
         output_stream = os.popen(asp_command)
+        
         output = output_stream.read()
+        output_stream.close()
         ## parsing answer sets
         
         answers = output.split('Answer:')
@@ -484,7 +488,7 @@ def getSceneGraph_data(num_objects, constraint_type_index, env_answers, environm
             #print('Preds for complete scene:', preds)
             obj_rm = random.choice(objects)
             #print(asp_file)
-            #query_attr, possible_sols, given_query = createQuery_Incomplete(asp_file, preds, obj_rm, environment_constraints_dir, args)
+            query_attr, possible_sols, given_query = createQuery_Incomplete(asp_file, preds, obj_rm, environment_constraints_dir, args)
             if len(possible_sols)==0:
                 print('** 10')
                 continue
@@ -507,6 +511,7 @@ def getSceneGraph_constraint(num_objects, constraint_type_index, env_answers, en
     asp_command = 'clingo ' + str(MAX_NUMBER_OF_ANSWERS) + ' ' + ASP_FILE_PATH
     output_stream = os.popen(asp_command)
     output = output_stream.read()
+    output_stream.close()
     ## parsing answer sets
 
     answers = output.split('Answer:')
