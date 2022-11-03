@@ -226,7 +226,7 @@ def main(args):
                     if len(possible_num_objects)== 0:
                     
                       num_images_left = args.num_images - i
-                      max_number_of_images_per_constraint = max_number_of_images_per_constraint  + math.floor(num_images_left/args.num_constraint_types) 
+                      max_number_of_images_per_constraint = max_number_of_images_per_constraint  + math.ceil(num_images_left/args.num_constraint_types) 
                       possible_num_objects = [num for num in range(args.min_objects, args.max_objects+1)]
                       
                       
@@ -340,21 +340,11 @@ def main(args):
               updated_file.close()
               
               if end_of_process:
-              	print('END OF PROCESS!!!')
-              """	
-              env_answers_updated_file = open(os.path.join(environment_constraints_dir, "env_answers_updated.obj"),"wb")
-              pickle.dump(env_answers, env_answers_updated_file)
-              env_answers_updated_file.close()
-              """
-              
-              
-              
-              
-              
-          break #breaking out of outer while loop - cannot generate more images/env
+                  print('END OF PROCESS!!!')
+                  
+          # breaking out of outer while loop - cannot generate more images/env  
+          break
 
-
-  
   if args.phase_constraint == 1:
       #Pickle env details - give path!!
       env_ans_file = open(os.path.join(environment_constraints_dir,"env_answers.obj"),"wb")
