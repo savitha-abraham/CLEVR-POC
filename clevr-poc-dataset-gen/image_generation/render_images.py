@@ -128,7 +128,7 @@ def main(args):
     objNum_env_file.close()
     print('Environments loaded!')
     
-    max_number_of_images_per_constraint = math.floor(num_images/args.num_constraint_types)
+    max_number_of_images_per_constraint = math.ceil(num_images/args.num_constraint_types)
     
 
     if args.start_idx == 0:
@@ -172,7 +172,7 @@ def main(args):
     for key in templates:
         num_questions_per_template_type[key] = 0
 
-    max_number_of_questions_per_template = math.floor(args.num_images/args.num_templates) 
+    max_number_of_questions_per_template = math.ceil(args.num_images/args.num_templates) 
       
 
   
@@ -341,7 +341,7 @@ def main(args):
               
               if end_of_process:
                   print('END OF PROCESS!!!')
-                  
+
           # breaking out of outer while loop - cannot generate more images/env  
           break
 
