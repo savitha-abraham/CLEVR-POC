@@ -9,12 +9,12 @@ def remove_tem_file(file_name):
         print("The file does not exist!")
 
 
-num_constraint_types = 30
-training_size = 600
+num_constraint_types = 10
+training_size = 10
 testing_size = int(math.ceil(training_size/10))
 validation_size = int(math.ceil(training_size/10))
 
-use_gpu=1
+use_gpu=0
 render_batch_size=40
 start_idx=0
 

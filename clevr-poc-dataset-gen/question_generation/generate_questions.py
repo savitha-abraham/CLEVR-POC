@@ -822,7 +822,7 @@ def instantiate_templates_dfs(args, scene_struct, query_attribute, given_attribu
   text = pattern.sub('',text)
   text_question = other_heuristic(text, vals)
   text_question = re.sub(' +', ' ', text_question)
-  print("Text_question:", text_question)   
+  #print("Text_question:", text_question)   
   return text_question, program, query
       
   
@@ -921,7 +921,7 @@ def get_allowed_templates(templates_items, num_questions_per_template_type, max_
       
 
 #-----------------------------------------------------------------------------------------
-def generate_question(args,templates, num_loaded_templates, query_attribute, given_attribute, obj_interest, possible_sols, complete_scene_struct, complete_scene_path, scene_count, num_questions_per_template_type, max_number_of_questions_per_template, constraint_type_index, scene_folder, env_folder):
+def generate_question(args,templates, num_loaded_templates, query_attribute, given_attribute, obj_interest, complete_scene_struct, complete_scene_path, scene_count, num_questions_per_template_type, max_number_of_questions_per_template, constraint_type_index, scene_folder, env_folder):
   
   with open(os.path.join(path_current, args.metadata_file), 'r') as f:
     metadata = json.load(f)

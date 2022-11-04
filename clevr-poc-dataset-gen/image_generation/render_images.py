@@ -91,17 +91,13 @@ def main(args):
     os.makedirs(environment_constraints_dir)     
 
 
-  constraints_types_list = []
   # Load the property file
   with open(args.properties_json, 'r') as f:
     properties = json.load(f)
   
   
 
-  # we have in total 9 regions, and we do not want to have more than one object at each region
-  #if args.max_objects > 9:
-  #  args.max_objects = 9
-
+ 
 
   if args.phase_constraint == 1:
     num_images = args.num_constraint_types
@@ -147,9 +143,7 @@ def main(args):
       num_image_per_qa = [0 for ind in range(4)]
       if args.split == 'training':
           updated = {i:0 for i in range(args.num_constraint_types)}
-          #env_ans_file = open(os.path.join(environment_constraints_dir,"env_answers.obj"),"rb")
-          #env_answers = pickle.load(env_ans_file)
-          #env_ans_file.close()
+          
       else:
           updated_file = open(os.path.join(environment_constraints_dir,"updated.obj"),"rb")
           updated = pickle.load(updated_file)
@@ -194,21 +188,33 @@ def main(args):
   
   i = args.start_idx
   while i < args.num_images:
-  #for i in range(args.num_images):
-        possible_sols = None
-        #input(i)
         complete_scene_graph = {} 
         incomplete_scene_graph = {} 
         query_attribute = "" 
         given_query = [] 
         complete_scene = None
-        #env_creation_flag = True
         end_of_process = False
-        no_question = True
         
-        while(no_question):#possible_sols == None or complete_scene == None):
+        #Data Generation Phase
+        if args.phase_constraint == 1:
+                    
+            index_num_obj = balance_env_numObj(num_env_per_numObj, max_number_of_env_per_numObj)
+            num_objects = possible_num_objects[index_num_obj]
+            generateEnvironment(args, environment_constraints_dir, num_objects, env_id)
+            
+            constraint_type_index = env_id
+            updated_answers = getSceneGraph_constraint(num_objects, constraint_type_index, env_answers, environment_constraints_dir, args)
+            env_answers[constraint_type_index] = updated_answers
+            objNum_env[num_objects].append(env_id)
+            num_env_per_numObj[index_num_obj] = num_env_per_numObj[index_num_obj]+1
+            env_id = env_id +1
+            #i = i+1
+        
+        else:
+            
+            no_question = True
+            while(no_question):
                 
-
                 complete_scene_image_path = complete_img_template % i
                 incomplete_scene_image_path = incomplete_img_template % i
             
@@ -218,144 +224,107 @@ def main(args):
                 
                 question_path = question_template % i
                 
-                #if (env_id < args.num_constraint_types):
-                if args.phase_constraint == 1:
-                    
-                    print('** 1')
-                    #input(max_number_of_env_per_numObj)
-                    index_num_obj = balance_env_numObj(num_env_per_numObj, max_number_of_env_per_numObj)
-                    #print('index_num_obj:')
-                    #input(index_num_obj)
-                    num_objects = possible_num_objects[index_num_obj]
-                    generateEnvironment(args, environment_constraints_dir, num_objects, env_id)
-                    
-                    constraint_type_index = env_id
-                    updated_answers = getSceneGraph_constraint(num_objects, constraint_type_index, env_answers, environment_constraints_dir, args)
-                    env_answers[constraint_type_index] = updated_answers
-                    objNum_env[num_objects].append(env_id)
-                    num_env_per_numObj[index_num_obj] = num_env_per_numObj[index_num_obj]+1
-                    #input(num_env_per_numObj)
-                    env_id = env_id +1
-                    break
-                    
-                    
-                    
-                else:
-                    print('** 2')
-                    if len(possible_num_objects)== 0:
-                    
-                      num_images_left = args.num_images - i
-                      max_number_of_images_per_constraint = max_number_of_images_per_constraint  + math.ceil(num_images_left/args.num_constraint_types) 
-                      possible_num_objects = [num for num in range(args.min_objects, args.max_objects+1)]
-                      
-                      
-                      #input('Pos = 0!!')
-                      
-                      
-                    num_objects = random.choice(possible_num_objects)
-                    list_env = objNum_env[num_objects]
-                    
-                    constraint_type_index = balance_constraint_type(list_env, num_image_per_constraint_type, max_number_of_images_per_constraint)
-                    
-                    if (num_image_per_constraint_type.count(num_image_per_constraint_type[0]) == len(num_image_per_constraint_type)):
-                    	if(num_image_per_constraint_type[0] == 1000000):
-                          end_of_process = True
-                          break
-
-                    if constraint_type_index == None:
-                      possible_num_objects.remove(num_objects)
-                      
-                      continue
+                #Choose an environment type
+                if len(possible_num_objects)== 0:
+                    num_images_left = args.num_images - i
+                    max_number_of_images_per_constraint = max_number_of_images_per_constraint  + math.ceil(num_images_left/args.num_constraint_types) 
+                    possible_num_objects = [num for num in range(args.min_objects, args.max_objects+1)]
+                  
+                num_objects = random.choice(possible_num_objects)
+                list_env = objNum_env[num_objects]
+                input(num_objects)
+                constraint_type_index = balance_constraint_type(list_env, num_image_per_constraint_type, max_number_of_images_per_constraint)
+                
+                if constraint_type_index == None:
+                  possible_num_objects.remove(num_objects)
+                  continue
+              
+                for e in updated:
+                    if updated[e] == len(env_answers[e])-1:
+                        num_image_per_constraint_type[e] = 1000000
+                if (num_image_per_constraint_type.count(num_image_per_constraint_type[0]) == len(num_image_per_constraint_type)):
+                    if(num_image_per_constraint_type[0] == 1000000):
+                        end_of_process = True
+                        break
+            
+            
+                #Generate a scene from that environment
+                complete_scene_graph, incomplete_scene_graph, query_attribute, given_query, obj_rm, updated = getSceneGraph_data(num_objects, constraint_type_index, env_answers, environment_constraints_dir, args, updated, num_image_per_qa, max_number_of_images_per_qa)
                 
                 
-                
-                #Extracting a scene graph conforming to the environment
-                #updated_env_ans 
-                trials = 0
-                possible_sols = None
-                while(possible_sols == None and trials<100):
-                
-                    complete_scene_graph, incomplete_scene_graph, query_attribute, possible_sols, given_query, obj_rm, updated = getSceneGraph_data(num_objects, constraint_type_index, env_answers, environment_constraints_dir, args, updated, num_image_per_qa, max_number_of_images_per_qa)
-                    #input('Trials')
+                print("Scene graph for image ",i, " created!!")
+                complete_scene, incomplete_scene = render_scene(args,
+                  complete_scene_graph=complete_scene_graph,
+                  incomplete_scene_graph=incomplete_scene_graph,
+                  image_index=i,
+                  complete_scene_image_path=complete_scene_image_path,
+                  incomplete_scene_image_path= incomplete_scene_image_path,
+                  properties=properties,
+                  constraint_type_index=constraint_type_index,
+                  phase = args.phase_constraint
+                )
+                if complete_scene == None:
+                    input(complete_scene_graph)
+    
+                if complete_scene is not None:
+                    input('scene not none')
+                    with open(complete_scene_path, 'w') as f:
+                      json.dump(complete_scene, f)
+        		
+                    with open(incomplete_scene_path, 'w') as f:
+                      json.dump(incomplete_scene, f)
                     
-                    trials = trials+1
-                    
-                if possible_sols is not None:
-                    #input('** 3')
-                    print("Scene graph for image ",i, " created!!")
-                    complete_scene, incomplete_scene = render_scene(args,
-                      complete_scene_graph=complete_scene_graph,
-                      incomplete_scene_graph=incomplete_scene_graph,
-                      image_index=i,
-                      complete_scene_image_path=complete_scene_image_path,
-                      incomplete_scene_image_path= incomplete_scene_image_path,
-                      properties=properties,
-                      constraint_type_index=constraint_type_index,
-                      phase = args.phase_constraint
-                    )
-
-                    if complete_scene is not None:
-                        #input('** 4')
-                        with open(complete_scene_path, 'w') as f:
-                          json.dump(complete_scene, f)
-            		
-                        with open(incomplete_scene_path, 'w') as f:
-                          json.dump(incomplete_scene, f)
-                        props = ['color', 'shape', 'size', 'material']
-                        
-                        query_attribute_index = props.index(query_attribute)		
-                        flag_good = False
+                    #GENERATING QUESTION 
+                    props = ['color', 'shape', 'size', 'material']
+                    query_attribute_index = props.index(query_attribute)		
+                    flag_good = False
+                    trial = 1
+                    tried = []
+                    flag_continue = True
+                    while(flag_continue): #continue trying
+                        if trial != 1:
+                            try_next  = False
+                            for i in range(len(num_image_per_qa)):
+                                if i not in tried and num_image_per_qa[i] < max_number_of_images_per_qa[i]:
+                                    query_attribute_index = i
+                                    try_next = True
+                            if not try_next:
+                                flag_continue = False
+                                break
+                            query_attribute = props[query_attribute_index]
+                            given_query = chooseGiven(props, query_attribute, 0)
                         
                         for k in range(1, 7):
                         
                             incomplete_scene_path_rel = str(os.path.join(args.incomplete_data_dir, args.scene_dir, args.split))
                             incomplete_scene_main_path = os.path.join(str(path_root), incomplete_scene_path_rel.split("../")[1])
                             environment_constraints_main = os.path.join(str(path_root), 'environment_constraints')
-                            question, flag_good = generate_question(args,templates, num_loaded_templates, query_attribute, given_query, obj_rm, possible_sols, complete_scene, complete_scene_path, i, num_questions_per_template_type, max_number_of_questions_per_template, constraint_type_index, incomplete_scene_main_path, environment_constraints_main)
-                            #input('Trying question!!')
+                            question, flag_good = generate_question(args,templates, num_loaded_templates, query_attribute, given_query, obj_rm, complete_scene, complete_scene_path, i, num_questions_per_template_type, max_number_of_questions_per_template, constraint_type_index, incomplete_scene_main_path, environment_constraints_main)
                             if flag_good:
                               break
-
-                            #query_attribute_index = balance_queryAttribute_numImages(num_image_per_qa, max_number_of_images_per_qa)#random.choice(props)
-                            #query_attribute = props[query_attribute_index]
-                            #n1 = random.randint(0, 2)
+                              
                             given_query = chooseGiven(props, query_attribute, k)
-			
-                        if flag_good:
-                        	no_question = False
-                        	with open(question_path, 'w') as f:
-                        		json.dump(question, f)
-                        	num_image_per_constraint_type[constraint_type_index]= num_image_per_constraint_type[constraint_type_index] +1
-                        	num_image_per_qa[query_attribute_index] = num_image_per_qa[query_attribute_index] +1 
-                        	
-                	
-                        		
-                        else:
-                        	possible_sols = None
-                        	
-                        		
-                		
-        		
                             
-                    
-                        
-                    
-                else:
-                    #input('** NEW ELSE')
-                    num_image_per_constraint_type[constraint_type_index] = 1000000
-                    
-                                    
-        if not end_of_process:
-          i = i + 1
-          #input('Increment i')
-
+            			
+                        if flag_good:
+                            no_question = False
+                            flag_continue = False
+                            with open(question_path, 'w') as f:
+                                json.dump(question, f)
+                            input(question)
+                            num_image_per_constraint_type[constraint_type_index]= num_image_per_constraint_type[constraint_type_index] +1
+                            num_image_per_qa[query_attribute_index] = num_image_per_qa[query_attribute_index] +1
+                            
+                        tried.append(query_attribute_index)
+                        trial = trial+1
+            
+                    	
+        if not end_of_process:    	
+            i = i+1
         if args.use_gpu == 1:
           gc.collect()
-          print("After cache clearing:", len(env_answers))
-          print("\n")
+          
         if (i == args.start_idx + args.render_batch_size)  or end_of_process:  #to avoid GPU CUDA overflow!
-          print('WE ARE HEREEE')
-          print('Len of env_answers:',len(env_answers[0]))
           if args.phase_constraint != 1:
             #Pickle
 		

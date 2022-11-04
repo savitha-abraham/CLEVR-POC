@@ -353,15 +353,11 @@ def getQA(query_attribute, given_query, complete, incomplete_details, obj_rm, en
      file1 = open(temp_file, 'w')
      n1 = file1.write(complete_qa)
      file1.close()
-     #input(complete_qa)
-     #print('Give, queryn:', given_query, query_attribute)
-     #input()
      asp_command = 'clingo 0'  + ' ' + temp_file
      output_stream = os.popen(asp_command)
      output = output_stream.read()
      output_stream.close()
      answers = output.split('Answer:')
-     #input(answers)
      answers = answers[1:]
      possible_values = []
      for answer_index, answer in enumerate(answers):
@@ -449,80 +445,30 @@ def createQuery_Incomplete(asp_file, preds, obj_rm, environment_constraints_dir,
       
         
 def getSceneGraph_data(num_objects, constraint_type_index, env_answers, environment_constraints_dir, args, start_from, num_image_per_qa, max_number_of_images_per_qa):
-    MAX_NUMBER_OF_ANSWERS = 1000000
     props = ['color', 'shape', 'size', 'material']
-    asp_file = environment_constraints_dir + str(constraint_type_index)+".lp"
-
-    print('constraint_type_index:', constraint_type_index)
-    if constraint_type_index in env_answers:
-        answers = env_answers[constraint_type_index]
-        print('** 8')
-
-    else:
-        print('** 9')
-        #asp_file = environment_constraints_dir + str(constraint_type_index)+".lp"
-        ASP_FILE_PATH = os.path.join(asp_file)
-        #ASP_FILE_PATH = os.path.join(args.environment_constraints_dir, str(constraint_type_index)+".lp")
-        asp_command = 'clingo ' + str(MAX_NUMBER_OF_ANSWERS) + ' ' + ASP_FILE_PATH
-        output_stream = os.popen(asp_command)
+    answers = env_answers[constraint_type_index]
         
-        output = output_stream.read()
-        output_stream.close()
-        ## parsing answer sets
-        
-        answers = output.split('Answer:')
-        answers = answers[1:]
-        random.shuffle(answers)
-        
-        if len(answers) <=  int(math.ceil(10.0/100*(MAX_NUMBER_OF_ANSWERS))):
-            number_sample = len(answers)
-        else:
-            number_sample = int(math.ceil(10.0/100*(MAX_NUMBER_OF_ANSWERS)))
-
-        answers = random.sample(answers, number_sample)
-        #input(len(answers))
     query_attr = "" 
-    possible_sols = [] 
     given_query = []
 
     objects =list(range(num_objects))
-    #print(objects, num_objects)
-    #input("EMPTY!!")
-
-    for answer_index, answer in enumerate(answers):
-            if(answer_index<start_from[constraint_type_index]):
-                continue
-            print("Answer:::", answer_index)
-            preds = answer.split('\n')[1].split(' ')
-            #print('Preds for complete scene:', preds)
-            obj_rm = random.choice(objects)
-            psossible_sols = []
-            possible_sols.append('random')
-            query_attr_index = balance_queryAttribute_numImages(num_image_per_qa, max_number_of_images_per_qa)
-            query_attr = props[query_attr_index]
-            
-            #print(asp_file)
-            #query_attr, possible_sols, given_query = createQuery_Incomplete(asp_file, preds, obj_rm, environment_constraints_dir, args, num_image_per_qa, max_number_of_images_per_qa)
-            given_query = chooseGiven(props, query_attr, 0)
-            if len(possible_sols)==0:
-                print('** 10')
-                continue
-            else:
-                print('** 11')
-                start_from[constraint_type_index] = answer_index+1 #answers[answer_index+1:]
-                #env_answers[constraint_type_index] = updated_answers
-                complete, incomplete = getObjects(preds, obj_rm, given_query)
-                #print("Possible sols:", possible_sols)
-                return complete, incomplete, query_attr, possible_sols, given_query, obj_rm, start_from
+    answer_index = start_from[constraint_type_index]
+    answer = answers[answer_index]
+    
+    preds = answer.split('\n')[1].split(' ')
+    obj_rm = random.choice(objects)
+    query_attr_index = balance_queryAttribute_numImages(num_image_per_qa, max_number_of_images_per_qa)
+    query_attr = props[query_attr_index]
+    given_query = chooseGiven(props, query_attr, 0)
+    start_from[constraint_type_index] = answer_index+1 
+    complete, incomplete = getObjects(preds, obj_rm, given_query)
+    return complete, incomplete, query_attr, given_query, obj_rm, start_from
                 
-    start_from[constraint_type_index] = None
-    return complete, incomplete, query_attr, None, given_query, obj_rm, start_from
-
+    
 def getSceneGraph_constraint(num_objects, constraint_type_index, env_answers, environment_constraints_dir, args):
     MAX_NUMBER_OF_ANSWERS = 1000000
     asp_file = environment_constraints_dir + str(constraint_type_index)+".lp"
     ASP_FILE_PATH = os.path.join(asp_file)
-	# ASP_FILE_PATH = os.path.join(args.environment_constraints_dir, str(constraint_type_index)+".lp")
     asp_command = 'clingo ' + str(MAX_NUMBER_OF_ANSWERS) + ' ' + ASP_FILE_PATH
     output_stream = os.popen(asp_command)
     output = output_stream.read()
