@@ -378,25 +378,33 @@ def getQA(query_attribute, given_query, complete, incomplete_details, obj_rm, en
          return possible_values 
 
     
-    
 #----------------------------------------------------------------------------------------------
+def balance_queryAttribute_numImages(num_images_per_qa, max_number_of_images_per_qa):
+  for i in range(len(num_images_per_qa)):
+     if num_images_per_qa[i] < max_number_of_images_per_qa[i]:
+      return i
+  return random.randint(0, 3) 
+    
+#---------------------------------------------------------------------------------------------
 def chooseGiven(props, query_attribute, n1):
     #Choose n1 props that is not query_attribute
     given = []
     allowed = copy.deepcopy(props)
     allowed.remove(query_attribute)
-    for i in range(n1):
-        g = random.choice(allowed)
-        given.append(g)
-        allowed.remove(g)
-       
-    return given
+    given_comb = [[0], [0, 1],[1], [0, 2], [2], [1, 2], [0,1,2]] 
+    chosen_comb = given_comb[n1]
+    for k in chosen_comb:
+    	given.append(allowed[k]) 
+    return given     
+
+#----------------------------------------------------------------------------------------------
 #-----------------------------------------------------------------------------------------------
 #Creates an incomplete scene graph by removing obj_rm and decides on the query_attribute and given_attributes 
 #based on possible_sols for the query () 
 
-def createQuery_Incomplete(asp_file, preds, obj_rm, environment_constraints_dir,args):
+def createQuery_Incomplete(asp_file, preds, obj_rm, environment_constraints_dir,args, num_image_per_qa, max_number_of_images_per_qa):
      props = ['color', 'shape', 'size', 'material']
+     #max_number_of_images_per_qa = math.ceil(args.num_images/4.0)
      file2 = open(asp_file, 'r')
      Lines = file2.readlines()
      complete = ""
@@ -419,7 +427,7 @@ def createQuery_Incomplete(asp_file, preds, obj_rm, environment_constraints_dir,
      possible_sols = []
      given_query = []
      for k in range(10):
-         query_attribute = random.choice(props)
+         query_attribute = random.choice(props) #balance_queryAttribute_numImages(num_image_per_qa, max_number_of_images_per_qa) 
          n1 = random.randint(0, 2)
          given = chooseGiven(props, query_attribute, n1)
          
@@ -440,8 +448,9 @@ def createQuery_Incomplete(asp_file, preds, obj_rm, environment_constraints_dir,
 #2. Creates an incomplete scene graph with an obj_interest, query_attribute, given_attributes and set of possible soluions for it.
       
         
-def getSceneGraph_data(num_objects, constraint_type_index, env_answers, environment_constraints_dir, args, start_from):
+def getSceneGraph_data(num_objects, constraint_type_index, env_answers, environment_constraints_dir, args, start_from, num_image_per_qa, max_number_of_images_per_qa):
     MAX_NUMBER_OF_ANSWERS = 1000000
+    props = ['color', 'shape', 'size', 'material']
     asp_file = environment_constraints_dir + str(constraint_type_index)+".lp"
 
     print('constraint_type_index:', constraint_type_index)
@@ -487,8 +496,14 @@ def getSceneGraph_data(num_objects, constraint_type_index, env_answers, environm
             preds = answer.split('\n')[1].split(' ')
             #print('Preds for complete scene:', preds)
             obj_rm = random.choice(objects)
+            psossible_sols = []
+            possible_sols.append('random')
+            query_attr_index = balance_queryAttribute_numImages(num_image_per_qa, max_number_of_images_per_qa)
+            query_attr = props[query_attr_index]
+            
             #print(asp_file)
-            query_attr, possible_sols, given_query = createQuery_Incomplete(asp_file, preds, obj_rm, environment_constraints_dir, args)
+            #query_attr, possible_sols, given_query = createQuery_Incomplete(asp_file, preds, obj_rm, environment_constraints_dir, args, num_image_per_qa, max_number_of_images_per_qa)
+            given_query = chooseGiven(props, query_attr, 0)
             if len(possible_sols)==0:
                 print('** 10')
                 continue

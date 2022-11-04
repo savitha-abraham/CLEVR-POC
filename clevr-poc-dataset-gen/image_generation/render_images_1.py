@@ -220,8 +220,8 @@ def main(args):
                     if len(possible_num_objects)== 0:
                     
                       end_of_process = True
-                      input('End of process')
-                      input(num_image_per_constraint_type)
+                      #input('End of process')
+                      #input(num_image_per_constraint_type)
                       #print('EOP True!!')
                       
                       break
