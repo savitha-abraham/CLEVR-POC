@@ -134,7 +134,6 @@ def main(args):
     max_number_of_images_per_qa.append(math.ceil((20/100)*num_images)) #material
     
     
-    #input()
     
 
     if args.start_idx == 0:
@@ -232,7 +231,7 @@ def main(args):
                   
                 num_objects = random.choice(possible_num_objects)
                 list_env = objNum_env[num_objects]
-                input(num_objects)
+                ##input(num_objects)
                 constraint_type_index = balance_constraint_type(list_env, num_image_per_constraint_type, max_number_of_images_per_constraint)
                 
                 if constraint_type_index == None:
@@ -263,11 +262,11 @@ def main(args):
                   constraint_type_index=constraint_type_index,
                   phase = args.phase_constraint
                 )
-                if complete_scene == None:
-                    input(complete_scene_graph)
+                ##if complete_scene == None:
+                ##    input(complete_scene_graph)
     
                 if complete_scene is not None:
-                    input('scene not none')
+                    ##input('scene not none')
                     with open(complete_scene_path, 'w') as f:
                       json.dump(complete_scene, f)
         		
@@ -311,7 +310,7 @@ def main(args):
                             flag_continue = False
                             with open(question_path, 'w') as f:
                                 json.dump(question, f)
-                            input(question)
+                            ##input(question)
                             num_image_per_constraint_type[constraint_type_index]= num_image_per_constraint_type[constraint_type_index] +1
                             num_image_per_qa[query_attribute_index] = num_image_per_qa[query_attribute_index] +1
                             
@@ -324,7 +323,7 @@ def main(args):
         if args.use_gpu == 1:
           gc.collect()
           
-        if (i == args.start_idx + args.render_batch_size)  or end_of_process:  #to avoid GPU CUDA overflow!
+        if (i == args.start_idx + args.render_batch_size)  or end_of_process or i == args.num_images:  #to avoid GPU CUDA overflow!
           if args.phase_constraint != 1:
             #Pickle
 		
@@ -484,8 +483,8 @@ def render_scene(args,
     complete_scene_struct['similar'] = scene_info.compute_all_similar(complete_scene_struct)
     #scene_struct['objects_blender_info'] = objects_blender_info    
     
-    #if args.phase_constraint != 1:
-    #  blender_obj.render()
+    if args.phase_constraint != 1:
+      blender_obj.render()
 
 
     blender_incomplete_obj = blender.Blender(incomplete_scene_image_path, 
@@ -734,4 +733,4 @@ if __name__ == '__main__':
     print('python render_images.py --help')  
 
     ## blender --background -noaudio --python render_images.py -- --num_images 1
-    ## blender --background -noaudio --python render_images.py -- --num_images 200 --use_gpu 1 --start_idx 0
+    ## blender --background -noaudio --python render_images.py -- --num_images 10 --use_gpu 1 --start_idx 0 --num_constraint_types 10

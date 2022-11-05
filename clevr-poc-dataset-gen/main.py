@@ -10,11 +10,11 @@ def remove_tem_file(file_name):
 
 
 num_constraint_types = 10
-training_size = 10
+training_size = 500
 testing_size = int(math.ceil(training_size/10))
 validation_size = int(math.ceil(training_size/10))
 
-use_gpu=0
+use_gpu=1
 render_batch_size=40
 start_idx=0
 
