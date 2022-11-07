@@ -112,10 +112,10 @@ parser.add_argument('--profile', action='store_true',
 
 #----------------------------------------------------------------------------------------
 domain = {}
-domain['color'] = ['red', 'blue', 'green', 'yellow'] 
+domain['color'] = ['gray', 'red', 'blue', 'green', 'brown', 'purple', 'cyan', 'yellow']
 domain['material'] = ['rubber', 'metal']
 domain['shape'] = ['cube', 'cylinder', 'sphere', 'cone']
-domain['size'] = ['large', 'small']
+domain['size'] = ['large', 'small', 'medium']
 
 def precompute_filter_options(scene_struct, metadata):
   # Keys are tuples (size, color, shape, material) (where some may be None)
