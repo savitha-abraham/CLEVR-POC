@@ -861,10 +861,10 @@ def replace_optionals(s):
 #Given an answer (prop_value), find the property to which it belongs to
 def findQueryAttribute(prop_value):
     domain = {}
-    domain['color'] = ['red', 'blue', 'green', 'yellow'] #'green', 'purple', 'red', 'yellow', 'coral']
+    domain['color'] = ['gray', 'red', 'blue', 'green', 'brown', 'purple', 'cyan', 'yellow'] #'green', 'purple', 'red', 'yellow', 'coral']
     domain['material'] = ['rubber', 'metal']
     domain['shape'] = ['cube', 'cylinder', 'sphere', 'cone']
-    domain['size'] = ['large', 'small']
+    domain['size'] = ['large', 'small', 'medium']
     for key in domain:
         if prop_value in domain[key]:
             return key
@@ -1034,6 +1034,7 @@ def generate_question(args,templates, num_loaded_templates, query_attribute, giv
     
     image_index = int(os.path.splitext(scene_fn)[0].split('_')[-1])
     possible_sols = solve(asp_query, image_index, constraint_type_index, '', scene_folder, env_folder)
+    #input(possible_sols)
     if possible_sols == None:
         return None, False
     if len(possible_sols) == len(domain[query_attribute]):

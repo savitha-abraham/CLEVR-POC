@@ -213,7 +213,7 @@ def main(args):
             
             no_question = True
             while(no_question):
-                
+                input(no_question)
                 complete_scene_image_path = complete_img_template % i
                 incomplete_scene_image_path = incomplete_img_template % i
             
@@ -231,7 +231,7 @@ def main(args):
                   
                 num_objects = random.choice(possible_num_objects)
                 list_env = objNum_env[num_objects]
-                ##input(num_objects)
+                #input(num_objects)
                 constraint_type_index = balance_constraint_type(list_env, num_image_per_constraint_type, max_number_of_images_per_constraint)
                 
                 if constraint_type_index == None:
@@ -262,11 +262,11 @@ def main(args):
                   constraint_type_index=constraint_type_index,
                   phase = args.phase_constraint
                 )
-                ##if complete_scene == None:
-                ##    input(complete_scene_graph)
+                #if complete_scene == None:
+                    #input(complete_scene_graph)
     
                 if complete_scene is not None:
-                    ##input('scene not none')
+                    #input('scene not none')
                     with open(complete_scene_path, 'w') as f:
                       json.dump(complete_scene, f)
         		
@@ -310,7 +310,7 @@ def main(args):
                             flag_continue = False
                             with open(question_path, 'w') as f:
                                 json.dump(question, f)
-                            ##input(question)
+                            input(question)
                             num_image_per_constraint_type[constraint_type_index]= num_image_per_constraint_type[constraint_type_index] +1
                             num_image_per_qa[query_attribute_index] = num_image_per_qa[query_attribute_index] +1
                             
@@ -459,7 +459,7 @@ def render_scene(args,
   loop_counter  = 0
   succeed = False
   # Building a (complete) scene and check the validity and visibility of all the randomly added objects
-  while (loop_counter < 10):
+  while (loop_counter < 50):
     objects, objects_blender_info = add_objects(complete_scene_struct, args, properties, complete_scene_graph)
     objects, blender_objects = get_blender_objects(objects, objects_blender_info, blender_obj)
     all_visible = blender_obj.check_visibility(blender_objects, args.min_pixels_per_object)
@@ -709,7 +709,7 @@ def add_objects(scene_struct, args, properties, complete_scene_graph):
       'region': region_index
     })
 
-    
+
   return objects, objects_blender_info
 
 ##---------------------------------------------------------------------------------------------------------------------------

@@ -1,6 +1,10 @@
-property(color, blue).
+property(color, gray).
 property(color, red).
+property(color, blue).
 property(color, green).
+property(color, brown).
+property(color, purple).
+property(color, cyan).
 property(color, yellow).
 
 property(shape, cube).
@@ -9,6 +13,7 @@ property(shape, sphere).
 property(shape, cone).
 
 property(size, small).
+property(size, medium).
 property(size, large).
 
 property(material, rubber).

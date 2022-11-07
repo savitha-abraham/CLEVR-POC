@@ -17,10 +17,11 @@ sys.path.append(str(path_root))
 
 PROPERTIES = ['shape', 'color', 'material', 'size']
 domain = {}
-domain['color'] = ['red', 'blue', 'green', 'yellow'] 
+domain['color'] = ['gray', 'red', 'blue', 'green', 'brown', 'purple', 'cyan', 'yellow'] 
 domain['material'] = ['rubber', 'metal']
 domain['shape'] = ['cube', 'cylinder', 'sphere', 'cone']
-domain['size'] = ['large', 'small']
+domain['size'] = ['large', 'small', 'medium']
+
 region = [0,1,2,3] #4,5,6,7,8]
 
 
@@ -71,7 +72,7 @@ def generateConstraints(templates, negation, across, within):
         #mandatory negation constraints
         
         
-        for n  in range(0,2):
+        for n  in range(0,1):
             cons_num = random.choice(negation)
             c = templates[cons_num].instantiate(r)
             c_split = list(filter(None, c.split('.')))
@@ -80,7 +81,7 @@ def generateConstraints(templates, negation, across, within):
                 constraints = constraints + c_split[con] + "." + "\n"
                 
     #Generate 3 across region constraints
-    for i in range(3):
+    for i in range(1):
         n = random.choice(across)
         c = templates[n].instantiate()
         c_split = list(filter(None, c.split('.')))

@@ -114,9 +114,10 @@ def solve(pred_pgm, scene_filename,  constraint_type_index, split, scene_folder,
     file1 = open(temp_file, 'w')
     n1 = file1.write(complete)
     file1.close()
-    if constraint_type_index==122:
-    	print('COMPLETE:::', complete)
-		
+    #if constraint_type_index==122:
+    print(constraint_type_index)
+    print(complete)
+    
     asp_command = 'clingo 0'  + ' ' + temp_file
     output_stream = os.popen(asp_command)
     output = output_stream.read()
@@ -139,6 +140,8 @@ def solve(pred_pgm, scene_filename,  constraint_type_index, split, scene_folder,
     temp_path = os.path.join(temp_file)
     if os.path.isfile(temp_path):
         os.remove(temp_path)
+        
+    input(possible_values)
         
     return possible_values    
    
