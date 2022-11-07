@@ -19,17 +19,24 @@ region(1).
 region(2).
 region(3).
 
-sameProperty(X1, X2, P) :- object(X1), object(X2), hasProperty(X1,P,V1), hasProperty(X2, P, V2), V1==V2, X1!=X2.
+sameProperty(X1, X2, P) :- hasProperty(X1,P,V), hasProperty(X2,P,V), X1<X2.
+
+same_color(X,Y):- sameProperty(X, Y, color).
+same_size(X,Y):- sameProperty(X, Y, size).
+same_shape(X,Y):- sameProperty(X, Y, shape).
+same_material(X,Y):- sameProperty(X, Y, material).
+    
+
 1{hasProperty(X, color, V):property(color, V)}1 :- object(X).
 1{hasProperty(X, material, V):property(material, V)}1 :- object(X).
 1{hasProperty(X, shape, V):property(shape, V)}1 :- object(X).
 1{hasProperty(X, size, V):property(size, V)}1 :- object(X).
 1{at(X, R): region(R)}1 :- object(X).
 
-:-hasProperty(X1, material, MV), hasProperty(X2, material, MV), hasProperty(X1, color, CV), hasProperty(X2, color, CV), hasProperty(X1, size, SiV), hasProperty(X2, size, SiV), hasProperty(X1, shape, SV), hasProperty(X2, shape, SV), X1!=X2, object(X1), object(X2).
+:- sameProperty(X1, X2, color), sameProperty(X1, X2, material), sameProperty(X1, X2, size), sameProperty(X1, X2, shape), object(X1), object(X2), X1!=X2.
 
-:-#count{object(X): at(X,0)}>=4.
-:-#count{object(X): at(X,1)}>=4.
-:-#count{object(X): at(X,2)}>=4.
-:-#count{object(X): at(X,3)}>=4.
+exceed_region_capacity(R) :- #count{X: object(X), at(X, R)} >= 4, region(R).
+:- exceed_region_capacity(_).
+
+
 

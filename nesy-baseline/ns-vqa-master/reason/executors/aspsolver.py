@@ -101,10 +101,6 @@ def solve(pred_pgm, scene_filename,  constraint_type_index, split, scene_folder,
     
     #Add definitions for same_color, same_material, same_size, same_shape
     complete = complete+'\n'+':- not missing(_).'+'\n'
-    complete = complete+'\n'+'same_color(X,Y):- sameProperty(X, Y, color).'
-    complete = complete+'\n'+'same_size(X,Y):- sameProperty(X, Y, size).'
-    complete = complete+'\n'+'same_shape(X,Y):- sameProperty(X, Y, shape).'
-    complete = complete+'\n'+'same_material(X,Y):- sameProperty(X, Y, material).'
 	
     #Add scene information
     
