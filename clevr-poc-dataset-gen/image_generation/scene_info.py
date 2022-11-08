@@ -87,6 +87,7 @@ def compute_all_relationships(scene_struct, eps=0.2):
   object j is left of object i.
   """
   
+  """
   all_relationships = {}
   for name, direction_vec in scene_struct['directions'].items():
     if name == 'above' or name == 'below': continue
@@ -103,9 +104,8 @@ def compute_all_relationships(scene_struct, eps=0.2):
           related.add(j)
       all_relationships[name].append(sorted(list(related)))
   return all_relationships
-
-
 """
+
 
   all_relationships = {}
   for name, direction_vec in scene_struct['directions'].items():
@@ -137,7 +137,7 @@ def compute_all_relationships(scene_struct, eps=0.2):
         all_relationships[name][i] = sorted(list(all_relationships[name][i]))
 
   return all_relationships
-  """
+  
 
 def compute_all_similar(scene_struct):
     all_similar = {}

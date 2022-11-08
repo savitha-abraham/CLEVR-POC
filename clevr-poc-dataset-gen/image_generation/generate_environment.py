@@ -71,8 +71,8 @@ def generateConstraints(templates, negation, across, within):
             
         #mandatory negation constraints
         
-        
-        for n  in range(0,1):
+        t = random.choice([1, 2])
+        for n  in range(0,t):
             cons_num = random.choice(negation)
             c = templates[cons_num].instantiate(r)
             c_split = list(filter(None, c.split('.')))
@@ -81,7 +81,8 @@ def generateConstraints(templates, negation, across, within):
                 constraints = constraints + c_split[con] + "." + "\n"
                 
     #Generate 3 across region constraints
-    for i in range(1):
+    t = random.choice([1, 2, 3])
+    for i in range(t):
         n = random.choice(across)
         c = templates[n].instantiate()
         c_split = list(filter(None, c.split('.')))
@@ -186,7 +187,7 @@ def createTemplateInstance(templates_list):
     val_var[0] = [lambda region : random.choice(region), region]
     val_var[1] = [lambda y, region: random.choice(list(filter(lambda x: (x != y), region))), 0, region]
     val_var[2] = [lambda PROPERTIES : random.choice(PROPERTIES), PROPERTIES]
-    val_var[3] = [lambda x: random.choice(x), [1,2]]
+    val_var[3] = [lambda x: random.choice(x), [2,4]]
     t7 = Template(template_7, vars1, val_var)
     #t4_instance = t4.instantiate()
     #print(t4_instance)
@@ -201,7 +202,7 @@ def createTemplateInstance(templates_list):
     val_var[2] = [lambda PROPERTIES : random.choice(PROPERTIES), PROPERTIES]
     val_var[3] = [lambda y, PROPERTIES: random.choice(list(filter(lambda x: (x != y), PROPERTIES))), 2, PROPERTIES]
     val_var[4] = [lambda x : random.choice(domain[x]), 3]
-    val_var[5] = [lambda x: random.choice(x), [1,2]]
+    val_var[5] = [lambda x: random.choice(x), [2,4]]
     t8 = Template(template_8, vars1, val_var)
     #t8_instance = t8.instantiate()
     #print(t5_instance)
@@ -215,7 +216,7 @@ def createTemplateInstance(templates_list):
     val_var[0] = [lambda region : random.choice(region), region]
     val_var[1] = [lambda y, region: random.choice(list(filter(lambda x: (x != y), region))), 0, region]
     val_var[2] = [lambda PROPERTIES : random.choice(PROPERTIES), PROPERTIES]
-    val_var[3] = [lambda x: random.choice(x), [1, 2]]
+    val_var[3] = [lambda x: random.choice(x), [2, 4]]
     t9 = Template(template_9, vars1, val_var)
     #t9_instance1 = t9.instantiate()
     #t6_instance2 = t6.instantiate()
@@ -231,7 +232,7 @@ def createTemplateInstance(templates_list):
     val_var[2] = [lambda PROPERTIES : random.choice(PROPERTIES), PROPERTIES]
     val_var[3] = [lambda y, PROPERTIES: random.choice(list(filter(lambda x: (x != y), PROPERTIES))), 2, PROPERTIES]
     val_var[4] = [lambda x : random.choice(domain[x]), 3]
-    val_var[5] = [lambda x: random.choice(x), [1, 2]]
+    val_var[5] = [lambda x: random.choice(x), [2, 4]]
     t10 = Template(template_10, vars1, val_var)
     #t7_instance = t7.instantiate()
     #print(t7_instance)

@@ -100,7 +100,19 @@ def solve(pred_pgm, scene_filename,  constraint_type_index, split, scene_folder,
     file2.close()
     
     #Add definitions for same_color, same_material, same_size, same_shape
-    complete = complete+'\n'+':- not missing(_).'+'\n'
+    complete = complete+'\n'+':- not missing(_).'+'\n\n'
+    complete = complete+'\n'+'1 {at(Y, R2) : at(X, R1), front_R(R1, R2)} 1 :- front(X, Y).'+'\n'
+    complete = complete+'\n'+'1 {at(Y, R2) : at(X, R1), behind_R(R1, R2)} 1 :- behind(X, Y).'+'\n'
+    complete = complete+'\n'+'1 {at(Y, R2) : at(X, R1), right_R(R1, R2)} 1 :- right(X, Y).'+'\n'
+    complete = complete+'\n'+'1 {at(Y, R2) : at(X, R1), left_R(R1, R2)} 1 :- left(X, Y).'+'\n\n'
+ 
+    complete = complete+'\n'+'front(X, Y) :- behind(Y, X).'+'\n'
+    complete = complete+'\n'+'right(X, Y) :- left(Y, X).'+'\n'
+
+
+    complete = complete+'\n'+'1{right(X, Y); left(X, Y)}1 :- object(X), object(Y), X<Y.'+'\n'
+    complete = complete+'\n'+'1{front(X, Y); behind(X, Y)}1 :- object(X), object(Y), X<Y.'+'\n'
+    
 	
     #Add scene information
     
@@ -115,35 +127,38 @@ def solve(pred_pgm, scene_filename,  constraint_type_index, split, scene_folder,
     n1 = file1.write(complete)
     file1.close()
     #if constraint_type_index==122:
-    print(constraint_type_index)
-    print(complete)
-    
+
     asp_command = 'clingo 0'  + ' ' + temp_file
     output_stream = os.popen(asp_command)
     output = output_stream.read()
     output_stream.close()
     #print('OUTPUT::')
     #print(output)
-    possible_values = None
+    possible_values = set()
     if ("Answer" in output):
         answers = output.split('Answer:')
         #print("Answers:", answers)
         answers = answers[1:]
-        possible_values = []
+        possible_values = set()
         for answer_index, answer in enumerate(answers):
             ans = answer.split('\n')[1].split(' ')
-            val = ans[0][8:(len(ans[0])-1)]
-            if val=='':
-                continue
-            if (val not in possible_values):
-                possible_values.append(val)
+            for element in ans:
+            	val = element[8:(len(element)-1)]
+            	if val=='':	
+            		continue
+            	possible_values.add(val)
+
+    else:
+    	print(constraint_type_index)
+    	print(complete)
+    	input('UNSAT...')       
     temp_path = os.path.join(temp_file)
     if os.path.isfile(temp_path):
         os.remove(temp_path)
         
-    input(possible_values)
+    #input(possible_values)
         
-    return possible_values    
+    return list(possible_values)
    
 
     

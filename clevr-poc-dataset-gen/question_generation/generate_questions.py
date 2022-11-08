@@ -329,25 +329,25 @@ def getOtherProps(props, n1):
     return props_other
 #------------------------------------------------------------------------------------
 #Find an object 'other' that is not obj_interest such that obj_R is in the 'R' of other  
-def chooseRelation(relations, rels, obj_R, obj_interest):
+def chooseRelation(relations, rels, obj_R, taboo):
       other = -1
       updated_relations = copy.deepcopy(relations)
       while(other == -1):
           R = random.choice(updated_relations)
-          other = getObjs_Relation(rels, R, obj_R, obj_interest)
+          other = getObjs_Relation(rels, R, obj_R, taboo)
           if other == -1:
               updated_relations.remove(R)
           else:
               return R, other
 
-def getObjs_Relation(rels, R, obj_R, obj_interest):
+def getObjs_Relation(rels, R, obj_R, taboo):
 
       list_list = rels[R]
       other_no = 0
       possible_other = []
       for l in list_list:
           if obj_R in l:
-              if other_no!=obj_interest:
+              if other_no not in taboo:
                   possible_other.append(other_no)
           other_no = other_no+1
       if len(possible_other)==0:
@@ -581,7 +581,7 @@ def instantiate_templates_dfs(args, scene_struct, query_attribute, given_attribu
       #print("vals after filling given:", vals)
       rels = scene_struct["relationships"]
       
-      R, other = chooseRelation(relations, rels, obj_interest, obj_interest)
+      R, other = chooseRelation(relations, rels, obj_interest, [obj_interest])
       
               
       #allowed_props_other = copy.deepcopy(props)
@@ -612,8 +612,8 @@ def instantiate_templates_dfs(args, scene_struct, query_attribute, given_attribu
   
   elif  "two_hop" in template_type:
       rels = scene_struct["relationships"]
-      R2, other2 = chooseRelation(relations, rels, obj_interest, obj_interest)
-      R, other =  chooseRelation(relations, rels, other2, obj_interest)
+      R2, other2 = chooseRelation(relations, rels, obj_interest, [obj_interest])
+      R, other =  chooseRelation(relations, rels, other2, [obj_interest, other2])
       for param in param_name_to_type:
           if param_name_to_type[param] == "relation" and "2" in param: 
               vals[param] = R2
@@ -649,7 +649,7 @@ def instantiate_templates_dfs(args, scene_struct, query_attribute, given_attribu
                   pred_v.append("hasProperty(Y2,"+param_name_to_type[v]+","+vals[v]+")")
       
       rel_pred1 = R2+"(Y1, X),"
-      rel_pred2 = R+"(Y2, Y1), X!=Y1, Y1!=Y2."
+      rel_pred2 = R+"(Y2, Y1), X!=Y1, Y1!=Y2, X!=Y2."
       query = "missing(Q):-hasProperty(X,"+query_attribute+",Q),"
       for i in range(len(pred_v)):
           query = query + pred_v[i]+","
@@ -659,9 +659,9 @@ def instantiate_templates_dfs(args, scene_struct, query_attribute, given_attribu
   elif "three_hop" in template_type:
       #incomplete_asp = addRelations(incomplete_asp, scene_struct)
       rels = scene_struct["relationships"]
-      R3, other3 = chooseRelation(relations, rels, obj_interest, obj_interest)
-      R2, other2 = chooseRelation(relations, rels, other3, obj_interest)
-      R, other =  chooseRelation(relations, rels, other2, obj_interest)
+      R3, other3 = chooseRelation(relations, rels, obj_interest, [obj_interest])
+      R2, other2 = chooseRelation(relations, rels, other3, [obj_interest, other3])
+      R, other =  chooseRelation(relations, rels, other2, [obj_interest, other2, other3])
       for param in param_name_to_type:
           if param_name_to_type[param] == "relation" and "2" in param: 
               vals[param] = R2
@@ -703,7 +703,7 @@ def instantiate_templates_dfs(args, scene_struct, query_attribute, given_attribu
 
       rel_pred1 = R3+"(Y1,X),"
       rel_pred2 = R2+"(Y2, Y1),"
-      rel_pred3 = R+"(Y3, Y2), X!=Y1, Y1!=Y2, Y2!=Y3."
+      rel_pred3 = R+"(Y3, Y2), X!=Y1, Y1!=Y2, Y2!=Y3, X!=Y2, X!=Y3, Y1!=Y3."
       
       query = "missing(Q):-hasProperty(X,"+query_attribute+",Q),"
       for i in range(len(pred_v)):
@@ -750,7 +750,7 @@ def instantiate_templates_dfs(args, scene_struct, query_attribute, given_attribu
                   pred_v.append("hasProperty(Y,"+param_name_to_type[v]+","+vals[v]+")")
       
       rel_pred = "same_"+relate_prop+"(Y,X)."
-      query = "missing(Q):-hasProperty(X,"+query_attribute+",Q),"
+      query = "missing(Q):-hasProperty(X,"+query_attribute+",Q), X!=Y, "
       for i in range(len(pred_v)):
           query = query + pred_v[i]+","
       query = query+ rel_pred
@@ -759,8 +759,8 @@ def instantiate_templates_dfs(args, scene_struct, query_attribute, given_attribu
   elif "single_and" in template_type:
       rels = scene_struct["relationships"]
       
-      R2, other2 = chooseRelation(relations, rels, obj_interest, obj_interest)
-      R, other =  chooseRelation(relations, rels, obj_interest, obj_interest)
+      R2, other2 = chooseRelation(relations, rels, obj_interest, [obj_interest])
+      R, other =  chooseRelation(relations, rels, obj_interest, [obj_interest, other2])
       
       
       for param in param_name_to_type:
@@ -796,7 +796,7 @@ def instantiate_templates_dfs(args, scene_struct, query_attribute, given_attribu
                   pred_v.append("hasProperty(Y2,"+param_name_to_type[v]+","+vals[v]+")")
       
       rel_pred1 = R2+"(Y1, X),"
-      rel_pred2 = R+"(Y2, X), X!=Y1, Y1!=Y2."
+      rel_pred2 = R+"(Y2, X), X!=Y1, Y1!=Y2, X!=Y2."
       query = "missing(Q):-hasProperty(X,"+query_attribute+",Q),"
       for i in range(len(pred_v)):
           query = query + pred_v[i]+","
@@ -1035,7 +1035,7 @@ def generate_question(args,templates, num_loaded_templates, query_attribute, giv
     image_index = int(os.path.splitext(scene_fn)[0].split('_')[-1])
     possible_sols = solve(asp_query, image_index, constraint_type_index, '', scene_folder, env_folder)
     #input(possible_sols)
-    if possible_sols == None:
+    if len(possible_sols) == 0:
         return None, False
     if len(possible_sols) == len(domain[query_attribute]):
          return None, False

@@ -213,7 +213,7 @@ def main(args):
             
             no_question = True
             while(no_question):
-                input(no_question)
+                #input(no_question)
                 complete_scene_image_path = complete_img_template % i
                 incomplete_scene_image_path = incomplete_img_template % i
             
@@ -310,7 +310,7 @@ def main(args):
                             flag_continue = False
                             with open(question_path, 'w') as f:
                                 json.dump(question, f)
-                            input(question)
+                            #input(question)
                             num_image_per_constraint_type[constraint_type_index]= num_image_per_constraint_type[constraint_type_index] +1
                             num_image_per_qa[query_attribute_index] = num_image_per_qa[query_attribute_index] +1
                             
