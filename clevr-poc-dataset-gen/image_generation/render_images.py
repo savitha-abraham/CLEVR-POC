@@ -18,6 +18,7 @@ from generate_environment import generateEnvironment, getSceneGraph_data, getSce
 from question_generation.generate_questions import generate_question
 
 
+VERY_LARG_NUMBER = 1000000
 
 INSIDE_BLENDER = True
 try:
@@ -240,18 +241,33 @@ def main(args):
               
                 for e in updated:
                     if updated[e] == len(env_answers[e])-1:
-                        num_image_per_constraint_type[e] = 1000000
+                        num_image_per_constraint_type[e] = VERY_LARG_NUMBER
+                        
+                
+                temp = [ind for ind in range(len(num_image_per_constraint_type)) if num_image_per_constraint_type[ind] == VERY_LARG_NUMBER] 
+                if len(temp) == len(num_image_per_constraint_type):
+                	end_of_process = True
+                	break
+                """     		       
                 if (num_image_per_constraint_type.count(num_image_per_constraint_type[0]) == len(num_image_per_constraint_type)):
-                    if(num_image_per_constraint_type[0] == 1000000):
+                    if(num_image_per_constraint_type[0] == VERY_LARG_NUMBER):
                         end_of_process = True
                         break
-            
+                """
             
                 #Generate a scene from that environment
+                print(updated)
+                print(constraint_type_index)
                 complete_scene_graph, incomplete_scene_graph, query_attribute, given_query, obj_rm, updated = getSceneGraph_data(num_objects, constraint_type_index, env_answers, environment_constraints_dir, args, updated, num_image_per_qa, max_number_of_images_per_qa)
                 
-                
+                #input(updated)
+                """
+                      complete_scene_graph = {0: {'color': 'purple', 'material': 'rubber', 'region': '2', 'size': 'medium', 'shape': 'sphere'}, 1: {'color': 'purple', 'material': 'rubber', 'region': '2', 'size': 'large', 'shape': 'sphere'}, 2: {'color': 'purple', 'material': 'rubber', 'region': '0', 'size': 'small', 'shape': 'cylinder'}, 3: {'color': 'yellow', 'material': 'rubber', 'region': '3', 'size': 'small', 'shape': 'cylinder'}, 4: {'color': 'purple', 'material': 'metal', 'region': '0', 'size': 'small', 'shape': 'sphere'}, 5: {'color': 'green', 'material': 'rubber', 'region': '0', 'size': 'small', 'shape': 'sphere'}, 6: {'color': 'green', 'material': 'rubber', 'region': '1', 'size': 'small', 'shape': 'cone'}, 7: {'color': 'gray', 'material': 'rubber', 'region': '1', 'size': 'small', 'shape': 'cone'}, 8: {'color': 'yellow', 'material': 'rubber', 'region': '1', 'size': 'small', 'shape': 'cone'}}
+                      """
                 print("Scene graph for image ",i, " created!!")
+
+
+
                 complete_scene, incomplete_scene = render_scene(args,
                   complete_scene_graph=complete_scene_graph,
                   incomplete_scene_graph=incomplete_scene_graph,
@@ -262,8 +278,9 @@ def main(args):
                   constraint_type_index=constraint_type_index,
                   phase = args.phase_constraint
                 )
-                #if complete_scene == None:
-                    #input(complete_scene_graph)
+
+                #if complete_scene == None and constraint_type_index == 24:
+                #    input(complete_scene_graph)
     
                 if complete_scene is not None:
                     #input('scene not none')
@@ -283,9 +300,9 @@ def main(args):
                     while(flag_continue): #continue trying
                         if trial != 1:
                             try_next  = False
-                            for i in range(len(num_image_per_qa)):
-                                if i not in tried and num_image_per_qa[i] < max_number_of_images_per_qa[i]:
-                                    query_attribute_index = i
+                            for ind in range(len(num_image_per_qa)):
+                                if ind not in tried and num_image_per_qa[ind] < max_number_of_images_per_qa[ind]:
+                                    query_attribute_index = ind
                                     try_next = True
                             if not try_next:
                                 flag_continue = False
@@ -320,6 +337,8 @@ def main(args):
                     	
         if not end_of_process:    	
             i = i+1
+            print('i updated to:')
+            #input(i)
         if args.use_gpu == 1:
           gc.collect()
           
@@ -411,6 +430,8 @@ def render_scene(args,
 
   ):
 
+  #input(complete_scene_graph)
+
   blender_obj = blender.Blender(complete_scene_image_path, 
     args.material_dir, 
     args.base_scene_blendfile, 
@@ -459,7 +480,7 @@ def render_scene(args,
   loop_counter  = 0
   succeed = False
   # Building a (complete) scene and check the validity and visibility of all the randomly added objects
-  while (loop_counter < 50):
+  while (loop_counter < 100):
     objects, objects_blender_info = add_objects(complete_scene_struct, args, properties, complete_scene_graph)
     objects, blender_objects = get_blender_objects(objects, objects_blender_info, blender_obj)
     all_visible = blender_obj.check_visibility(blender_objects, args.min_pixels_per_object)
@@ -486,7 +507,7 @@ def render_scene(args,
     if args.phase_constraint != 1:
       blender_obj.render()
 
-
+    
     blender_incomplete_obj = blender.Blender(incomplete_scene_image_path, 
       args.material_dir, 
       args.base_scene_blendfile, 
@@ -498,6 +519,7 @@ def render_scene(args,
       args.render_min_bounces, 
       args.render_max_bounces) 
     
+    
     blender_incomplete_obj.get_plane_direction()
 
     incomplete_objects, incomplete_blender_info = get_incomplete_scene_info(complete_scene_graph, incomplete_scene_graph, objects, objects_blender_info)
@@ -505,16 +527,18 @@ def render_scene(args,
 
     if args.phase_constraint != 1:
       blender_incomplete_obj.render()
-
+    
 
     incomplete_scene_struct = copy.deepcopy(complete_scene_struct)
+    
+    
     del incomplete_scene_struct['similar']
     incomplete_scene_struct['image_filename'] = os.path.basename(incomplete_scene_image_path)
     incomplete_scene_struct['objects'] = incomplete_objects
     incomplete_scene_struct['relationships'] = scene_info.compute_all_relationships(incomplete_scene_struct)
-     
-    del blender_obj
+    
     del blender_incomplete_obj
+    del blender_obj
     gc.collect()
     
     return complete_scene_struct, incomplete_scene_struct
