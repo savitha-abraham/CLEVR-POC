@@ -130,6 +130,9 @@ class Blender():
     utils.add_object(shape_dir, obj_name, r, (x, y), theta)
     obj = bpy.context.object
     utils.add_material(mat_name, Color=rgba)
+    
+    location = Vector((x, y, obj.location[2]))
+    obj.location = location
     pixel_coords = utils.get_camera_coords(self.camera, obj.location)
     return obj, pixel_coords
 

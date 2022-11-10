@@ -504,8 +504,8 @@ def render_scene(args,
     complete_scene_struct['similar'] = scene_info.compute_all_similar(complete_scene_struct)
     #scene_struct['objects_blender_info'] = objects_blender_info    
     
-    if args.phase_constraint != 1:
-      blender_obj.render()
+    #if args.phase_constraint == 0:
+    #  blender_obj.render()
 
     
     blender_incomplete_obj = blender.Blender(incomplete_scene_image_path, 
@@ -525,7 +525,7 @@ def render_scene(args,
     incomplete_objects, incomplete_blender_info = get_incomplete_scene_info(complete_scene_graph, incomplete_scene_graph, objects, objects_blender_info)
     incomplete_objects, incomplete_blender_objects = get_blender_objects(incomplete_objects, incomplete_blender_info, blender_incomplete_obj)    
 
-    if args.phase_constraint != 1:
+    if args.phase_constraint == 0:
       blender_incomplete_obj.render()
     
 
@@ -591,7 +591,15 @@ def get_blender_objects(objects, objects_blender_info, blender_obj):
     blender_objects.append(obj)
     objects[index]['pixel_coords'] = pixel_coords
     objects[index]['3d_coords'] = tuple(obj.location)
-
+    
+    #objects[index]['3d_coords'] = tuple  (obj_blender_info['x'], obj_blender_info['y'], obj.location[2])
+    """
+    print('---------------------------------------------------')
+    print(objects[index]['region'])
+    print(obj_blender_info['x'], obj_blender_info['y'])
+    print(objects[index]['3d_coords'])
+    print('======================================================')    
+    """
   return objects, blender_objects
           
 
