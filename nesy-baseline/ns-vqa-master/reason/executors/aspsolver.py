@@ -69,11 +69,13 @@ def getToken(seq_ids, idx_to_token):
 def solve(pred_pgm, scene_filename,  constraint_type_index, split, scene_folder, env_folder):
     if pred_pgm == "":
         return None
-    if type(scene_filename == int):
-        name = str(scene_filename)
+
+    if type(scene_filename) == int:
+    	name = str(scene_filename)
     else:
-        name = str(scene_filename.tolist())    
-    #print("Expecting:",type(scene_filename))
+    	name = str(scene_filename.tolist())
+    	
+
     
     
     num_zero = 6-len(name)
@@ -148,10 +150,6 @@ def solve(pred_pgm, scene_filename,  constraint_type_index, split, scene_folder,
             		continue
             	possible_values.add(val)
 
-    else:
-    	print(constraint_type_index)
-    	print(complete)
-    	input('UNSAT...')       
     temp_path = os.path.join(temp_file)
     if os.path.isfile(temp_path):
         os.remove(temp_path)

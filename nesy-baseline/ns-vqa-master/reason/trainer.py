@@ -230,7 +230,7 @@ class Trainer():
             
             
            
-            if pred != None:
+            if len(pred) != 0:
                 a = [self.vocab['labels'][d] for d in pred]
                 b = [1 if c in a else 0 for c in range(len(self.vocab['labels']))]
                 predicted = numpy.array(b)
