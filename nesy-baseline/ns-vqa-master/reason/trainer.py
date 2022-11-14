@@ -133,10 +133,12 @@ class Trainer():
             
             
             trainPlot_loss.append(loss)
+            #input('VAL_ACC:::')
             val_acc,print_res = self.check_val_accuracy(val_batches_list_x, val_batches_list_y, val_batches_list_ans, val_batches_list_scenes, val_batches_list_ct)
             print('|Epoch| ', epoch)
             print('|Loss %f|' % loss)
             print('| Validation Accuracy %f' % val_acc)
+            #input('EPOCH over')
             validationPlot_acc.append(val_acc)
             if val_acc >= self.stats['best_val_acc']:
                 print('| best model')

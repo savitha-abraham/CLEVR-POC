@@ -60,6 +60,13 @@ def check_program(pred, gt):
             return False
         if pred[i] == 2:
             break
+    for i in range(1, len_gt+1):
+    	if gt[i] not in pred:
+    		return False
+    	
+    		
+           
+		
     
     return True
 
@@ -143,6 +150,13 @@ for x, y, answer, idx,constraint_type in loader:
             	#print('Predicted vectors:', predicted, ans)
             	#print('Ground truth ans:', ans_tokens_str)
             	#print('Predicted ans:', pred)
+        else:
+        	if(ans_eq):
+        		print('Testing question number-NEQ:', idx[i])
+        		print('Constraint type:', ct_np[i])
+        		print('GT pgm:', gt_pgm, ans_tokens_str)
+        		print('Predicted program:', pred_pgm, pred)
+    			
        
         stats['total'] += 1
         
