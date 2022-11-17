@@ -198,16 +198,16 @@ class Trainer():
             t += 1
         return loss / t if t is not 0 else 0
 
-    '''def computeReward(predicted, ans, function):
-    	if function == 'partial':
-    		comm = numpy.sum(predicted == ans)
-    		return comm/len(predicted)
-	else:
-		if numpy.array_equal(predicted, ans):
-			return 1
-		else:
-			return 0
-    	'''
+    def computeReward(predicted, ans, function):
+        if function == 'partial':
+            comm = numpy.sum(predicted == ans)
+            return comm/len(predicted)
+        else:
+            if numpy.array_equal(predicted, ans):
+                return 1
+        else:
+            return 0
+    	
     	
     def check_val_accuracy(self, val_batches_list_x, val_batches_list_y, val_batches_list_ans, val_batches_list_scenes,  val_batches_list_ct):
         reward = 0
@@ -228,27 +228,28 @@ class Trainer():
         return reward, val_pgm, print_res 
 
     def check_program(pred, gt):
-    	len_pred = 0
-    	for i in range(len(pred)):
-    		if pred[i]==2:
-    			break
-	len_pred = i
-	
-	for i in range(1, len(gt)):
-		if gt[i]==2:
-			break
-	len_gt = i-1
-	if len_pred!= len_gt:
-		return False
-	for i in range(len(pred)):
-		if pred[i] not in gt:
-			return False
-		if pred[i] == 2:
-			break
-	for i in range(1, len_gt+1):
-		if gt[i] not in pred:
-			return False
-	return True
+        len_pred = 0
+        for i in range(len(pred)):
+            if pred[i]==2:
+                break
+        
+        len_pred = i
+        
+        for i in range(1, len(gt)):
+            if gt[i]==2:
+                break
+        len_gt = i-1
+        if len_pred!= len_gt:
+            return False
+        for i in range(len(pred)):
+            if pred[i] not in gt:
+                return False
+            if pred[i] == 2:
+                break
+        for i in range(1, len_gt+1):
+            if gt[i] not in pred:
+                return False
+        return True
 
     
     def get_batch_reward(self, quests, gt, programs, answers, scene, constraint_type, split):
