@@ -44,13 +44,17 @@ def computeReward(predicted, ans, function):
 def check_program(pred, gt):
     """Check if the input programs matches"""
     len_pred = 0
+    flag = True
     for i in range(len(pred)):
     	if pred[i]==2:
+    		flag = True
     		break
     		
-    		
-    len_pred = i
-    
+    if (flag):		
+    	len_pred = i
+
+    else:
+    	len_pred = i+1
     for i in range(1, len(gt)):
     	if gt[i]==2:
     		break

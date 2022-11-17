@@ -205,8 +205,8 @@ class Trainer():
         else:
             if numpy.array_equal(predicted, ans):
                 return 1
-        else:
-            return 0
+            else:
+            	return 0
     	
     	
     def check_val_accuracy(self, val_batches_list_x, val_batches_list_y, val_batches_list_ans, val_batches_list_scenes,  val_batches_list_ct):
@@ -227,18 +227,25 @@ class Trainer():
         
         return reward, val_pgm, print_res 
 
-    def check_program(pred, gt):
+    def check_program(self, pred, gt):
         len_pred = 0
+        flag = False
         for i in range(len(pred)):
             if pred[i]==2:
+            	flag = True
                 break
         
-        len_pred = i
+        if (flag):
+        	len_pred = i
+	else:
+		len_pred = i+1
+        print(pred, len_pred)
         
         for i in range(1, len(gt)):
             if gt[i]==2:
                 break
         len_gt = i-1
+        print(gt, len_gt)
         if len_pred!= len_gt:
             return False
         for i in range(len(pred)):
@@ -288,7 +295,7 @@ class Trainer():
               
               quest_token = getToken(quests[i], self.vocab['question_idx_to_token'])
               gt_token = getToken_program(gt[i], self.vocab['program_idx_to_token'])
-              if check_program(pg_np[i], gt[i]):
+              if self.check_program(pg_np[i], gt[i]):
               	val_pgm_accuracy = val_pgm_accuracy+1 
               print_res.append("Question:"+quest_token+"\n GT:"+gt_token+"\n Pred pg:"+pred_pgm+"\n Ans:"+ans_tokens_str+"\n Pred ans: "+str(pred))
         reward /= pg_np.shape[0]
