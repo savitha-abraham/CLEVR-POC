@@ -115,7 +115,7 @@ class Trainer():
                 if self.reinforce:
                     
                     pred = self.model.reinforce_forward()
-                    reward,print_batch_res = self.get_batch_reward(x, y, pred, ans, scene, constraint_type, 'train')
+                    reward,val_pgm_acc, print_batch_res = self.get_batch_reward(x, y, pred, ans, scene, constraint_type, 'train')
                     #print("Reward ="+str(reward)+" at epoch:", epoch)
                     baseline = reward * (1 - self.reward_decay) + baseline * self.reward_decay
                     advantage = reward - baseline
@@ -134,10 +134,11 @@ class Trainer():
             
             trainPlot_loss.append(loss)
             #input('VAL_ACC:::')
-            val_acc,print_res = self.check_val_accuracy(val_batches_list_x, val_batches_list_y, val_batches_list_ans, val_batches_list_scenes, val_batches_list_ct)
+            val_acc,val_pgm_acc, print_res = self.check_val_accuracy(val_batches_list_x, val_batches_list_y, val_batches_list_ans, val_batches_list_scenes, val_batches_list_ct)
             print('|Epoch| ', epoch)
             print('|Loss %f|' % loss)
             print('| Validation Accuracy %f' % val_acc)
+            print('| Validation Pgm Accuracy %f' % val_pgm_acc)
             #input('EPOCH over')
             validationPlot_acc.append(val_acc)
             if val_acc >= self.stats['best_val_acc']:
@@ -197,26 +198,65 @@ class Trainer():
             t += 1
         return loss / t if t is not 0 else 0
 
-    
+    '''def computeReward(predicted, ans, function):
+    	if function == 'partial':
+    		comm = numpy.sum(predicted == ans)
+    		return comm/len(predicted)
+	else:
+		if numpy.array_equal(predicted, ans):
+			return 1
+		else:
+			return 0
+    	'''
+    	
     def check_val_accuracy(self, val_batches_list_x, val_batches_list_y, val_batches_list_ans, val_batches_list_scenes,  val_batches_list_ct):
         reward = 0
+        val_pgm = 0
         t = 0
         print_res = []
         for x, y, ans, scene, constraint_type in zip(val_batches_list_x, val_batches_list_y, val_batches_list_ans, val_batches_list_scenes, val_batches_list_ct):
             self.model.set_input(x, y)
             pred = self.model.parse()
-            reward1,print_res_batch = self.get_batch_reward(x,y, pred, ans, scene, constraint_type, 'val')
+            reward1,val_pgm_acc, print_res_batch = self.get_batch_reward(x,y, pred, ans, scene, constraint_type, 'val')
             reward += reward1
+            val_pgm += val_pgm_acc
             print_res.extend(print_res_batch)
             t += 1
         reward = reward / t if t is not 0 else 0
-        return reward, print_res 
+        val_pgm = val_pgm / t if t is not 0 else 0
+        
+        return reward, val_pgm, print_res 
 
+    def check_program(pred, gt):
+    	len_pred = 0
+    	for i in range(len(pred)):
+    		if pred[i]==2:
+    			break
+	len_pred = i
+	
+	for i in range(1, len(gt)):
+		if gt[i]==2:
+			break
+	len_gt = i-1
+	if len_pred!= len_gt:
+		return False
+	for i in range(len(pred)):
+		if pred[i] not in gt:
+			return False
+		if pred[i] == 2:
+			break
+	for i in range(1, len_gt+1):
+		if gt[i] not in pred:
+			return False
+	return True
+
+    
     def get_batch_reward(self, quests, gt, programs, answers, scene, constraint_type, split):
         pg_np = programs.cpu().detach().numpy()
         ans_np = answers.cpu().detach().numpy()
         ct_np = constraint_type.cpu().detach().numpy()
         reward = 0
+        val_pgm_accuracy = 0
         print_res = []
         for i in range(len(pg_np)):
             
@@ -236,6 +276,7 @@ class Trainer():
                 a = [self.vocab['labels'][d] for d in pred]
                 b = [1 if c in a else 0 for c in range(len(self.vocab['labels']))]
                 predicted = numpy.array(b)
+                #reward = reward + computeReward(predicted, ans, 'partial')
                 
                 
                 if numpy.array_equal(predicted, ans):
@@ -246,9 +287,12 @@ class Trainer():
               
               quest_token = getToken(quests[i], self.vocab['question_idx_to_token'])
               gt_token = getToken_program(gt[i], self.vocab['program_idx_to_token'])
+              if check_program(pg_np[i], gt[i]):
+              	val_pgm_accuracy = val_pgm_accuracy+1 
               print_res.append("Question:"+quest_token+"\n GT:"+gt_token+"\n Pred pg:"+pred_pgm+"\n Ans:"+ans_tokens_str+"\n Pred ans: "+str(pred))
         reward /= pg_np.shape[0]
-        return reward,print_res
+        val_pgm_accuracy /= pg_np.shape[0]
+        return reward,val_pgm_accuracy, print_res
 
     def log_stats(self, tag, value, t):
         if self.visualize_training and self.logger is not None:

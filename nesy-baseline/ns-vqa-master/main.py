@@ -17,7 +17,7 @@ DATA_FOLDER_NAME = "output-6000"
 import os
 shell = TerminalInteractiveShell.instance()
 
-
+'''
 #PREPROCESS TRAIN
 
 run = f"python ./reason/tools/preprocess_questions.py         --main_root={main_root}         --ns_vqa_root={ns_vqa_root}         --data_folder_name={DATA_FOLDER_NAME}         --vocab_flag=0" 
@@ -41,7 +41,7 @@ get_ipython().system('{run} ')
 run = f"python ./reason/tools/sample_questions.py         --n_questions_per_family 40         --input_question_h5 {ns_vqa_root}/data/reason/{DATA_FOLDER_NAME}/clevr-poc-train_questions.h5         --output_dir {ns_vqa_root}/data/reason/{DATA_FOLDER_NAME}" 
 get_ipython().system('{run} ')
 
-
+'''
 
 
 # In[ ]:
@@ -89,7 +89,7 @@ path_plot = os.path.join(ns_vqa_root, 'data/reason', DATA_FOLDER_NAME,'pretrain-
 plt.savefig(path_plot)
 plt.show()
 
-'''
+
 # In[ ]:
 
 
@@ -100,7 +100,7 @@ run = f"python ./reason/tools/run_train.py         --clevr_train_scene_path {mai
 get_ipython().system('{run} ')
 
 
-'''
+
 # In[ ]:
 
 
@@ -137,21 +137,21 @@ plt.show()
 
 # In[ ]:
 '''
-
+'''
 #PREPROCESS TEST
 
 run = f"python ./reason/tools/preprocess_questions.py         --main_root={main_root}         --ns_vqa_root={ns_vqa_root}         --data_folder_name={DATA_FOLDER_NAME}         --vocab_flag=2" 
 get_ipython().system('{run} ')
 
 # In[ ]:
-
-
+'''
+'''
 #TESTING
 run = f"python ./reason/tools/run_test.py         --main_root={main_root}         --ns_vqa_root={ns_vqa_root}         --data_folder_name={DATA_FOLDER_NAME}         --clevr_val_scene_path {main_root}/clevr-poc-dataset-gen/{DATA_FOLDER_NAME}/incomplete/scenes/testing       --clevr_val_question_path {ns_vqa_root}/data/reason/{DATA_FOLDER_NAME}/clevr-poc-test_questions.h5         --clevr_constraint_scene_path {main_root}/clevr-poc-dataset-gen/environment_constraints         --load_checkpoint_path {ns_vqa_root}/data/reason/{DATA_FOLDER_NAME}/model_reinforce/checkpoint_best.pt         --save_result_path {ns_vqa_root}/data/reason/{DATA_FOLDER_NAME}/test_result.json         --clevr_vocab_path {ns_vqa_root}/data/reason/{DATA_FOLDER_NAME}/clevr-poc-vocab.json"
 get_ipython().system('{run} ')
 
 # In[ ]:
-
+'''
 '''
 #TESTING
 run = f"python ./reason/tools/run_test.py         --main_root={main_root}         --ns_vqa_root={ns_vqa_root}         --data_folder_name={DATA_FOLDER_NAME}         --clevr_val_scene_path {main_root}/clevr-poc-dataset-gen/{DATA_FOLDER_NAME}/incomplete/scenes/testing       --clevr_val_question_path {ns_vqa_root}/data/reason/{DATA_FOLDER_NAME}/clevr-poc-test_questions.h5         --clevr_constraint_scene_path {main_root}/clevr-poc-dataset-gen/environment_constraints         --load_checkpoint_path {ns_vqa_root}/data/reason/output-2000-FS/model_pretrain/checkpoint_best.pt         --save_result_path {ns_vqa_root}/data/reason/output-2000-FS/test_result.json         --clevr_vocab_path {ns_vqa_root}/data/reason/{DATA_FOLDER_NAME}/clevr-poc-vocab.json"

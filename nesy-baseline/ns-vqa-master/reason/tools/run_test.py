@@ -32,7 +32,15 @@ def find_clevr_question_type(out_mod):
         q_type = 'query'
     return q_type
 
-
+def computeReward(predicted, ans, function):
+	if function == 'partial':
+		comm = numpy.sum(predicted == ans)
+		return comm/len(predicted)
+	else:
+		if numpy.array_equal(predicted, ans):
+			return 1
+		else:
+			return 0
 def check_program(pred, gt):
     """Check if the input programs matches"""
     len_pred = 0
@@ -88,8 +96,10 @@ if (opt.load_checkpoint_path is not None):
   
 print('| running test')
 stats = {
-    'correct_ans': 0,
+    'exact_correct_ans': 0,
+    'partial_correct_ans':0,
     'correct_prog': 0,
+    'partial':0,
     'total': 0
 }
 
@@ -134,11 +144,16 @@ for x, y, answer, idx,constraint_type in loader:
             a = [vocab['labels'][d] for d in pred]
             b = [1 if c in a else 0 for c in range(len(vocab['labels']))]
             predicted = numpy.array(b)
-            
+            partial = computeReward(predicted, ans, 'partial')
+            #stats['correct_ans']+=computeReward(predicted, ans, 'exact')
+            if partial>0 and partial<1:
+            	stats['partial_correct_ans']+=1 
+            stats['partial'] = stats['partial']+partial 
             if numpy.array_equal(predicted, ans):
-            	stats['correct_ans']+=1
+            	stats['exact_correct_ans']+=1
             	#print('Equal answers..', pred, predicted, ans)
             	ans_eq=True
+    		
         if check_program(pg_np[i], y_np[i]):
             stats['correct_prog'] += 1
             #print('Equal programs..', pg_np[i], y_np[i])
@@ -161,12 +176,14 @@ for x, y, answer, idx,constraint_type in loader:
         stats['total'] += 1
         
         
-    print('| %d/%d questions processed, accuracy %f' % (stats['total'], len(loader.dataset), stats['correct_ans'] / stats['total']))
+    print('| %d/%d questions processed, accuracy %f' % (stats['total'], len(loader.dataset), stats['exact_correct_ans'] / stats['total']))
 
 result = {
     'program_acc': stats['correct_prog'] / stats['total'],
-    'overall_acc': stats['correct_ans'] / stats['total'],
-    'correct-ans':stats['correct_ans'],
+    'exact_acc': stats['exact_correct_ans'] / stats['total'],
+    'partial_acc':stats['partial'] / stats['total'],
+    'exact_correct_ans':stats['exact_correct_ans'],
+    'partial_correct_ans':stats['partial_correct_ans']
 }
 print(result)
 utils.mkdirs(os.path.dirname(opt.save_result_path))
