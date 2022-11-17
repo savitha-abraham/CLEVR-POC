@@ -232,13 +232,12 @@ class Trainer():
         flag = False
         for i in range(len(pred)):
             if pred[i]==2:
-            	flag = True
+                flag = True
                 break
-        
         if (flag):
-        	len_pred = i
-	else:
-		len_pred = i+1
+            len_pred = i
+        else:
+            len_pred = i+1
         print(pred, len_pred)
         
         for i in range(1, len(gt)):

@@ -44,42 +44,29 @@ def computeReward(predicted, ans, function):
 def check_program(pred, gt):
     """Check if the input programs matches"""
     len_pred = 0
-    flag = True
+    flag = False
     for i in range(len(pred)):
-    	if pred[i]==2:
-    		flag = True
-    		break
-    		
-    if (flag):		
-    	len_pred = i
-
+        if pred[i]==2:
+            flag = True
+            break
+    if (flag):
+        len_pred = i
     else:
-    	len_pred = i+1
+        len_pred = i+1
     for i in range(1, len(gt)):
     	if gt[i]==2:
     		break
     len_gt = i-1
-    #print(pred, len_pred)
-    #print(gt, len_gt)
-    
-    	
-    
     if len_pred!= len_gt:
-    	return False
-    # ground truth programs have a start token as the first entry
+        return False
     for i in range(len(pred)):
         if pred[i] not in gt:
             return False
         if pred[i] == 2:
             break
     for i in range(1, len_gt+1):
-    	if gt[i] not in pred:
-    		return False
-    	
-    		
-           
-		
-    
+        if gt[i] not in pred:
+            return False
     return True
 
 if torch.cuda.is_available():
