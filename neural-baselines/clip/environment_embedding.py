@@ -65,5 +65,5 @@ def get_total_embedding(env_folder):
 
 
 if __name__ == "__main__":
-    env_folder = '/home/marjan/myworks/code/python/CLEVR-POC/clevr-poc-dataset-gen/environment_constraints'
+    env_folder = '/home/marjan/code/CLEVR-POC/clevr-poc-dataset-gen/environment_constraints'
     get_total_embedding(env_folder)

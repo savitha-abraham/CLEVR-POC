@@ -2,6 +2,7 @@ import torch
 from tqdm import tqdm
 import torch.nn as nn
 from PIL import Image
+import numpy
 
 def to_device(data, device):
         
@@ -79,11 +80,12 @@ def train(final_classifier, clip_model, dataloader, optimizer, criterion, train_
 
 
 # validation function
-def validate(final_classifier, clip_model, dataloader, criterion, val_data, device, dropout, clip_processor):
+def validate(final_classifier, clip_model, dataloader, criterion, val_data, device, dropout, clip_processor, val_threshold):
     print('Validating')
     final_classifier.eval()
     counter = 0
     val_running_loss = 0.0
+    val_running_acc = 0
     with torch.no_grad():
         for i, data in tqdm(enumerate(dataloader), total=int(len(val_data)/dataloader.batch_size)):
             counter += 1
@@ -110,17 +112,27 @@ def validate(final_classifier, clip_model, dataloader, criterion, val_data, devi
         
             loss = criterion(outputs, data_device['target'])
             val_running_loss += loss.item()
+            
+            updated_outputs = torch.where(outputs > val_threshold, 1, 0.)
+            
+            #partial accuracy
+            comm = numpy.sum(numpy.array(updated_outputs.tolist()) == numpy.array(data_device['target'].tolist()))
+            val_running_acc += comm/len(updated_outputs.tolist())
+            
         
         val_loss = val_running_loss / counter
-        return val_loss       
+        val_acc = val_running_acc / counter
+        return val_loss, val_acc   
+    
 
 
 
-def test(final_classifier, clip_model, dataloader, criterion, test_data, device, dropout, clip_processor):
+def test(final_classifier, clip_model, dataloader, criterion, test_data, device, dropout, clip_processor, val_threshold):
     print('Testing')
     final_classifier.eval()
     counter = 0
-    correct = 0
+    test_running_partial_acc = 0
+    test_running_exact_acc = 0
     
     for i, data in tqdm(enumerate(dataloader), total=int(len(test_data)/dataloader.batch_size)):
         counter += 1
@@ -145,12 +157,19 @@ def test(final_classifier, clip_model, dataloader, criterion, test_data, device,
         # apply sigmoid activation to get all the outputs between 0 and 1
         outputs = torch.sigmoid(outputs)        
         
-        #loss = criterion(outputs, data_device['target'])
-        #test_running_loss += loss.item()
-
-        pred = torch.max(outputs, 1)[1]
-        t = torch.max(data_device['target'], 1)[1]
-        correct += pred.eq(t).sum()
+        updated_outputs = torch.where(outputs > val_threshold, 1, 0.)
+        
+        #partial accuracy
+        comm = numpy.sum(numpy.array(updated_outputs.tolist()) == numpy.array(data_device['target'].tolist()))
+        test_running_partial_acc += comm/len(updated_outputs.tolist())
+        
+        #exact accuracy
+        if numpy.array_equal(numpy.array(updated_outputs.tolist()), numpy.array(data_device['target'].tolist())):
+            test_running_exact_acc += 1
+        
+        
+        #t = torch.max(data_device['target'], 1)[1]
+        #correct += pred.eq(t).sum()
         
         
 
@@ -162,6 +181,8 @@ def test(final_classifier, clip_model, dataloader, criterion, test_data, device,
         N,C = data_device['target'].shape
         accuracy = (outputs == data_device['target']).sum() / (N*C) * 100   
         """
-    #test_loss = test_running_loss / counter
-    accuracy = 100 * correct / counter
-    return accuracy
+    
+    #accuracy = 100 * correct / counter
+    test_partial_acc = test_running_partial_acc /  counter
+    test_exact_acc = test_running_exact_acc /  counter
+    return test_exact_acc, test_partial_acc
