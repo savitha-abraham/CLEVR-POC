@@ -113,11 +113,13 @@ def validate(final_classifier, clip_model, dataloader, criterion, val_data, devi
             loss = criterion(outputs, data_device['target'])
             val_running_loss += loss.item()
             
-            updated_outputs = torch.where(outputs > val_threshold, 1, 0.)
+            updated_outputs = torch.where(outputs > val_threshold, 1, 0.).tolist()[0]
+        
+            target = data_device['target'].tolist()[0]            
             
             #partial accuracy
-            comm = numpy.sum(numpy.array(updated_outputs.tolist()) == numpy.array(data_device['target'].tolist()))
-            val_running_acc += comm/len(updated_outputs.tolist())
+            comm = numpy.sum(numpy.array(updated_outputs) == numpy.array(target))
+            val_running_acc += comm/len(updated_outputs)
             
         
         val_loss = val_running_loss / counter
@@ -155,16 +157,18 @@ def test(final_classifier, clip_model, dataloader, criterion, test_data, device,
         outputs = final_classifier(emb)
 
         # apply sigmoid activation to get all the outputs between 0 and 1
-        outputs = torch.sigmoid(outputs)        
+        outputs = torch.sigmoid(outputs)  
+        updated_outputs = torch.where(outputs > val_threshold, 1, 0.).tolist()[0]
         
-        updated_outputs = torch.where(outputs > val_threshold, 1, 0.)
+        target = data_device['target'].tolist()[0]
         
         #partial accuracy
-        comm = numpy.sum(numpy.array(updated_outputs.tolist()) == numpy.array(data_device['target'].tolist()))
-        test_running_partial_acc += comm/len(updated_outputs.tolist())
+        comm = numpy.sum(numpy.array(updated_outputs) == numpy.array(target))
+        test_running_partial_acc += comm/len(updated_outputs)
+        
         
         #exact accuracy
-        if numpy.array_equal(numpy.array(updated_outputs.tolist()), numpy.array(data_device['target'].tolist())):
+        if numpy.array_equal(numpy.array(updated_outputs), numpy.array(target)):
             test_running_exact_acc += 1
         
         
