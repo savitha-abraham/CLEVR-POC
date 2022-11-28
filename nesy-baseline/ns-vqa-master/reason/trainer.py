@@ -200,8 +200,18 @@ class Trainer():
 
     def computeReward(self,predicted, ans, function):
         if function == 'partial':
-            comm = numpy.sum(predicted == ans)
-            return comm/len(predicted)
+        	r = numpy.where(ans == 1)
+        	ans_ones = set(list(r[0]))
+        	r = numpy.where(predicted == 1)
+        	pred_ones = set(list(r[0]))
+        	tp = len(list(ans_ones & pred_ones))
+        	fp = len(list(pred_ones.difference(ans_ones)))
+        	fn = len(list(ans_ones.difference(pred_ones)))
+        	jaccard_index = tp/(tp + fp + fn)
+        	return jaccard_index
+		        
+            #comm = numpy.sum(predicted == ans)
+            #return comm/len(predicted)
         else:
             if numpy.array_equal(predicted, ans):
                 return 1
