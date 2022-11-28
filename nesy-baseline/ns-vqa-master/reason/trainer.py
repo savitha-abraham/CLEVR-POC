@@ -198,7 +198,7 @@ class Trainer():
             t += 1
         return loss / t if t is not 0 else 0
 
-    def computeReward(predicted, ans, function):
+    def computeReward(self,predicted, ans, function):
         if function == 'partial':
             comm = numpy.sum(predicted == ans)
             return comm/len(predicted)
@@ -238,21 +238,22 @@ class Trainer():
             len_pred = i
         else:
             len_pred = i+1
-        print(pred, len_pred)
-        
+        pred = pred[0:len_pred]
         for i in range(1, len(gt)):
             if gt[i]==2:
                 break
-        len_gt = i-1
-        print(gt, len_gt)
-        if len_pred!= len_gt:
-            return False
+        len_gt = i
+        #print('gt old:', gt)
+        gt = gt[1:len_gt]
+        #input(gt)
+        #if len_pred!= len_gt:
+        #    return False
         for i in range(len(pred)):
+            if pred[i] == 2: 
+                break
             if pred[i] not in gt:
                 return False
-            if pred[i] == 2:
-                break
-        for i in range(1, len_gt+1):
+        for i in range(len(gt)):
             if gt[i] not in pred:
                 return False
         return True
@@ -262,6 +263,7 @@ class Trainer():
         pg_np = programs.cpu().detach().numpy()
         ans_np = answers.cpu().detach().numpy()
         ct_np = constraint_type.cpu().detach().numpy()
+        gt = gt.cpu().detach().numpy()
         reward = 0
         val_pgm_accuracy = 0
         print_res = []
@@ -283,19 +285,22 @@ class Trainer():
                 a = [self.vocab['labels'][d] for d in pred]
                 b = [1 if c in a else 0 for c in range(len(self.vocab['labels']))]
                 predicted = numpy.array(b)
-                #reward = reward + computeReward(predicted, ans, 'partial')
+                reward = reward + self.computeReward(predicted, ans, 'partial')
                 
                 
-                if numpy.array_equal(predicted, ans):
-                    reward += 1.0
-                    #print('Equal answers', pred, predicted, ans)
+                ##if numpy.array_equal(predicted, ans):
+                    ##reward += 1.0
+                    #gt_token = getToken_program(gt[i], self.vocab['program_idx_to_token'])
+                    #print(pred_pgm, gt_token, predicted)
+                    #input(ans)
                     
             if split=='val':
               
               quest_token = getToken(quests[i], self.vocab['question_idx_to_token'])
               gt_token = getToken_program(gt[i], self.vocab['program_idx_to_token'])
               if self.check_program(pg_np[i], gt[i]):
-              	val_pgm_accuracy = val_pgm_accuracy+1 
+              	val_pgm_accuracy = val_pgm_accuracy+1
+              	 
               print_res.append("Question:"+quest_token+"\n GT:"+gt_token+"\n Pred pg:"+pred_pgm+"\n Ans:"+ans_tokens_str+"\n Pred ans: "+str(pred))
         reward /= pg_np.shape[0]
         val_pgm_accuracy /= pg_np.shape[0]

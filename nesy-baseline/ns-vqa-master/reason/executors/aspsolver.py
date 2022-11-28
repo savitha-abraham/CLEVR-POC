@@ -85,6 +85,7 @@ def solve(pred_pgm, scene_filename,  constraint_type_index, split, scene_folder,
     scene_filename = "CLEVR_"+zeros+name+".json"
     
     scene_file_path = os.path.join(scene_folder, scene_filename)
+    #input(scene_file_path)
     with open(scene_file_path, encoding="utf-8") as f:
         scene_dict = json.load(f)             
     
